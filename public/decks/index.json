@@ -1,21 +1,35 @@
-[
-  "nca-genl-01-core-ml-ai.json",
-  "nca-genl-02-software-dev-nvidia.json",
-  "nca-genl-03-experimentation-prompting.json",
-  "nca-genl-04-data-analysis-viz.json",
-  "nca-genl-05-trustworthy-ai.json",
-  "nca-genl-06-nvidia-stack-deployment.json",
-  "leetprep-01-genai-llm-fundamentals.json",
-  "leetprep-02-rag-systems.json",
-  "leetprep-03-finetuning-and-quantization.json",
-  "leetprep-04-agents-mcp-langgraph.json",
-  "leetprep-05-system-design.json",
-  "leetprep-06-distributed-systems-event-driven.json",
-  "leetprep-07-cloud-aws-serverless.json",
-  "leetprep-08-java-spring-backend.json",
-  "leetprep-09-sql-and-databases.json",
-  "leetprep-10-behavioral-star.json",
-  "leetprep-11-tricky-leveling-and-weak-claims.json",
-  "world-capitals.json",
-  "react-basics.json"
-]
+{
+  "groups": [
+    {
+      "id": "nca-genl",
+      "title": "NCA-GENL Prep",
+      "description": "NVIDIA Certified Associate: Generative AI & LLMs — decks by exam domain.",
+      "decks": [
+        "nca-genl-01-core-ml-ai.json",
+        "nca-genl-02-software-dev-nvidia.json",
+        "nca-genl-03-experimentation-prompting.json",
+        "nca-genl-04-data-analysis-viz.json",
+        "nca-genl-05-trustworthy-ai.json",
+        "nca-genl-06-nvidia-stack-deployment.json"
+      ]
+    },
+    {
+      "id": "interview",
+      "title": "Interview Prep",
+      "description": "GenAI / ML / backend lead interview topics.",
+      "decks": [
+        "leetprep-01-genai-llm-fundamentals.json",
+        "leetprep-02-rag-systems.json",
+        "leetprep-03-finetuning-and-quantization.json",
+        "leetprep-04-agents-mcp-langgraph.json",
+        "leetprep-05-system-design.json",
+        "leetprep-06-distributed-systems-event-driven.json",
+        "leetprep-07-cloud-aws-serverless.json",
+        "leetprep-08-java-spring-backend.json",
+        "leetprep-09-sql-and-databases.json",
+        "leetprep-10-behavioral-star.json",
+        "leetprep-11-tricky-leveling-and-weak-claims.json"
+      ]
+    }
+  ]
+}

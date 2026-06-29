@@ -1,25 +1,20 @@
 import { getStats } from '../lib/storage.js'
 
-export default function DeckPicker({ decks, onStart, onImport, onDelete }) {
+// Second-level picker: the individual decks within one selected set.
+export default function DeckPicker({ group, onStart, onDelete, onBack }) {
   const stats = getStats()
 
   return (
     <div className="picker">
       <div className="picker-head">
-        <h1>Your decks</h1>
-        <button className="btn primary" onClick={onImport}>+ Import JSON</button>
+        <div>
+          <button className="btn ghost back-link" onClick={onBack}>← All sets</button>
+          <h1>{group.title}</h1>
+        </div>
       </div>
 
-      {decks.length === 0 && (
-        <div className="empty card-surface">
-          <p>No decks yet.</p>
-          <p className="muted">Import a JSON deck or paste cards to get started.</p>
-          <button className="btn primary" onClick={onImport}>Import a deck</button>
-        </div>
-      )}
-
       <div className="deck-grid">
-        {decks.map((deck) => {
+        {group.decks.map((deck) => {
           const s = stats[deck.id]
           return (
             <div key={deck.id} className="deck-card card-surface">
@@ -45,9 +40,7 @@ export default function DeckPicker({ decks, onStart, onImport, onDelete }) {
 
               <div className="deck-meta">
                 <span className="chip">{deck.cardCount} cards</span>
-                <span className={`chip ${deck.source === 'builtin' ? 'chip-builtin' : 'chip-mine'}`}>
-                  {deck.source === 'builtin' ? 'Sample' : 'Yours'}
-                </span>
+                {deck.source === 'imported' && <span className="chip chip-mine">Yours</span>}
                 {s && <span className="chip chip-score">Best {s.bestPct}%</span>}
               </div>
 

@@ -41,6 +41,26 @@ export default function Quiz({ deck, onExit, onPractice }) {
     }
   }
 
+  // Keyboard answering: A–D pick a choice, Enter/Space advances after answering.
+  useEffect(() => {
+    if (finished) return
+    function onKeyDown(e) {
+      if (e.target.closest('input, textarea, [contenteditable="true"]')) return
+      const key = e.key.toLowerCase()
+      const idx = ['a', 'b', 'c', 'd'].indexOf(key)
+      if (idx !== -1 && q && idx < q.choices.length) {
+        e.preventDefault()
+        choose(q.choices[idx])
+      } else if ((e.key === 'Enter' || e.key === ' ') && selected) {
+        e.preventDefault()
+        advance()
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [q, selected, finished, pos, total])
+
   // Record best score once when the quiz finishes.
   useEffect(() => {
     if (finished) recordQuizScore(deck.id, correctCount, total)
@@ -120,7 +140,7 @@ export default function Quiz({ deck, onExit, onPractice }) {
           ? <button className="btn primary wide" onClick={advance}>
               {pos + 1 >= total ? 'See results →' : 'Next question →'}
             </button>
-          : <p className="muted center">Select an answer above</p>}
+          : <p className="muted center">Select an answer above (or press A–D)</p>}
       </div>
     </div>
   )
