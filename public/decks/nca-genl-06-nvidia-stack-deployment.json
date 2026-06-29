@@ -1,0 +1,201 @@
+{
+  "title": "NCA-GENL · NVIDIA Stack & Deployment",
+  "description": "Exam-favorite facts: NeMo/TensorRT-LLM/Triton/NIM/NGC, quantization, batching, parallelism, PEFT, VLMs.",
+  "cards": [
+    {
+      "front": "In the NVIDIA stack, what are the roles of NeMo, TensorRT-LLM, Triton, and NIM?",
+      "back": "NeMo trains/fine-tunes and exports models; TensorRT-LLM optimizes them into fast GPU inference engines (KV-cache, in-flight batching, quantization); Triton serves models over HTTP/gRPC with batching; NIM packages the whole stack as one turnkey container. NGC is the catalog that provides the containers.",
+      "quizAnswer": "NeMo trains, TensorRT-LLM optimizes, Triton serves, and NIM packages it as one container; NGC is the catalog.",
+      "distractors": [
+        "NeMo serves, TensorRT-LLM trains, Triton optimizes, and NIM curates the training data.",
+        "All four are model-serving tools that differ only in which cloud provider hosts them.",
+        "NeMo optimizes, NIM trains, Triton catalogs, and TensorRT-LLM serves the model.",
+        "TensorRT-LLM trains the model, NeMo deploys it, and Triton only profiles performance.",
+        "NIM trains, NGC serves, Triton optimizes, and NeMo is just a hardware catalog.",
+        "They are four names for the same product at different stages of its release cycle."
+      ]
+    },
+    {
+      "front": "What does quantization do — and not do — for an LLM?",
+      "back": "Quantization reduces the numerical precision of weights/activations (FP32 → FP16/BF16 → INT8 → FP8 → INT4/FP4), saving memory and speeding inference because there is less data to move. It does NOT improve model accuracy, and it does NOT increase model size.",
+      "quizAnswer": "It lowers weight/activation precision to save memory and speed inference; it does NOT improve accuracy or increase size.",
+      "distractors": [
+        "It increases the model's precision to improve accuracy, at the cost of extra memory.",
+        "It adds parameters to the model, increasing its size but making inference faster.",
+        "It improves accuracy by retraining the model at a higher numerical precision.",
+        "It is purely a training technique and has no effect on inference speed or memory.",
+        "It converts the model to a higher precision like FP32 to reduce memory usage.",
+        "It compresses the training dataset rather than the model's weights or activations."
+      ]
+    },
+    {
+      "front": "What is the KV-cache and how does its memory behave?",
+      "back": "It caches the computed Key and Value tensors for already-generated tokens so they are not recomputed at each step during generation. Memory grows with sequence length (and batch size), which is why long contexts and many concurrent users strain GPU memory.",
+      "quizAnswer": "It caches past tokens' Key/Value tensors to avoid recomputation during generation; memory grows with sequence length.",
+      "distractors": [
+        "It caches the model's weights in faster memory so they need not be reloaded each step.",
+        "It stores recent prompts and responses so identical queries can skip generation.",
+        "It caches the final softmax distribution so identical inputs produce identical outputs.",
+        "It precomputes the Keys and Values for all future tokens, shrinking as generation proceeds.",
+        "It caches gradients during training so back-propagation can reuse them across batches.",
+        "It stores document embeddings for the retrieval step, separate from text generation."
+      ]
+    },
+    {
+      "front": "What is in-flight (continuous) batching, and how does it differ from dynamic batching?",
+      "back": "In-flight (continuous) batching lets new requests join a running batch as others finish, maximizing GPU utilization (TensorRT-LLM, vLLM). Dynamic batching (Triton) instead groups incoming requests within a short time window into one batch before running them — sequences are fixed once the batch forms.",
+      "quizAnswer": "New requests join a running batch as others finish (TensorRT-LLM/vLLM); dynamic batching instead forms a batch up front.",
+      "distractors": [
+        "It delays every request by a fixed window, whereas dynamic batching runs each request alone.",
+        "It splits one request across GPUs, whereas dynamic batching keeps each request on one GPU.",
+        "It is identical to dynamic batching; the two terms are used interchangeably in practice.",
+        "It runs each sequence to completion before admitting the next, unlike dynamic batching.",
+        "It batches only training examples, whereas dynamic batching applies to inference requests.",
+        "It caches finished responses, whereas dynamic batching groups requests by time window."
+      ]
+    },
+    {
+      "front": "What is speculative decoding?",
+      "back": "A small draft model proposes several tokens, and the large target model verifies them in parallel in a single forward pass, accepting the ones it agrees with. This reduces latency because multiple tokens can be confirmed per expensive large-model step.",
+      "quizAnswer": "A small draft model proposes tokens that the large model verifies in parallel, reducing generation latency.",
+      "distractors": [
+        "The large model proposes tokens that a small model verifies sequentially, saving memory.",
+        "The model speculatively skips low-probability tokens to shorten the generated output.",
+        "Two equally large models vote on each token, improving accuracy at the cost of latency.",
+        "The model precomputes every possible next token and caches them for instant lookup.",
+        "It samples several full sequences in parallel and returns the highest-scoring one.",
+        "It trains a draft model on the fly during inference to match the target model's outputs."
+      ]
+    },
+    {
+      "front": "Distinguish tensor parallelism, pipeline parallelism, and expert parallelism.",
+      "back": "Tensor parallelism splits an individual layer's matrices across GPUs. Pipeline parallelism puts different layers on different GPUs. Expert parallelism (for Mixture-of-Experts) distributes the experts across GPUs. All address fitting and scaling a model too large for one device.",
+      "quizAnswer": "Tensor splits a layer's matrices across GPUs; pipeline puts different layers on different GPUs; expert distributes MoE experts.",
+      "distractors": [
+        "Tensor puts different layers on different GPUs; pipeline splits a single layer across GPUs.",
+        "All three replicate the full model on each GPU and simply split the batch of inputs.",
+        "Tensor parallelism distributes MoE experts; expert parallelism splits the input batch.",
+        "Pipeline parallelism splits a layer's matrices; tensor parallelism distributes the experts.",
+        "They are three names for data parallelism applied to training versus inference.",
+        "Tensor splits the dataset, pipeline splits the vocabulary, and expert splits the optimizer."
+      ]
+    },
+    {
+      "front": "What does NVIDIA NIM provide?",
+      "back": "A single Docker container wrapping a model plus an optimized runtime. It auto-detects the model format, architecture, and quantization, auto-selects a backend (vLLM, SGLang, or TensorRT-LLM), and exposes an OpenAI-compatible API — deployable with one docker run command.",
+      "quizAnswer": "A single container wrapping a model + optimized runtime, auto-selecting a backend and exposing an OpenAI-compatible API.",
+      "distractors": [
+        "A training framework that fine-tunes models with LoRA before exporting them to Triton.",
+        "A catalog of GPU-validated containers, models, and SDKs that teams download from.",
+        "A model-optimization compiler that fuses kernels and calibrates precision for inference.",
+        "A data-curation tool that deduplicates and filters the pre-training corpus.",
+        "A safety layer that adds programmable guardrails around an LLM application's outputs.",
+        "A hardware appliance bundling A100/H100 GPUs with NVLink for on-prem training."
+      ]
+    },
+    {
+      "front": "What is the purpose of NeMo Curator?",
+      "back": "Data curation for pre-training: deduplicate, filter, and score the quality of training data. It is a training-phase tool that improves the corpus before the model is trained, not a serving or optimization component.",
+      "quizAnswer": "A training-phase tool that deduplicates, filters, and quality-scores pre-training data before training begins.",
+      "distractors": [
+        "A serving component that batches and routes inference requests across multiple GPUs.",
+        "An optimizer that compiles trained models into fast TensorRT-LLM inference engines.",
+        "A catalog of curated pretrained models that teams can download and deploy directly.",
+        "A guardrails system that filters unsafe content out of the model's generated outputs.",
+        "A retrieval microservice that embeds and indexes documents for a RAG pipeline.",
+        "A benchmark suite that scores trained models on MMLU and HumanEval after training."
+      ]
+    },
+    {
+      "front": "How does CLIP align images and text?",
+      "back": "CLIP jointly trains a vision encoder and a text encoder with a contrastive loss, producing an aligned multimodal embedding space where matching image–text pairs are close. Matching is done by cosine similarity in that shared space.",
+      "quizAnswer": "It jointly trains vision and text encoders with a contrastive loss into a shared space; matches by cosine similarity.",
+      "distractors": [
+        "It trains a single transformer to caption images by predicting the next word autoregressively.",
+        "It fine-tunes a language model on image filenames so it can describe pictures in text.",
+        "It uses cross-attention so text tokens attend to image patches within one decoder.",
+        "It converts images to text with OCR and then embeds only the extracted text.",
+        "It trains a diffusion model to generate images from the text encoder's embeddings.",
+        "It aligns the modalities with a reconstruction loss that regenerates the image from text."
+      ]
+    },
+    {
+      "front": "How does a Vision Transformer (ViT) process an image?",
+      "back": "It splits the image into fixed patches (e.g., 16×16), flattens and linearly projects each patch into a token embedding, adds positional encodings, and feeds the sequence into a Transformer encoder — treating patches like tokens, analogous to subword tokens in NLP.",
+      "quizAnswer": "It splits the image into patches, linearly projects each into a token embedding + position, then runs a Transformer encoder.",
+      "distractors": [
+        "It slides convolutional filters over the image, then feeds the feature maps into an RNN.",
+        "It feeds raw pixels one row at a time into a recurrent network with attention.",
+        "It uses cross-attention between the image and a text caption to classify the scene.",
+        "It compresses the image with a CNN, then generates a caption with a decoder.",
+        "It treats each individual pixel as a token, producing one embedding per pixel.",
+        "It applies a diffusion process to denoise the image before classification."
+      ]
+    },
+    {
+      "front": "Name the main parameter-efficient fine-tuning (PEFT) methods and their mechanisms.",
+      "back": "LoRA injects low-rank matrices A,B into attention (W' = W + BA), training <1% of params. QLoRA adds a 4-bit quantized base so it fits on consumer GPUs. Prefix/P-tuning prepends trainable virtual tokens with frozen weights. Adapters insert small bottleneck layers between transformer layers.",
+      "quizAnswer": "LoRA (low-rank matrices), QLoRA (4-bit base + LoRA), prefix tuning (virtual tokens), and adapters (bottleneck layers).",
+      "distractors": [
+        "Full fine-tuning, distillation, pruning, and quantization, each updating all the weights.",
+        "LoRA retrains every weight, while adapters and prefix tuning replace the base model.",
+        "Dropout, weight decay, early stopping, and layer norm applied during fine-tuning.",
+        "Data parallelism, tensor parallelism, pipeline parallelism, and expert parallelism.",
+        "Greedy, beam, top-k, and top-p, which are the four PEFT decoding strategies.",
+        "RLHF, DPO, SFT, and pre-training, which are the parameter-efficient tuning stages."
+      ]
+    },
+    {
+      "front": "What is the difference between a bi-encoder and a cross-encoder in retrieval?",
+      "back": "A bi-encoder embeds the query and each document separately, so embeddings can be precomputed and searched fast (first-stage retrieval). A cross-encoder feeds the (query, document) pair together and scores them jointly — far more accurate but too slow to run over the whole corpus, so it is used only for second-stage re-ranking.",
+      "quizAnswer": "Bi-encoder embeds query and docs separately (fast, first stage); cross-encoder scores pairs jointly (accurate, re-rank only).",
+      "distractors": [
+        "A bi-encoder scores query–document pairs jointly; a cross-encoder embeds them separately.",
+        "Both embed the query and documents separately; they differ only in the vector dimension.",
+        "A cross-encoder is faster, so it handles first-stage retrieval over the whole corpus.",
+        "A bi-encoder is too slow for retrieval, so it is reserved for second-stage re-ranking.",
+        "A cross-encoder precomputes document embeddings, while a bi-encoder scores at query time.",
+        "They are identical models; the names refer only to CPU versus GPU deployment."
+      ]
+    },
+    {
+      "front": "What are DGX, Base Command, and NGC in the NVIDIA stack?",
+      "back": "DGX is purpose-built AI server hardware (A100/H100/B200 with NVLink). Base Command is the cluster OS for DGX that handles workload scheduling. NGC is the software catalog — a registry of GPU-validated containers, models, and SDKs.",
+      "quizAnswer": "DGX is AI server hardware; Base Command is the DGX cluster OS for scheduling; NGC is the software/container catalog.",
+      "distractors": [
+        "DGX is the software catalog, Base Command is the hardware, and NGC schedules workloads.",
+        "All three are software services for serving models over HTTP with dynamic batching.",
+        "DGX is a container registry, NGC is a GPU server, and Base Command optimizes models.",
+        "Base Command is the AI server hardware, while DGX schedules its training jobs.",
+        "NGC is the cluster OS, DGX is the catalog, and Base Command is the GPU chip.",
+        "They are three successive generations of the same GPU server product line."
+      ]
+    },
+    {
+      "front": "What is the difference between self-attention and cross-attention?",
+      "back": "In self-attention, Q, K, and V all come from the same sequence (used in encoders and decoders). In cross-attention, the Query comes from one sequence (e.g., the decoder) while the Keys and Values come from another (e.g., the encoder) — the mechanism by which a decoder attends to encoder outputs in seq2seq models.",
+      "quizAnswer": "Self-attention takes Q, K, V from the same sequence; cross-attention takes Q from one sequence and K/V from another.",
+      "distractors": [
+        "Self-attention takes Q from one sequence and K/V from another; cross-attention uses one sequence.",
+        "Self-attention is bidirectional and cross-attention is causal; both use a single sequence.",
+        "Self-attention runs on the encoder only; cross-attention runs on the decoder only.",
+        "Cross-attention takes Q, K, and V all from the same sequence, like a second self-attention.",
+        "Self-attention compares two different sequences, while cross-attention compares a sequence to itself.",
+        "They are identical operations; the names depend only on which layer they appear in."
+      ]
+    },
+    {
+      "front": "When should you use prompt engineering vs. RAG vs. fine-tuning?",
+      "back": "Prompt engineering: fast iteration, no training budget, task clear from examples — but limited control and bounded by the context window. RAG: need current/external knowledge or factual grounding without retraining — but retrieval quality is the bottleneck and it adds latency. Fine-tuning (LoRA/QLoRA or full): deep customization or domain shift — but more expensive, with catastrophic-forgetting risk.",
+      "quizAnswer": "Prompt for fast no-train tasks, RAG for current/external knowledge, fine-tuning for deep customization or domain shift.",
+      "distractors": [
+        "Fine-tune first for any task, use RAG only for tone, and avoid prompting in production.",
+        "Use RAG to change the model's behavior and fine-tuning to inject fresh, changing facts.",
+        "Prompt engineering is the most expensive option, so reserve it for when the others fail.",
+        "Always combine all three on every task, since each one alone is insufficient.",
+        "Use fine-tuning for current external knowledge and prompting for permanent domain shift.",
+        "RAG retrains the model nightly, so use it when you cannot afford prompt engineering."
+      ]
+    }
+  ]
+}

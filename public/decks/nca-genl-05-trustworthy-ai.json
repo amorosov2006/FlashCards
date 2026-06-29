@@ -1,0 +1,97 @@
+{
+  "title": "NCA-GENL · Trustworthy AI",
+  "description": "Prompt injection, hallucination, bias, PII, model cards, consent, human-in-the-loop (exam domain 5, 10%).",
+  "cards": [
+    {
+      "front": "What is the primary risk of prompt injection?",
+      "back": "Untrusted content (in user input, retrieved docs, or tool outputs) overrides the system instructions and causes the model to perform unintended actions or leak data. Architectural mitigations — separate instructions from data, output validators, least-privilege tools, never trusting the model with high-stakes actions — matter more than prompt-level patches, because no prompt is fully proof against injection.",
+      "quizAnswer": "Untrusted content overrides the system instructions, making the model take unintended actions or leak data.",
+      "distractors": [
+        "It raises GPU bills because injected text makes the model generate far longer responses.",
+        "It slows training convergence by corrupting the gradients during the fine-tuning loop.",
+        "It reduces the model's perplexity, making the evaluation metrics look artificially good.",
+        "It causes the model to refuse every request, creating a denial-of-service condition.",
+        "It leaks the model's weights to the attacker by encoding them in the output tokens.",
+        "It increases inference latency because the injected prompt must be re-tokenized twice."
+      ]
+    },
+    {
+      "front": "Which is a recommended approach to reduce LLM hallucinations in production?",
+      "back": "Ground responses with retrieval (RAG), require citations, lower temperature, and add a faithfulness check. Hallucinations come from generation untethered from a knowledge source; grounding + citations + verification drastically reduces them, while raising temperature does the opposite.",
+      "quizAnswer": "Ground answers with retrieval (RAG), require citations, lower temperature, and add a faithfulness check.",
+      "distractors": [
+        "Increase the temperature to 1.5 so the model explores more answers and self-corrects.",
+        "Disable output validation so the model is free to produce its most confident answer.",
+        "Remove the system prompt so the model relies entirely on its pretrained knowledge.",
+        "Fine-tune the model on more web text so it memorizes a wider range of facts.",
+        "Raise the top-p value to widen the candidate set and dilute the incorrect tokens.",
+        "Shorten the context window so the model has fewer chances to drift off topic."
+      ]
+    },
+    {
+      "front": "Why is bias auditing important for an LLM-powered application?",
+      "back": "Compliance frameworks and ethical-deployment requirements demand that models not produce systematically harmful or unequal outcomes across protected groups. Bias audits combine subgroup metrics, counterfactual tests, and red-teaming; documenting findings (model card, datasheet) is part of NVIDIA's Trustworthy AI pillar and most enterprise governance frameworks.",
+      "quizAnswer": "Compliance and ethics require that the model not produce systematically harmful or unequal outcomes across protected groups.",
+      "distractors": [
+        "It speeds up training by removing the biased examples that slow gradient convergence.",
+        "It reduces GPU memory because de-biased models have fewer parameters to store.",
+        "It is required by CUDA, which refuses to run models that fail a fairness check.",
+        "It improves the model's perplexity by smoothing the output probability distribution.",
+        "It lowers inference latency because unbiased models produce shorter responses.",
+        "It is only needed for research papers, not for production-deployed applications."
+      ]
+    },
+    {
+      "front": "What is PII and why must it be handled carefully in LLM workflows?",
+      "back": "Personally Identifiable Information; it can identify a real person and is regulated by laws (GDPR, CCPA, HIPAA), so it must be masked, minimized, or removed from training data, prompts, logs, and outputs. Standard practice: scrub PII at ingestion (regex + classifier), redact in logs, and avoid sending it to third-party APIs without contractual coverage. Outputs can leak training-data PII — scan and block.",
+      "quizAnswer": "Personally Identifiable Information — regulated data that must be masked or removed from training, prompts, logs, and outputs.",
+      "distractors": [
+        "Pretrained Inference Index; a lookup table that can be safely ignored during deployment.",
+        "Public Internet Information; data scraped from the web that requires no special protection.",
+        "Periodic Index of Iterations; a training-loop counter that is harmless to expose.",
+        "Parallel Inference Instances; replicas of the model that must be load-balanced carefully.",
+        "Private Inference Input; the raw logits that should be encrypted before leaving the GPU.",
+        "Protected Internal Identifier; a model-version string with no privacy implications."
+      ]
+    },
+    {
+      "front": "What is the best definition of a model card?",
+      "back": "A short structured document describing a model's intended use, training data, performance across groups, limitations, and ethical considerations. Model cards (Mitchell et al., 2019) are standard for transparent AI release — they communicate to downstream users what the model should and should not be used for.",
+      "quizAnswer": "A structured document describing a model's intended use, training data, group performance, limitations, and ethics.",
+      "distractors": [
+        "A purchase invoice for the GPU on which the model was trained and deployed.",
+        "A type of cooling card installed alongside the GPU to manage its thermal load.",
+        "The serial number of the model file, used to track it across deployments.",
+        "A benchmark scoreboard ranking the model against competitors on a single metric.",
+        "A configuration file listing the model's hyperparameters for reproducible training.",
+        "A license key that authorizes the model to run on a particular GPU cluster."
+      ]
+    },
+    {
+      "front": "Why is user consent relevant when collecting data for LLM applications?",
+      "back": "Many jurisdictions require informed, specific, and revocable consent for collecting and processing personal data; violating this exposes the organization to regulatory and reputational risk. Privacy by design starts at consent, with clear retention policies and a deletion/right-to-be-forgotten path. 'Public' does not mean 'unrestricted use' — copyright and contextual integrity still apply.",
+      "quizAnswer": "Many laws require informed, specific, revocable consent to process personal data; violating it brings legal and reputational risk.",
+      "distractors": [
+        "It is not relevant as long as the data was found somewhere on the public internet.",
+        "It only matters in research papers and academic settings, not in production systems.",
+        "It is fully replaced by encrypting the data at rest, which removes any consent obligation.",
+        "Consent is required only for the model's outputs, not for the data used to train it.",
+        "It applies only to data about employees, not to data collected from end users.",
+        "Anonymizing the data once removes the need for consent even if it can be re-identified."
+      ]
+    },
+    {
+      "front": "Which is a sign that an LLM output may need a human-in-the-loop review?",
+      "back": "The decision is high-stakes (financial, medical, legal), the model expresses low confidence, or guardrails flag potential bias or a policy violation. High-stakes domains require human oversight regardless of model confidence; confidence flags plus content classifiers route only the risky subset to humans, balancing throughput and safety.",
+      "quizAnswer": "When the decision is high-stakes, the model's confidence is low, or guardrails flag bias or a policy violation.",
+      "distractors": [
+        "Whenever the output is short, since brief responses are more likely to be wrong.",
+        "Whenever the model used FP16 precision, because reduced precision lowers reliability.",
+        "Whenever the prompt was written in English rather than the user's native language.",
+        "Whenever the response takes longer than one second to generate on the GPU.",
+        "Whenever the model retrieved more than five documents to ground its answer.",
+        "Whenever the temperature was set above zero, since any sampling adds risk."
+      ]
+    }
+  ]
+}

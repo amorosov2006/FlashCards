@@ -1,0 +1,110 @@
+{
+  "title": "NCA-GENL · Data Analysis & Visualization",
+  "description": "EDA, missing data, PCA, embeddings viz, outliers, scaling, confusion matrix (exam domain 4, 14%).",
+  "cards": [
+    {
+      "front": "Why perform exploratory data analysis (EDA) before fine-tuning?",
+      "back": "To uncover distributions, anomalies, leakage, label noise, and class imbalance that would otherwise corrupt the trained model. EDA catches the issues that silently ruin fine-tunes: duplicate rows, contaminated splits, encoding errors, biased class distributions, and label-quality problems — the single highest-ROI step before any training.",
+      "quizAnswer": "To uncover distributions, anomalies, leakage, label noise, and class imbalance that would otherwise corrupt training.",
+      "distractors": [
+        "Because the CUDA driver requires an exploratory pass over the data before training starts.",
+        "To compile the model with TensorRT so it runs efficiently during the fine-tuning loop.",
+        "To set the inference batch size based on how many rows the dataset contains.",
+        "To convert the dataset into ONNX format so it can move between frameworks.",
+        "To pick the learning rate automatically from the variance of the feature columns.",
+        "To encrypt the training data so personally identifiable information cannot leak."
+      ]
+    },
+    {
+      "front": "Which approach is most appropriate when 5% of values in a feature are missing at random?",
+      "back": "Impute (mean/median for numeric, mode or a special category for categorical) and optionally add a binary indicator. Median/mode imputation is the safe default for a low-rate missing-at-random feature; an indicator preserves the signal that a value was missing. Dropping the feature or every affected row throws away useful information.",
+      "quizAnswer": "Impute (median for numeric, mode for categorical) and optionally add a missing-value indicator — don't drop data.",
+      "distractors": [
+        "Drop the entire feature, since 5% missing makes the whole column unreliable for training.",
+        "Drop every row that has any missing value so the model only sees complete records.",
+        "Replace the missing values with NaN and proceed, letting the model handle them natively.",
+        "Replace each missing value with zero, which is always a neutral choice for any feature.",
+        "Impute using the maximum of the column so missing rows stand out clearly to the model.",
+        "Fill the gaps with random values drawn uniformly to avoid biasing the distribution."
+      ]
+    },
+    {
+      "front": "What does PCA's explained variance ratio tell you?",
+      "back": "The fraction of total variance captured by each principal component, used to decide how many components to keep. Plotting the cumulative explained variance and picking the smallest k that meets a threshold (e.g., 95%) is the classic way to choose dimensionality. PCA is linear and unsupervised — avoid it when class separability matters more than variance.",
+      "quizAnswer": "The fraction of total variance each principal component captures, used to choose how many components to keep.",
+      "distractors": [
+        "How accurate the downstream model is after training on the reduced feature set.",
+        "The number of training epochs needed before the validation loss stops improving.",
+        "The GPU utilization while projecting the dataset onto its principal components.",
+        "The correlation between each original feature and the target label being predicted.",
+        "The fraction of rows that PCA removes as outliers during dimensionality reduction.",
+        "The class-separability gained by each component, used to maximize classification accuracy."
+      ]
+    },
+    {
+      "front": "Which technique is most suitable for visualizing a high-dimensional embedding space?",
+      "back": "t-SNE or UMAP projection to 2D. These preserve local neighborhood structure and are the standard tools for visualizing token, document, or user embeddings. Distances in the projection are not globally meaningful — interpret clusters, not absolute positions.",
+      "quizAnswer": "A t-SNE or UMAP projection to 2D — they preserve local neighborhood structure for embedding visualization.",
+      "distractors": [
+        "A bar chart, which preserves the local neighborhood structure of high-dimensional vectors.",
+        "A pie chart, which is the standard way to display clusters in an embedding space.",
+        "An Excel pivot table, which projects high-dimensional embeddings down to two dimensions.",
+        "A PCA projection to 2D, which is preferred because its distances are globally meaningful.",
+        "A line chart of each embedding dimension, read left to right to spot the clusters.",
+        "A heatmap of the raw embedding matrix, where rows and columns reveal the clusters."
+      ]
+    },
+    {
+      "front": "How would you detect class imbalance in a labeled dataset?",
+      "back": "Plot the per-class count or frequency and inspect the ratio. A simple value-count plus bar plot reveals imbalance immediately. Severe imbalance (e.g., 99/1) usually requires class weighting, resampling, threshold tuning, or imbalance-aware metrics like PR-AUC.",
+      "quizAnswer": "Plot the per-class count or frequency and inspect the ratio — a value-count bar plot reveals imbalance immediately.",
+      "distractors": [
+        "Train the model first and then inspect its GPU memory usage for signs of imbalance.",
+        "Increase the learning rate and watch whether the training loss diverges across classes.",
+        "Run inference at FP16 and compare the latency for each class of input.",
+        "Compute the mean of the feature columns and check whether it is far from zero.",
+        "Measure the model's perplexity on each class and compare the resulting values.",
+        "Shuffle the labels and see whether the validation accuracy changes significantly."
+      ]
+    },
+    {
+      "front": "Which is a robust way to detect outliers in a numeric feature?",
+      "back": "Use the IQR rule (values outside [Q1 − 1.5·IQR, Q3 + 1.5·IQR]) or robust z-scores. The IQR rule is robust to non-Gaussian distributions; for heavy-tailed data, robust z-scores (using median and MAD) are even better. Always inspect outliers before discarding — some are signal.",
+      "quizAnswer": "Use the IQR rule (outside Q1−1.5·IQR to Q3+1.5·IQR) or robust z-scores — robust to non-Gaussian data.",
+      "distractors": [
+        "Compare every value to the mean only, flagging anything above the average as an outlier.",
+        "Sort the column and treat the first row as the outlier to remove before training.",
+        "Multiply each value by zero and flag any result that is not exactly zero.",
+        "Flag the top and bottom 10% of every feature as outliers regardless of distribution.",
+        "Use one standard deviation from the mean, which is robust to heavy-tailed data.",
+        "Remove any value that differs from its neighbor by more than a fixed constant."
+      ]
+    },
+    {
+      "front": "Why normalize/standardize numeric features before training many ML models?",
+      "back": "Because optimization and distance-based methods (logistic regression, kNN, SVM, neural nets) work poorly when features are on wildly different scales. Standardization (zero mean, unit variance) speeds optimization, prevents large-scale features from dominating distances/gradients, and is part of the default preprocessing for most tabular ML.",
+      "quizAnswer": "Optimization and distance-based methods work poorly when features have wildly different scales; standardizing fixes it.",
+      "distractors": [
+        "To color the plots correctly so each feature appears on the same axis range.",
+        "To compress the dataset file so it takes up less disk space during training.",
+        "To produce nicer printouts where every feature value fits in the same width.",
+        "Because tree-based models like random forests fail entirely on unscaled features.",
+        "To convert categorical features into numeric ones before the model can use them.",
+        "Because neural networks require every input to lie strictly between zero and one."
+      ]
+    },
+    {
+      "front": "What is the correct interpretation of a confusion matrix?",
+      "back": "A 2×2 (or K×K) table whose rows/columns are true vs. predicted classes; cells count TP, FP, TN, and FN, from which accuracy, precision, recall, and F1 are derived. For multi-class, use macro/micro averaging or per-class precision/recall to understand failure patterns.",
+      "quizAnswer": "A table of true vs. predicted classes counting TP/FP/TN/FN, from which accuracy, precision, recall, and F1 derive.",
+      "distractors": [
+        "A measure of how confused the model is, computed as the entropy of its predictions.",
+        "The same thing as ROC-AUC, just plotted as a square grid instead of a curve.",
+        "A table that applies only to regression, showing predicted versus actual numeric values.",
+        "A chart of the model's loss over time, where confusion appears as oscillations.",
+        "A matrix of feature correlations used to detect redundancy before training.",
+        "A 2×2 table of training versus validation accuracy used to diagnose overfitting."
+      ]
+    }
+  ]
+}

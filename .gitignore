@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vite
+
+# Generated PWA icons (rebuilt by `npm run icons` / build)
+public/pwa-192.png
+public/pwa-512.png
+public/pwa-maskable-512.png
+public/apple-touch-icon.png

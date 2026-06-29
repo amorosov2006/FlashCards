@@ -1,0 +1,110 @@
+{
+  "title": "Cloud, AWS & Serverless",
+  "description": "Lambda, SQS, DynamoDB, API Gateway, cost/scaling/cold starts.",
+  "cards": [
+    {
+      "front": "What is serverless, and what are the trade-offs?",
+      "back": "Running code without managing servers — the provider handles provisioning, scaling, patching; you deploy functions and pay per invocation + compute time, scaling to zero when idle. Pros: no infra management, fine-grained auto-scaling, pay-for-use, fast to ship. Cons: cold starts, execution limits (Lambda 15 min), statelessness, costlier at sustained high volume, vendor lock-in.",
+      "distractors": [
+        "Serverless means there are no servers involved at all; code runs in the browser.",
+        "You pay a fixed monthly fee regardless of usage, and it never scales to zero.",
+        "Serverless functions keep local state between invocations, so no external store is needed.",
+        "It is always cheaper than containers, including at sustained high steady load.",
+        "Serverless is best for long-running heavy jobs because there are no execution limits.",
+        "You manage the operating system and patching while the provider writes the code."
+      ],
+      "quizAnswer": "Run code without managing servers, paying per use and scaling to zero; trade-offs include cold starts, limits, and statelessness."
+    },
+    {
+      "front": "What causes Lambda cold starts and how do you mitigate them?",
+      "back": "A cold start happens when no warm environment exists, so AWS downloads code, starts the runtime, inits the container, and runs your init code before handling the request — adding latency. Mitigate with Provisioned Concurrency, smaller packages/fewer deps, lighter runtimes/lazy imports, moving heavy init to module scope (reused across warm invocations), and right-sizing memory. For async pipelines, cold starts often don't matter.",
+      "distractors": [
+        "Cold starts happen when the function runs too often and the CPU overheats.",
+        "They are caused by large response payloads; returning less data eliminates them.",
+        "Provisioned Concurrency makes cold starts worse by keeping containers idle.",
+        "Moving initialization inside the handler (re-run every call) avoids cold starts.",
+        "Cold starts only occur on the very first deployment and never again afterward.",
+        "Reducing the function's memory speeds up cold starts because less RAM is allocated."
+      ],
+      "quizAnswer": "Latency when AWS spins up a new environment; mitigate with provisioned concurrency, smaller packages, and module-scope init."
+    },
+    {
+      "front": "Why put SQS in front of Lambda instead of invoking Lambda directly?",
+      "back": "Load leveling/backpressure (the queue absorbs bursts so spikes don't overwhelm downstream or hit concurrency limits; Lambda drains at a controlled rate), decoupling and resilience (messages wait safely if a consumer is down), built-in retries + DLQ, and fast async acknowledgment so the producer doesn't wait on processing. Direct invocation couples producer to consumer availability with no buffer.",
+      "distractors": [
+        "SQS makes Lambda run faster by caching the function's code between invocations.",
+        "Direct invocation is impossible; Lambda can only be triggered through a queue.",
+        "SQS removes the need for retries because it guarantees exactly-once delivery.",
+        "It lets the producer block until processing finishes, ensuring synchronous results.",
+        "SQS in front reduces cost by skipping the Lambda invocation entirely for duplicates.",
+        "It is purely for ordering; SQS provides no buffering or backpressure benefit."
+      ],
+      "quizAnswer": "The queue buffers bursts, decouples producer from consumer, and adds retries/DLQ and a fast async acknowledgment."
+    },
+    {
+      "front": "DynamoDB — when do you use it, and how do you model data?",
+      "back": "A managed NoSQL key-value/document store with single-digit-ms latency at any scale. Use for high-throughput, known-access-pattern workloads (sessions, lookups, idempotency/dedup, high-write events) — not ad-hoc analytics or joins. Modeling: design the table around access patterns first; partition key must spread load (avoid hot partitions), sort key enables ranges, GSIs/single-table design support multiple patterns, no joins — denormalize.",
+      "distractors": [
+        "Use DynamoDB for complex ad-hoc analytical queries and multi-table joins.",
+        "Model it like SQL: normalize fully first, then write joins across tables at query time.",
+        "The partition key should funnel all traffic to one partition for consistency.",
+        "DynamoDB supports joins natively, so you can keep data normalized as in Postgres.",
+        "Choose the partition key last, after the data is loaded, based on query frequency.",
+        "It is a relational database with ACID transactions across arbitrary tables."
+      ],
+      "quizAnswer": "A managed NoSQL store; design around access patterns first, spread load with a good partition key, denormalize, no joins."
+    },
+    {
+      "front": "DynamoDB vs. a relational DB — how do you choose?",
+      "back": "Relational (Postgres/RDS): strong consistency, ACID, flexible ad-hoc queries, joins, normalized data — choose when access patterns evolve or you need complex queries/transactional integrity (payments, orders), and it's where pgvector lives. DynamoDB: massive scale, predictable low latency, simple known access patterns, pay-per-use. It's about access patterns and consistency, not 'NoSQL is modern' — many systems use both.",
+      "distractors": [
+        "Always pick DynamoDB; relational databases cannot scale and are obsolete.",
+        "Choose relational only when you need low latency; DynamoDB is for complex joins.",
+        "DynamoDB gives ACID transactions across tables, so it replaces relational entirely.",
+        "Pick based on which is newer; NoSQL is always the more modern, better choice.",
+        "Relational databases can't do transactions, so use DynamoDB for payments.",
+        "Never use both in one system; mixing data stores is always an anti-pattern."
+      ],
+      "quizAnswer": "Relational for ACID, joins, and ad-hoc queries; DynamoDB for scale and known access patterns. Choose by access patterns, often both."
+    },
+    {
+      "front": "How do you control cloud cost?",
+      "back": "Right-size Lambda memory/CPU, use serverless/scale-to-zero for spiky and provisioned/containers for sustained load (the crossover is real), S3 lifecycle tiers (Standard→IA→Glacier), DynamoDB on-demand vs. provisioned capacity, caching (ElastiCache/CloudFront). For AI: cache embeddings/query results, right-size the model, control context length, batch — cost is tokens × model size. Tag resources and use Cost Explorer/budgets/alarms.",
+      "distractors": [
+        "Always over-provision memory; more RAM is free and never affects cost.",
+        "Use serverless for everything, including sustained high load, to minimize cost.",
+        "Keep all S3 data in the most expensive tier so it is never accidentally deleted.",
+        "For AI cost, always use the largest frontier model since it finishes faster.",
+        "Disable monitoring and tagging to avoid the overhead cost of observability.",
+        "Cache nothing, since caches duplicate data and double your storage bill."
+      ],
+      "quizAnswer": "Right-size compute, scale to zero for spiky load, tier storage, cache, right-size models, and monitor spend with budgets."
+    },
+    {
+      "front": "How do you handle secrets and security in the cloud?",
+      "back": "Never hardcode credentials — use Secrets Manager / SSM Parameter Store (or runtime env-var injection) with rotation. Apply IAM least privilege (each service gets only the permissions it needs, scoped to specific resources/actions), encryption in transit (TLS) and at rest (KMS), VPC/network isolation for sensitive components, and audit/logging via CloudTrail + CloudWatch.",
+      "distractors": [
+        "Hardcode credentials in the deployment package so they're always available.",
+        "Give every Lambda full admin IAM permissions to avoid permission errors.",
+        "Skip encryption at rest since the cloud provider's data centers are physically secure.",
+        "Store secrets in plaintext environment variables committed to the repo.",
+        "Expose internal services publicly so they're easy to reach, then rely on obscurity.",
+        "Rotate credentials never, since rotation risks breaking running services."
+      ],
+      "quizAnswer": "Never hardcode credentials; use a secrets manager, least-privilege IAM, encryption in transit/at rest, and network isolation."
+    },
+    {
+      "front": "OpenShift / containers — where do they fit vs. serverless?",
+      "back": "OpenShift is an enterprise Kubernetes platform for container orchestration. Reach for it (vs. Lambda) for long-running services, predictable sustained load (cheaper than per-invocation at scale), more runtime/networking control, stateful workloads, or to avoid Lambda's execution limits. Rule: serverless for event-driven/bursty/glue, containers for long-running/steady/control-heavy. Real systems mix both.",
+      "distractors": [
+        "OpenShift is a serverless platform that scales to zero faster than Lambda.",
+        "Use containers only for bursty event-driven glue, and Lambda for long-running services.",
+        "OpenShift is a database engine, not a container orchestration platform.",
+        "Containers are always cheaper than serverless, including for rare bursty workloads.",
+        "Kubernetes/OpenShift cannot run stateful workloads, so it replaces Lambda exactly.",
+        "There is never a reason to mix the two; pick one platform for the whole system."
+      ],
+      "quizAnswer": "Containers for long-running, steady, or control-heavy services; serverless for event-driven, bursty glue. Real systems mix both."
+    }
+  ]
+}

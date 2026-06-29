@@ -1,0 +1,149 @@
+{
+  "title": "Fine-Tuning, PEFT & Quantization",
+  "description": "LoRA/QLoRA, full vs PEFT, quantization (GGUF, Q6_K), serving trade-offs.",
+  "cards": [
+    {
+      "front": "LoRA vs. full fine-tuning — when do you use each?",
+      "back": "Full fine-tuning updates all weights — most powerful but very expensive (optimizer state, gradients, activations for every parameter). LoRA freezes the base and trains tiny injected adapter matrices (<1% of params) — cheap, fast, tiny swappable files. Use LoRA/PEFT almost always; full fine-tuning only to change fundamental behavior with abundant data/GPUs.",
+      "distractors": [
+        "Full fine-tuning freezes the base model and trains adapters; LoRA retrains every weight from scratch.",
+        "LoRA trains all weights but in lower precision, while full fine-tuning uses FP32 throughout.",
+        "Use full fine-tuning for small data and LoRA only when you have data-center-scale GPUs.",
+        "LoRA and full fine-tuning are identical in cost; the only difference is the file format.",
+        "LoRA quantizes the model to 4-bit, whereas full fine-tuning keeps it at 16-bit.",
+        "Full fine-tuning produces a tiny adapter file; LoRA produces a full-size checkpoint per task."
+      ],
+      "quizAnswer": "Full fine-tuning updates all weights (expensive); LoRA freezes the base and trains tiny adapters — cheap and usually preferred."
+    },
+    {
+      "front": "How does LoRA work? What are rank and alpha?",
+      "back": "The fine-tune's weight change is approximately low-rank, so LoRA learns ΔW = B·A with a tiny rank r (4-64) instead of a full d×d update; effective weight is W + (α/r)·B·A with W frozen. Rank r = adapter capacity (higher = more expressive, more overfit risk); alpha α scales the adapter's contribution (heuristic α = 2r).",
+      "distractors": [
+        "LoRA trains the full weight matrix but caps the learning rate at α and the epochs at r.",
+        "Rank is the number of GPUs used and alpha is the batch size; both are infrastructure settings.",
+        "LoRA adds random noise of magnitude α to r% of the weights to regularize the model.",
+        "Rank sets the quantization bit-width and alpha sets the temperature during inference.",
+        "ΔW is approximated as A + B (a sum of two large matrices), where r is their shared dimension.",
+        "Alpha is the dropout rate applied to the adapters and rank is the context length."
+      ],
+      "quizAnswer": "LoRA learns a low-rank update B·A with small rank r; alpha scales its contribution (effective α/r), the base stays frozen."
+    },
+    {
+      "front": "What is QLoRA?",
+      "back": "LoRA on top of a 4-bit quantized frozen base model — you only need accurate gradients for the small adapters, so you quantize the frozen base (~4x memory savings) and train adapters in higher precision. Lets you fine-tune a large model on a single consumer GPU. Key parts: NF4 data type, double quantization, paged optimizers.",
+      "distractors": [
+        "Quantizing the LoRA adapters to 4-bit while keeping the base model in full FP16 precision.",
+        "Training the full model in 4-bit, including all base weights, with no frozen layers.",
+        "A queueing system (Q = queue) that schedules many LoRA fine-tunes across GPUs.",
+        "Running LoRA inference on quantized hardware; it has nothing to do with training.",
+        "Distilling a large model into a 4-bit student model using LoRA as the loss function.",
+        "Quantization-aware training that simulates 4-bit math during a full fine-tune."
+      ],
+      "quizAnswer": "LoRA on a 4-bit quantized frozen base, so you can fine-tune large models on a single consumer GPU."
+    },
+    {
+      "front": "What is quantization and what's the trade-off?",
+      "back": "Reducing the numerical precision of weights (and sometimes activations) — e.g. FP16 down to 8-bit or 4-bit ints; a 7B model goes from ~14 GB to ~4 GB. Trade-off: smaller and faster (less memory bandwidth) vs. some accuracy loss. PTQ quantizes an already-trained model (GPTQ, AWQ, GGUF); QAT simulates quantization during training (better, costlier).",
+      "distractors": [
+        "Reducing the number of model layers to make it smaller, at the cost of reasoning depth.",
+        "Compressing the training dataset into fewer examples so fine-tuning runs faster.",
+        "Converting weights to higher precision (FP32) to improve accuracy at the cost of memory.",
+        "Pruning attention heads that contribute least to the output, measured by gradient magnitude.",
+        "Caching frequent activations so repeated tokens skip computation entirely.",
+        "Splitting the model across multiple GPUs so each holds a lower-precision shard."
+      ],
+      "quizAnswer": "Lowering weight precision (e.g. FP16 to 4-bit) shrinks and speeds the model, trading a little accuracy for much less memory."
+    },
+    {
+      "front": "GGUF, GPTQ, AWQ, bitsandbytes — when each?",
+      "back": "GGUF (llama.cpp format): CPU and mixed CPU/GPU inference on consumer hardware, many K-quant bit-widths — go-to for local/on-prem. GPTQ: GPU PTQ using second-order info, fast 4-bit GPU inference. AWQ: protects salient weights, often slightly better than GPTQ at 4-bit for GPU serving. bitsandbytes: easy on-the-fly 8/4-bit, great for QLoRA training.",
+      "distractors": [
+        "GGUF is for GPU-only data-center serving; bitsandbytes is the fastest production inference format.",
+        "GPTQ and AWQ are CPU formats, while GGUF only runs on TPUs.",
+        "bitsandbytes is a quantization-aware training method that retrains the model in 2-bit.",
+        "AWQ averages the weights across layers; GPTQ is a tokenizer, not a quantizer.",
+        "GGUF is a fine-tuning library and GPTQ is a vector database format.",
+        "All four are identical formats with different names used by different vendors."
+      ],
+      "quizAnswer": "GGUF/llama.cpp for local/CPU, GPTQ and AWQ for GPU production serving, bitsandbytes for QLoRA training."
+    },
+    {
+      "front": "What does 'Q6_K' mean and what breaks at lower bit-widths?",
+      "back": "In GGUF naming, the number is average bits per weight and _K is the K-quant scheme (block-wise scale/min, mixed precision). Q6_K ≈ 6 bits, near-lossless; Q4_K_M ≈ 4-bit, the quality/size sweet spot; Q8_0 ≈ full quality. Q6/Q5 ≈ FP16; Q4 shows minor degradation; below 4 bits (Q3/Q2) coherence, reasoning and arithmetic fall off a cliff.",
+      "distractors": [
+        "Q6_K means the model has 6 billion parameters; the K denotes a Korean-trained variant.",
+        "The number is the number of layers quantized, and lower numbers mean higher quality.",
+        "Q6_K is 6-bit but lower bit-widths are lossless because K-quant fully recovers precision.",
+        "Quality improves as bit-width drops because smaller weights generalize better.",
+        "The number is the context window in thousands of tokens; Q2 means a 2k window.",
+        "Below 4 bits nothing breaks; the model simply runs slower on the same hardware."
+      ],
+      "quizAnswer": "GGUF naming: ~6 bits per weight with the K-quant scheme; near-lossless. Below 4-bit, reasoning and coherence break down."
+    },
+    {
+      "front": "How do you build a fine-tuning dataset? What about data quality?",
+      "back": "Quality and diversity over quantity — a few thousand clean, representative examples beat a noisy huge set (PEFT overfits fast on junk). Format to match the task in the model's chat template (special tokens matter), cover diverse phrasings/edge cases, hold out a validation set to catch overfitting, and filter/verify any synthetic data rather than blindly trusting the generator.",
+      "distractors": [
+        "Quantity over quality — collect millions of examples and let scale wash out the noise.",
+        "Skip the validation set; with PEFT the model cannot overfit because the base is frozen.",
+        "Use raw web text with no formatting, since chat templates only matter at inference.",
+        "Trust synthetic data fully — a stronger model's output never needs filtering.",
+        "Make the dataset as narrow as possible so the model specializes sharply.",
+        "Maximize duplicate examples so the most important cases dominate training."
+      ],
+      "quizAnswer": "Quality and diversity over quantity: clean, well-formatted, diverse examples, a validation set, and verified synthetic data."
+    },
+    {
+      "front": "What is catastrophic forgetting and how does PEFT help?",
+      "back": "When you fine-tune hard on a narrow task, the model can overwrite general capabilities — good at your task, worse at everything else (full fine-tuning is most prone). PEFT/LoRA mitigates it structurally: base weights are frozen, so you add a small adapter rather than overwriting the foundation, largely preserving general knowledge.",
+      "distractors": [
+        "It's when the GPU runs out of memory mid-training and loses the checkpoint; PEFT uses less memory so it can't happen.",
+        "It's the model forgetting the current conversation; PEFT helps by enlarging the context window.",
+        "It's overfitting to the validation set; PEFT prevents it by training on more epochs.",
+        "PEFT makes forgetting worse because adapters overwrite the attention layers directly.",
+        "It's the loss of quantization precision over time; PEFT re-quantizes the weights to fix it.",
+        "It's catastrophic gradient explosion; PEFT clips gradients to a fixed norm to stop it."
+      ],
+      "quizAnswer": "Fine-tuning narrowly can overwrite general skills; PEFT freezes the base and adds adapters, so general knowledge is preserved."
+    },
+    {
+      "front": "What is Chain-of-Thought, and is it training or prompting?",
+      "back": "Getting the model to produce intermediate reasoning steps before its final answer, which improves multi-step tasks (math, logic, planning). Primarily a prompting technique ('think step by step' or few-shot worked examples), but you can also fine-tune on reasoning traces to bake it in. Related: self-consistency (sample paths, majority vote) and ReAct (reasoning + tool actions).",
+      "distractors": [
+        "A quantization scheme that chains low-bit blocks together to recover precision.",
+        "A retrieval method that follows links between documents to build a reasoning chain.",
+        "Strictly a training-only technique; it cannot be triggered through prompting.",
+        "A decoding strategy that always takes the longest possible output sequence.",
+        "An attention variant that lets tokens attend only to the previous token in a chain.",
+        "A way to chain multiple models together so each handles one reasoning step in sequence."
+      ],
+      "quizAnswer": "Producing intermediate reasoning steps before the final answer; mainly a prompting technique, but it can be fine-tuned in."
+    },
+    {
+      "front": "RAG vs. fine-tuning vs. prompting — the decision framework?",
+      "back": "1) Start with prompting (incl. few-shot) — cheapest, exhaust it first. 2) Need external/changing knowledge or provenance → RAG. 3) Need consistent behavior, format, tone, or a missing skill → fine-tune (LoRA first). 4) They compose (fine-tune for how + RAG for what). 5) Need computation, live data, or actions → tools/agents. Common mistake: 'fine-tune on our docs' is usually a RAG problem.",
+      "distractors": [
+        "Always fine-tune first; prompting and RAG are only fallbacks when fine-tuning fails.",
+        "Use RAG to change the model's tone and fine-tuning to inject fresh facts.",
+        "Never combine approaches — pick exactly one of prompting, RAG, or fine-tuning per app.",
+        "For computation and live data, fine-tune the model on the data rather than using tools.",
+        "Prompting is the most expensive option, so reserve it for when RAG and fine-tuning are too costly.",
+        "Fine-tuning is the right default for injecting changing knowledge that must be cited."
+      ],
+      "quizAnswer": "Prompt first, RAG for knowledge, fine-tune for behavior; they compose, and use tools for computation or actions."
+    },
+    {
+      "front": "Have you done distributed / multi-node training? (How to answer honestly)",
+      "back": "Don't bluff: state plainly that your fine-tuning has been single-GPU PEFT/QLoRA, then show conceptual grasp — data parallelism (replicate, split batch, all-reduce gradients), tensor/model parallelism (split a layer across GPUs), pipeline parallelism (split layers), and frameworks like DeepSpeed ZeRO and FSDP — and redirect to genuine single-node depth.",
+      "distractors": [
+        "Claim deep multi-node production experience to match the job description, then hope it doesn't come up.",
+        "Say you can't discuss training topics you haven't run, and change the subject entirely.",
+        "Insist multi-node and single-node training are the same, so the distinction doesn't matter.",
+        "Explain that data parallelism splits a single layer's matrices across GPUs.",
+        "State that DeepSpeed ZeRO replicates the full optimizer state on every GPU to be safe.",
+        "Pretend pipeline parallelism means running several independent training jobs at once."
+      ],
+      "quizAnswer": "Be honest: single-node PEFT/QLoRA only, but explain data/tensor/pipeline parallelism and ZeRO/FSDP, then redirect to real depth."
+    }
+  ]
+}

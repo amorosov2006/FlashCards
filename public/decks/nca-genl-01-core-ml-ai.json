@@ -1,0 +1,240 @@
+{
+  "title": "NCA-GENL · Core ML & AI",
+  "description": "Transformers, attention, embeddings, training basics, RAG (exam domain 1, 30%).",
+  "cards": [
+    {
+      "front": "In a transformer self-attention block, what is the role of the Query, Key, and Value vectors?",
+      "back": "Query asks the question, Key advertises what each token contains, and Value is the information returned, weighted by Query–Key similarity. Attention computes softmax(QKᵀ/√d_k)V, so Q retrieves, K advertises matchability, and V is the payload carried. A common trap is confusing which vector carries the information — it is V.",
+      "quizAnswer": "Query asks what to look for, Key advertises each token's content, and Value is the payload returned, weighted by Q–K similarity.",
+      "distractors": [
+        "Query holds the input embedding, Key stores the position index, and Value is the answer copied straight to the output.",
+        "Query is the loss, Key is the gradient, and Value is the learning rate used to update the attention weights.",
+        "All three are identical copies of the embedding, used only to normalize activations before the feed-forward layer.",
+        "Key asks the question, Query advertises each token's content, and Value is the position encoding added to both.",
+        "Value asks the question, Query is the payload returned, and Key is a random projection applied for regularization.",
+        "Query and Key carry the information, while Value only scales the softmax so the attention weights sum to one."
+      ]
+    },
+    {
+      "front": "Why is positional encoding needed in a transformer?",
+      "back": "Because self-attention is permutation-invariant, the model would otherwise treat 'dog bites man' identically to 'man bites dog'. Positional information (sinusoidal, learned, RoPE, ALiBi) must be added or injected so the model can distinguish token order.",
+      "quizAnswer": "Attention is permutation-invariant, so order must be injected — otherwise 'dog bites man' and 'man bites dog' look identical.",
+      "distractors": [
+        "To reduce the parameter count of the model by sharing weights across positions in the attention layer.",
+        "To enforce L2 regularization on the weights so deeper transformer layers do not overfit the data.",
+        "To replace the softmax in attention with a cheaper normalization that scales linearly with length.",
+        "Because attention already encodes order, positional encoding is only needed for the feed-forward sub-layer.",
+        "To convert token IDs into dense vectors before they enter the first multi-head attention block.",
+        "To mask future tokens so a decoder cannot attend to positions that come later in the sequence."
+      ]
+    },
+    {
+      "front": "Which statement about decoder-only models like GPT is correct?",
+      "back": "They use causal (masked) self-attention so each token attends only to previous tokens. The causal mask means position t can only see positions < t, which is what makes left-to-right autoregressive generation valid.",
+      "quizAnswer": "They use causal (masked) self-attention, so each token attends only to earlier tokens — enabling autoregressive generation.",
+      "distractors": [
+        "They use bidirectional attention over the entire sequence at once, like an encoder reading both directions.",
+        "They require an external encoder to produce the embeddings before the decoder can generate any text.",
+        "They cannot generate text and are used only to produce sentence embeddings for classification tasks.",
+        "They attend to all positions including future ones, then mask the output logits to enforce ordering.",
+        "They replace attention with convolution so each token sees only a fixed local window of neighbors.",
+        "They apply cross-attention between two copies of the same sequence to capture long-range dependencies."
+      ]
+    },
+    {
+      "front": "What does an embedding layer do?",
+      "back": "Converts discrete token IDs into dense, continuous vectors the network can operate on. Token IDs are integer indices with no useful arithmetic; the embedding layer is a lookup table mapping each ID to a learned d-dimensional vector. The same trick is used for positions and segments in many models.",
+      "quizAnswer": "A lookup table converting discrete token IDs into dense, learned, continuous vectors the network can do math on.",
+      "distractors": [
+        "It performs gradient clipping on the input so the first attention layer never receives exploding activations.",
+        "It applies dropout to the input tokens to regularize the model during pre-training on large corpora.",
+        "It serializes the trained model into a portable format so it can be deployed across different GPUs.",
+        "It normalizes each token vector to zero mean and unit variance before the first transformer block.",
+        "It converts dense output vectors back into discrete token IDs by taking the argmax over the vocabulary.",
+        "It counts how many times each token appears so that rare words can be down-weighted during attention."
+      ]
+    },
+    {
+      "front": "Which of the following best describes Retrieval-Augmented Generation (RAG)?",
+      "back": "Retrieving relevant context from an external knowledge store and injecting it into the LLM prompt at query time. RAG keeps the model frozen and grounds answers by retrieving documents (vector similarity, BM25, or hybrid) and concatenating them into context — it updates without retraining and reduces hallucinations when context coverage is good.",
+      "quizAnswer": "Retrieving relevant context from an external store at query time and injecting it into the prompt, keeping the model frozen.",
+      "distractors": [
+        "Pretraining a brand-new LLM on the retrieved documents so the knowledge is baked into its weights.",
+        "Fine-tuning a model repeatedly so it memorizes the entire knowledge base and recites it on demand.",
+        "Encrypting the prompt before sending it to the model so retrieved documents stay confidential in transit.",
+        "Caching previous model answers in a vector database so identical questions skip generation entirely.",
+        "Compressing long documents into a short summary that is fine-tuned into the model each night.",
+        "Replacing the LLM with a keyword search engine that returns the matching documents verbatim."
+      ]
+    },
+    {
+      "front": "Which of the following is a primary use case for a chatbot built with an LLM?",
+      "back": "Conversational task automation such as customer support, internal Q&A, and assisted code generation. LLM chatbots excel at natural-language interaction over structured or unstructured knowledge — support, Q&A, summarization, and drafting.",
+      "quizAnswer": "Conversational task automation — customer support, internal Q&A, summarization, and assisted code generation.",
+      "distractors": [
+        "Performing matrix factorization for collaborative filtering in a large-scale recommendation system.",
+        "Replacing a relational database engine so applications can run their SQL queries through the model.",
+        "Compiling C++ source code into optimized machine binaries for deployment on GPU servers.",
+        "Encrypting network traffic between microservices to secure data in transit across the cluster.",
+        "Rendering 3D graphics by predicting the color of each pixel from a scene description.",
+        "Indexing files on disk so the operating system can locate documents by their contents quickly."
+      ]
+    },
+    {
+      "front": "What does the bias–variance tradeoff describe?",
+      "back": "The tradeoff between a model's tendency to underfit (high bias) and overfit (high variance) as capacity changes. Expected error decomposes into bias² + variance + noise; growing capacity reduces bias but raises variance. The goal is to land near the minimum of the sum, which regularization, more data, and ensembles help with.",
+      "quizAnswer": "The tradeoff between underfitting (high bias) and overfitting (high variance) as model capacity changes; minimize their sum.",
+      "distractors": [
+        "A choice between different learning-rate schedulers that balance fast convergence against final accuracy.",
+        "The tradeoff between FP16 and FP32 precision, balancing memory savings against numerical stability.",
+        "The choice between encoder and decoder architectures depending on whether the task is classification or generation.",
+        "The balance between training time and inference latency when selecting a model's hidden dimension.",
+        "The tradeoff between recall and precision that is controlled by moving the classification decision threshold.",
+        "A choice between batch size and sequence length that together determine total GPU memory usage."
+      ]
+    },
+    {
+      "front": "Which symptom most clearly indicates overfitting?",
+      "back": "Training loss continues to decrease while validation loss starts to increase. This divergence between train and validation curves is the textbook signature of overfitting — the model is memorizing training noise. Common fixes: more data, regularization, dropout, early stopping, and a simpler model.",
+      "quizAnswer": "Training loss keeps decreasing while validation loss starts rising — the classic divergence from memorizing training noise.",
+      "distractors": [
+        "Training loss is high and validation loss is high, with both plateauing early in training.",
+        "Training loss and validation loss are both low and continue to fall together throughout training.",
+        "Training loss exactly equals validation loss at every epoch, with no gap between the two curves.",
+        "Validation loss falls steadily while training loss rises, indicating the two splits were swapped.",
+        "Both losses oscillate randomly with no clear trend, which means the learning rate is too low.",
+        "Training accuracy drops to chance while validation accuracy stays high throughout the run."
+      ]
+    },
+    {
+      "front": "Which of the following is a discriminative model?",
+      "back": "Logistic regression — it learns P(y|x) directly. Generative models (Gaussian mixture models, VAEs, diffusion, GANs) model P(x) or P(x,y) and can synthesize samples. LLMs are generative but are often used discriminatively after task-specific tuning.",
+      "quizAnswer": "Logistic regression — it models P(y|x) directly, unlike generative models (GMM, VAE, diffusion) that model P(x).",
+      "distractors": [
+        "A Gaussian mixture model, which estimates decision boundaries directly without modeling the inputs.",
+        "A variational autoencoder, which learns conditional class probabilities for classification tasks.",
+        "A diffusion model, which directly predicts labels from inputs without generating any samples.",
+        "A generative adversarial network, which discriminates between classes rather than synthesizing data.",
+        "A hidden Markov model, which models P(y|x) directly to classify each observation independently.",
+        "A naive Bayes classifier, which is discriminative because it conditions only on the label."
+      ]
+    },
+    {
+      "front": "What does transfer learning mean for LLMs?",
+      "back": "Using a pretrained foundation model as the starting point and adapting it (fine-tuning, prompting, RAG) instead of training from scratch. It re-uses representations learned at huge scale and adapts them to a downstream task with far less data and compute — the dominant pattern in production NLP since BERT/GPT.",
+      "quizAnswer": "Reusing a pretrained foundation model as a starting point and adapting it, instead of training from scratch.",
+      "distractors": [
+        "Transferring data between two GPUs over NVLink so larger batches fit during distributed training.",
+        "Migrating a trained model from PyTorch to TensorFlow without changing any of its weights.",
+        "Compressing a model with INT8 quantization so it transfers faster over the network to clients.",
+        "Copying the attention weights from the encoder to the decoder so the two stay synchronized.",
+        "Sharing one model across many users at inference time to reduce the per-request serving cost.",
+        "Distilling a large teacher model into a smaller student that runs on edge devices."
+      ]
+    },
+    {
+      "front": "Which loss function is standard for next-token prediction in causal language modeling?",
+      "back": "Cross-entropy over the vocabulary. Causal LM treats next-token prediction as multi-class classification over the vocabulary; the per-token loss is −log P(xₜ | x<ₜ), which is categorical cross-entropy.",
+      "quizAnswer": "Cross-entropy over the vocabulary — next-token prediction is multi-class classification, loss is −log P(xₜ | x<ₜ).",
+      "distractors": [
+        "Mean squared error between the predicted token embedding and the true token's embedding vector.",
+        "Hinge loss that maximizes the margin between the correct token and the next most likely one.",
+        "Triplet loss that pulls the predicted token toward the target and pushes it away from distractors.",
+        "Contrastive loss comparing the generated sequence against a corrupted version of the same text.",
+        "Kullback–Leibler divergence between the model's weights and a fixed Gaussian prior distribution.",
+        "Binary cross-entropy applied independently to each dimension of the output embedding vector."
+      ]
+    },
+    {
+      "front": "What is the relationship between context length and compute in standard self-attention?",
+      "back": "Compute scales as O(n²) in context length without optimizations. Vanilla self-attention computes an n×n score matrix, hence quadratic compute and memory. FlashAttention preserves the math but tiles the computation to avoid materializing the full matrix in HBM.",
+      "quizAnswer": "Quadratic — O(n²) in context length, because self-attention computes a full n×n score matrix.",
+      "distractors": [
+        "Linear — O(n) in context length, because each token attends to only a fixed window of neighbors.",
+        "Constant — compute is independent of context length once the model weights are loaded into memory.",
+        "Logarithmic — O(log n), because attention uses a tree structure to aggregate distant tokens.",
+        "Cubic — O(n³), because every token computes a separate score matrix against all other tokens.",
+        "Linear — O(n), because the KV cache lets each new token reuse all previously computed scores.",
+        "Quadratic in the hidden dimension but linear in context length, since the heads run in parallel."
+      ]
+    },
+    {
+      "front": "What is the purpose of the softmax in the final layer of an LLM?",
+      "back": "To turn raw logits over the vocabulary into a valid probability distribution for sampling and loss. Softmax exponentiates and normalizes the logits so they sum to 1 — exactly what cross-entropy expects and what samplers (greedy, top-k, nucleus, temperature) operate on.",
+      "quizAnswer": "It turns raw vocabulary logits into a normalized probability distribution for sampling and the cross-entropy loss.",
+      "distractors": [
+        "To prevent gradient explosion by clipping the largest logits before they reach the loss function.",
+        "To shrink the model's weights via L2 regularization so the output distribution stays smooth.",
+        "To allocate GPU memory for the KV cache in proportion to the size of the vocabulary.",
+        "To convert the probability distribution back into discrete integer token IDs for decoding.",
+        "To mask future tokens so the decoder cannot attend to positions later in the sequence.",
+        "To compress the logits into a lower-dimensional embedding before the sampling step runs."
+      ]
+    },
+    {
+      "front": "What is true about CNNs vs. Transformers for sequence modeling?",
+      "back": "Transformers use self-attention to capture long-range dependencies in one layer; CNNs need many stacked layers to reach a comparable receptive field. Self-attention couples every position with every other position in a single layer, which is why Transformers dominate modern NLP.",
+      "quizAnswer": "Transformers capture long-range dependencies in one attention layer; CNNs need many stacked layers to match the receptive field.",
+      "distractors": [
+        "CNNs handle long-range dependencies natively in one layer, while Transformers need great depth to do so.",
+        "They are mathematically identical, differing only in how their weights are initialized before training.",
+        "Transformers cannot be parallelized during training, whereas CNNs process the whole sequence at once.",
+        "CNNs use self-attention across channels, while Transformers slide fixed-width filters over the tokens.",
+        "Transformers process tokens strictly one at a time, while CNNs see the entire sequence simultaneously.",
+        "Both reach a full receptive field in a single layer, so depth is irrelevant for sequence modeling."
+      ]
+    },
+    {
+      "front": "Which statement about beam search is correct?",
+      "back": "It keeps the top-b partial sequences at each step and chooses the highest-scoring complete sequence at the end. Beam search is an approximate decoding strategy that explores b hypotheses in parallel — better for structured output (translation, summarization), but it does not guarantee a global optimum and can be too 'safe' for open-ended generation.",
+      "quizAnswer": "It keeps the top-b partial sequences each step and picks the highest-scoring complete sequence — approximate, not optimal.",
+      "distractors": [
+        "It samples a single random token at each step according to the temperature-scaled distribution.",
+        "It always produces the globally optimal sequence by exhaustively searching every possible continuation.",
+        "It is used only during training to compute the loss, never during inference for generation.",
+        "It picks the single highest-probability token at every step and never reconsiders earlier choices.",
+        "It keeps the lowest-scoring b sequences to encourage diversity in open-ended text generation.",
+        "It divides the logits by a temperature before sampling to control how random the output is."
+      ]
+    },
+    {
+      "front": "Which Python ecosystem item is NOT typically used for LLM application development?",
+      "back": "Microsoft Excel macros. LLM stacks rely on transformers, spaCy, NumPy, pandas, matplotlib, scikit-learn, and similar tools; Excel macros are not part of any standard NVIDIA-recommended LLM stack.",
+      "quizAnswer": "Microsoft Excel macros — not part of any standard LLM stack (unlike transformers, spaCy, NumPy, pandas).",
+      "distractors": [
+        "Hugging Face transformers, which provides a unified API to thousands of pretrained models.",
+        "spaCy, the production NLP library for tokenization, POS tagging, and named-entity recognition.",
+        "matplotlib, the standard Python library for plotting data distributions and training curves.",
+        "NumPy, the foundational array library that underlies most Python machine-learning code.",
+        "pandas, the standard library for loading and manipulating tabular datasets as DataFrames.",
+        "scikit-learn, the classical-ML toolkit for SVMs, cross-validation, metrics, and preprocessing."
+      ]
+    },
+    {
+      "front": "Which is a key reason to apply transfer learning rather than train an LLM from scratch?",
+      "back": "It dramatically reduces the required compute, data, and time while typically improving downstream performance. Pretrained foundation models capture broad linguistic knowledge that downstream tasks reuse; the cost reduction is orders of magnitude versus training from scratch.",
+      "quizAnswer": "It dramatically cuts the compute, data, and time needed while usually improving downstream task performance.",
+      "distractors": [
+        "It eliminates the need for any evaluation because the pretrained model is already validated.",
+        "It guarantees zero hallucinations by grounding every answer in the pre-training corpus.",
+        "It is required by NVIDIA Triton, which refuses to serve models trained from scratch.",
+        "It removes the need for a validation set since the base model already generalizes perfectly.",
+        "It makes the model smaller by discarding the layers that were learned during pre-training.",
+        "It lets the model skip tokenization because the foundation model shares your exact vocabulary."
+      ]
+    },
+    {
+      "front": "Why are residual (skip) connections used in transformer blocks?",
+      "back": "To allow gradients to flow through deep networks and stabilize training. Residuals add the input back to the output of each sub-layer (out = x + sublayer(x)), making it easy for layers to learn near-identity mappings and for gradients to propagate at depth — essential for training deep transformers.",
+      "quizAnswer": "They add the input back to each sub-layer's output, letting gradients flow through deep networks and stabilizing training.",
+      "distractors": [
+        "To save GPU memory by literally skipping every other layer during the forward pass.",
+        "To replace the embedding layer so that token IDs map directly into the attention block.",
+        "To enforce sparsity in attention so that each token attends to only a few other tokens.",
+        "To normalize activations to zero mean and unit variance across the embedding dimension.",
+        "To split the model across multiple GPUs by routing the residual stream between devices.",
+        "To mask future positions so the decoder generates tokens strictly from left to right."
+      ]
+    }
+  ]
+}

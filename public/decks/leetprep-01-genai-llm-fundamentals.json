@@ -1,0 +1,162 @@
+{
+  "title": "GenAI & LLM Fundamentals",
+  "description": "Transformers, attention, tokenization, embeddings, decoding, context windows.",
+  "cards": [
+    {
+      "front": "Explain the transformer architecture at a high level.",
+      "back": "A neural network built around self-attention (no recurrence) that processes all tokens in parallel through a stack of identical blocks — each with multi-head self-attention plus a feed-forward MLP, wrapped in residual connections and layer norm.",
+      "distractors": [
+        "A recurrent network that processes tokens one at a time, using LSTM gates to carry hidden state across the sequence.",
+        "A convolutional network that slides fixed-width filters over token embeddings to capture local n-gram patterns.",
+        "A graph neural network that passes messages between tokens along a parsed syntax tree.",
+        "A bag-of-words model that averages word embeddings and feeds them to a softmax classifier.",
+        "A diffusion model that iteratively denoises token embeddings over many steps to produce text.",
+        "An encoder-decoder of stacked GRUs joined by an attention bridge, usable only for machine translation."
+      ],
+      "quizAnswer": "A self-attention network (no recurrence) that processes all tokens in parallel through stacked attention + feed-forward blocks."
+    },
+    {
+      "front": "How does self-attention actually work?",
+      "back": "Each token is projected into Query, Key and Value vectors; attention weights = softmax(Q·Kᵀ / √d_k), and the output is the weighted sum of the Value vectors — so each token's new representation blends all tokens' values by relevance.",
+      "distractors": [
+        "Each token's embedding is multiplied by a fixed positional matrix and the results are summed to mix context.",
+        "A gating network decides which previous hidden state to carry forward, like an LSTM forget gate.",
+        "Queries and Keys are compared with cosine similarity and only the single highest-scoring Value is copied to the output.",
+        "Attention averages all token embeddings equally, then subtracts the mean to center the sequence.",
+        "Q, K and V are the same vector, so attention is just each token's dot product with itself scaled by √d_k.",
+        "Value vectors are convolved with a learned kernel followed by max-pooling over the sequence."
+      ],
+      "quizAnswer": "Project each token to Query/Key/Value; weights are softmax(Q·Kᵀ/√d_k), and the output is the weighted sum of Values."
+    },
+    {
+      "front": "Why is positional encoding needed, and what kinds exist?",
+      "back": "Self-attention is permutation-invariant, so order must be injected. Kinds: sinusoidal (fixed), learned absolute, RoPE (rotates Q/K by position, encodes relative position — used by Llama/Gemma), and ALiBi (biases scores by distance).",
+      "distractors": [
+        "Attention already encodes order via the causal mask, so positional encoding is only needed for encoder models like BERT.",
+        "Positional encoding stores each token's part-of-speech tag so the model knows its grammatical role.",
+        "It normalizes embedding magnitudes per position to keep the softmax temperature constant.",
+        "The main kinds are one-hot position vectors, TF-IDF weighting, and byte-pair position merges.",
+        "RoPE adds a learned bias to the feed-forward layer based on the absolute token index.",
+        "Positional encodings are timestamps of when each token was generated during decoding."
+      ],
+      "quizAnswer": "Order must be injected since attention is permutation-invariant; methods include sinusoidal, learned absolute, RoPE, and ALiBi."
+    },
+    {
+      "front": "What is tokenization and why does it matter?",
+      "back": "Converting raw text into integer IDs using subword units (BPE or SentencePiece/Unigram): common words are one token, rare words split into pieces, and a byte fallback means nothing is out-of-vocabulary. Cost, context limits and chunking are all measured in tokens.",
+      "distractors": [
+        "Splitting text strictly on whitespace and punctuation so each word becomes exactly one token.",
+        "Mapping every unique character to an ID, so the vocabulary is just the alphabet plus symbols.",
+        "Hashing each sentence into a fixed-length vector before it enters the embedding layer.",
+        "Using a fixed dictionary of words and replacing anything unknown with a single <UNK> token.",
+        "Compressing the text with gzip and feeding the resulting byte stream directly to the model.",
+        "Translating text into a controlled vocabulary of ~5,000 root words to reduce ambiguity."
+      ],
+      "quizAnswer": "Converting text to integer IDs via subword units (BPE/SentencePiece) so nothing is out-of-vocabulary; cost is counted in tokens."
+    },
+    {
+      "front": "How does an LLM generate text? Explain decoding.",
+      "back": "Autoregressively: the model outputs a probability distribution over the next token, you pick one (greedy, beam search, or sampling with temperature / top-k / top-p), append it, and feed everything back in — repeating until an end-of-sequence token or length limit.",
+      "distractors": [
+        "It generates the entire response in a single forward pass, emitting all tokens simultaneously.",
+        "It retrieves the closest matching sentence from its training corpus and lightly paraphrases it.",
+        "It fills masked positions bidirectionally like BERT, choosing the best token for every blank at once.",
+        "Temperature above 1 makes output more deterministic by sharpening the probability distribution.",
+        "Top-p sampling always draws from exactly the 50 most likely tokens regardless of confidence.",
+        "Beam search is the only valid decoder for chat models because greedy decoding cannot terminate."
+      ],
+      "quizAnswer": "Autoregressive next-token prediction, sampling each token (greedy, beam, temperature, top-k, top-p) and feeding it back until EOS."
+    },
+    {
+      "front": "Difference between pretraining, fine-tuning, and in-context learning?",
+      "back": "Pretraining: self-supervised next-token training on trillions of tokens (broad knowledge, no task alignment). Fine-tuning: continued training on curated data to specialize (SFT, RLHF/DPO). In-context learning: no weight updates — examples/instructions live in the prompt; RAG is a form of it.",
+      "distractors": [
+        "Pretraining and fine-tuning both update weights, while in-context learning permanently stores prompt examples in the model.",
+        "Fine-tuning trains from random initialization on your domain data; pretraining only adjusts the final layer.",
+        "In-context learning runs a few gradient steps on the prompt examples before answering, then discards them.",
+        "Pretraining is supervised on labeled (input, output) pairs; fine-tuning is the unsupervised next-token step.",
+        "RAG is a fine-tuning technique that bakes retrieved documents directly into the model's weights.",
+        "In-context learning needs at least 100 examples in the prompt or it is ignored entirely."
+      ],
+      "quizAnswer": "Pretraining learns broad knowledge; fine-tuning specializes via weight updates; in-context learning adapts from prompt examples, no updates."
+    },
+    {
+      "front": "What are embeddings and how are they used?",
+      "back": "A dense vector representing the meaning of text, where semantic similarity corresponds to geometric closeness (cosine similarity). For RAG you embed documents once, store the vectors in a vector DB, embed the query at request time, and retrieve nearest neighbors.",
+      "distractors": [
+        "A sparse one-hot vector with a 1 in the position of each word present in the text.",
+        "A compressed, JPEG-like encoding of token IDs used to save context-window space.",
+        "The raw softmax output distribution over the vocabulary for a given input.",
+        "A hash of the document used as a primary key in the vector database, with no semantic meaning.",
+        "A TF-IDF weighted bag-of-words vector, where similarity requires shared exact words.",
+        "The n×n attention matrix produced for a sentence, flattened into a single vector."
+      ],
+      "quizAnswer": "Dense vectors capturing meaning, where similarity is geometric closeness; used for semantic search and RAG retrieval."
+    },
+    {
+      "front": "What is a context window, and what happens when you exceed it?",
+      "back": "The maximum number of tokens the model can attend to at once (prompt + output). It's bounded because attention is O(n²) in memory/compute. Exceed it and you must truncate, summarize, or retrieve (RAG). Note 'lost in the middle': models attend best to the start and end.",
+      "distractors": [
+        "The maximum number of separate conversations a model can hold in memory simultaneously.",
+        "A sliding window of the last 512 tokens that the model is hard-coded to ignore beyond.",
+        "Exceeding it triggers an automatic fine-tune that extends the model's knowledge.",
+        "The number of GPUs required to serve the model; doubling context halves the GPU count.",
+        "Models attend most strongly to the exact middle of the context, so ordering rarely matters.",
+        "It is fixed by the tokenizer's vocabulary size rather than by attention cost."
+      ],
+      "quizAnswer": "The max tokens attended to at once; exceed it and you truncate, summarize, or retrieve (RAG). Attention is O(n²)."
+    },
+    {
+      "front": "Why do LLMs hallucinate?",
+      "back": "Because an LLM is a next-token probability model, not a knowledge base — it generates the most plausible continuation, and plausible ≠ true, with no built-in sense of its knowledge boundary. You manage (not eliminate) it via RAG grounding, citations, an abstain path, low temperature, verification and evals.",
+      "distractors": [
+        "Because the training data contained deliberate lies that the model memorized verbatim.",
+        "Because temperature is always set above 1, which forces random word choices.",
+        "Because the context window overflowed and corrupted the stored facts.",
+        "It is a bug in the attention mask that can be fully eliminated by retraining.",
+        "Because embeddings lose precision in float16, flipping true facts to false ones.",
+        "Because the model queries the internet at inference time and copies unreliable pages."
+      ],
+      "quizAnswer": "It's a next-token probability model, not a knowledge base, so it generates plausible-but-untrue text; manage with grounding and evals."
+    },
+    {
+      "front": "What's the difference between RLHF, DPO, and instruction tuning?",
+      "back": "Instruction tuning (SFT): supervised on (instruction, good response) pairs — teaches format/task. RLHF: train a reward model on human preference rankings, then use RL (PPO) toward high reward. DPO: optimizes directly on preference pairs with a classification-style loss — no separate reward model and no RL loop.",
+      "distractors": [
+        "RLHF needs no human input; its reward model is trained on automatically generated labels.",
+        "DPO uses reinforcement learning with a reward model but skips the supervised step.",
+        "Instruction tuning aligns tone and harmlessness, while RLHF only teaches output formatting.",
+        "DPO requires three models in the loop, making it more complex than RLHF.",
+        "RLHF and DPO update no weights; they only change the system prompt.",
+        "Instruction tuning is unsupervised next-token prediction on raw web text."
+      ],
+      "quizAnswer": "SFT teaches format/task from pairs; RLHF uses a reward model plus RL; DPO optimizes preferences directly, no reward model."
+    },
+    {
+      "front": "What is the KV cache and why does it matter for serving?",
+      "back": "During generation each new token attends to all previous tokens' Keys and Values; the KV cache stores past K/V so each step only computes them for the new token, cutting per-step cost from O(n²) toward O(n). It's the dominant inference memory consumer and grows with sequence length and batch size — why vLLM/PagedAttention exist.",
+      "distractors": [
+        "A cache of recent user prompts and responses kept to answer repeat questions instantly.",
+        "It stores the model's weights in faster memory so the GPU skips reloading them each step.",
+        "It caches the final softmax distribution so identical prompts produce identical outputs.",
+        "A disk-based cache of embeddings for the retrieval layer, unrelated to generation.",
+        "It precomputes Keys and Values for all possible future tokens to speed up sampling.",
+        "The KV cache shrinks as the sequence grows, which is why long contexts are cheap."
+      ],
+      "quizAnswer": "Caches past tokens' Keys/Values so each step computes only the new token; the main inference memory cost, growing with length."
+    },
+    {
+      "front": "Mixture-of-Experts (MoE) — what is it, in one breath?",
+      "back": "Instead of one big feed-forward net per layer, an MoE layer has many expert FFNs plus a lightweight router that sends each token to only a couple of them — a huge total parameter count but only a small fraction active per token, giving big-model capacity at smaller-model inference cost (e.g. Mixtral).",
+      "distractors": [
+        "An ensemble of several complete models that all run on every input and vote on the output.",
+        "A technique that trains a separate model per language and picks one by detected language.",
+        "A router that selects which GPU to use, with every expert still seeing every token.",
+        "Replacing attention with many small expert attention heads to cut the O(n²) cost.",
+        "A cascade where a small model answers easy queries and escalates hard ones to a large model.",
+        "Splitting the vocabulary across experts so each handles a subset of possible tokens."
+      ],
+      "quizAnswer": "Many expert feed-forward nets with a router sending each token to a few; huge capacity, small fraction active per token."
+    }
+  ]
+}

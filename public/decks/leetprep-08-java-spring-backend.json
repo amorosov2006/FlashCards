@@ -1,0 +1,136 @@
+{
+  "title": "Java, Spring Boot & Backend",
+  "description": "Spring Boot, REST design, concurrency, JVM, microservices, ACID.",
+  "cards": [
+    {
+      "front": "What is Spring Boot and what problem does it solve?",
+      "back": "A framework on top of Spring for building production-ready stand-alone Java services fast. Core value: auto-configuration (sensible defaults from the classpath, no boilerplate XML), starter dependencies (curated compatible bundles), an embedded server (run a self-contained JAR, no external app server), and production features like Actuator. Spring gives the IoC container; Spring Boot makes it opinionated and instantly runnable.",
+      "distractors": [
+        "A build tool that compiles Java into native binaries to avoid the JVM.",
+        "A replacement for the JVM that runs Java without a garbage collector.",
+        "An ORM that maps database tables to objects, replacing JPA and Hibernate.",
+        "A front-end framework for building Java-based web UIs in the browser.",
+        "It requires deploying a WAR to an external Tomcat, like classic Spring always did.",
+        "A testing framework that auto-generates unit tests from your controllers."
+      ],
+      "quizAnswer": "A framework adding auto-configuration, starter dependencies, and an embedded server so you run stand-alone Spring services fast."
+    },
+    {
+      "front": "Explain Dependency Injection and Inversion of Control.",
+      "back": "IoC inverts who creates objects: instead of a class doing `new SomeService()`, an external container creates and wires dependencies. DI is how IoC is implemented — the container injects dependencies (constructor, setter, or field). Benefits: loose coupling (depend on interfaces), testability (inject mocks), lifecycle management. Best practice: constructor injection (explicit, supports final fields, fails fast).",
+      "distractors": [
+        "IoC means the class always constructs its own dependencies with `new` for full control.",
+        "DI is a database pattern for injecting SQL queries into a connection pool.",
+        "Field injection is the recommended best practice because it needs the least code.",
+        "IoC inverts the order of method calls so the last-defined method runs first.",
+        "Dependency Injection couples a class tightly to concrete implementations for speed.",
+        "DI is a compile-time macro that inlines dependencies, so no container is involved."
+      ],
+      "quizAnswer": "A container creates and injects a class's dependencies (DI) instead of the class building them (IoC); prefer constructor injection."
+    },
+    {
+      "front": "How do you design a good REST API?",
+      "back": "Resource-oriented noun URLs (/payments/123, not /getPayment) with HTTP methods conveying action (GET safe/idempotent, POST create, PUT replace, PATCH partial, DELETE). Correct status codes (2xx/4xx/5xx), idempotency keys for retry-safe POST, versioning (/v1), pagination/filtering/sorting, consistent error format without leaking internals, statelessness (auth per request) for horizontal scale, and 202 + status resource for long async ops.",
+      "distractors": [
+        "Use verb-based URLs like /getPayment and /createPayment, with everything over POST.",
+        "Keep state on the server between requests so clients send less data each time.",
+        "Return all records in one unbounded list; pagination just slows clients down.",
+        "Return 200 OK for every response, including errors, and put the real status in the body.",
+        "Never version the API; clients should always adapt to the latest breaking changes.",
+        "Embed internal stack traces in error responses so clients can debug your server."
+      ],
+      "quizAnswer": "Noun-based resource URLs, correct HTTP methods and status codes, versioning, pagination, idempotency, and statelessness."
+    },
+    {
+      "front": "Sync vs. async processing — when do you decouple?",
+      "back": "Synchronous: caller waits for the result — simple, immediate consistency, right when the caller needs the result to continue and the work is fast. Asynchronous: caller hands work to a queue/event and gets an immediate ack; processing happens later — right when work is slow, involves external systems, or the caller shouldn't be coupled to completion. Trade-off: eventual completion (with events for visibility) vs. a synchronous result.",
+      "distractors": [
+        "Always process synchronously; async adds complexity with no real benefit.",
+        "Async means the caller waits longer because it must poll until the work finishes.",
+        "Use synchronous processing for slow external-provider calls to ensure consistency.",
+        "Async processing guarantees the work completes before the caller gets an acknowledgment.",
+        "Synchronous and asynchronous are identical except async uses more threads.",
+        "Decouple only when the work is fast; slow work must stay synchronous for correctness."
+      ],
+      "quizAnswer": "Synchronous when the caller needs a fast result; asynchronous (ack now, process later) when work is slow or externally coupled."
+    },
+    {
+      "front": "Java concurrency — thread pools and common pitfalls?",
+      "back": "Thread pools (ExecutorService) reuse a bounded set of threads with a queue for backpressure (creating threads is expensive; unbounded creation exhausts resources). Pitfalls: race conditions on shared mutable state (fix with synchronized/locks/atomics), deadlock (avoid via consistent lock ordering, tryLock timeouts). volatile gives visibility not atomicity; atomic classes use CAS. Prefer immutability and java.util.concurrent over hand-rolled locks.",
+      "distractors": [
+        "Create a new thread per task; thread creation is cheap and pools add overhead.",
+        "volatile guarantees atomicity of compound operations like i++ across threads.",
+        "Deadlock is avoided by having each thread acquire locks in a different order.",
+        "Shared mutable state is fine without coordination as long as the JVM is single-core.",
+        "Atomic classes use a global lock internally, so they are slower than synchronized.",
+        "Immutability causes concurrency bugs because immutable objects can't be shared."
+      ],
+      "quizAnswer": "Use bounded thread pools and prefer immutability and java.util.concurrent; guard shared mutable state to avoid races and deadlock."
+    },
+    {
+      "front": "JVM essentials — memory model and garbage collection?",
+      "back": "Heap (shared, GC-managed objects) split into young gen (Eden + survivor, where new objects live and most die fast) and old/tenured gen; per-thread stacks hold frames/locals. The generational hypothesis (most objects die young) means cheap frequent minor GCs sweep the young gen, rarer major/full GCs handle old gen. Collectors: G1 (default, balanced), ZGC/Shenandoah (low-latency). Trade-off: throughput vs. pause time.",
+      "distractors": [
+        "All objects live on the stack; the heap stores only primitive local variables.",
+        "Garbage collection requires the programmer to manually free each object.",
+        "The generational hypothesis says most objects live forever, so GC rarely runs.",
+        "Full GCs are cheap and frequent; minor GCs are rare and expensive.",
+        "G1 guarantees zero pause times, which is why it replaced all other collectors.",
+        "There is no trade-off; modern collectors maximize throughput and minimize pauses equally."
+      ],
+      "quizAnswer": "The heap (generational: young + old) is GC-managed; most objects die young, so minor GCs are cheap and major GCs rarer."
+    },
+    {
+      "front": "Checked vs. unchecked exceptions; how do you handle errors?",
+      "back": "Checked (extend Exception): compiler forces catch-or-declare, for recoverable conditions a caller should handle (IO failure). Unchecked/runtime (extend RuntimeException): programming errors or unrecoverable states (NPE, IllegalArgumentException), not compiler-forced. Practice: don't swallow silently, fail fast or handle meaningfully, wrap low-level in domain exceptions, use @ControllerAdvice for clean HTTP mapping, never leak stack traces, log with context.",
+      "distractors": [
+        "Checked exceptions extend RuntimeException and are never enforced by the compiler.",
+        "Always catch every exception and silently swallow it to keep the app running.",
+        "Unchecked exceptions are for recoverable IO errors the caller must handle.",
+        "Leak full stack traces to the client so they can report the exact error.",
+        "Never wrap low-level exceptions; always rethrow them exactly as-is to callers.",
+        "The compiler forces you to handle unchecked exceptions but not checked ones."
+      ],
+      "quizAnswer": "Checked exceptions are compiler-forced for recoverable cases; unchecked are runtime/programming errors. Don't swallow; map cleanly."
+    },
+    {
+      "front": "How do microservices communicate and handle failure?",
+      "back": "Synchronous (REST/HTTP or gRPC) — simple but couples availability, so add timeouts, retries with backoff, and circuit breakers (Resilience4j). Asynchronous (Kafka, SQS) — the resilient default for workflows. Plus service discovery/API gateway, resilience patterns (circuit breaker, bulkhead, retry, timeout, fallback), and distributed tracing with correlation IDs. Failure is normal: every network call needs a timeout and a plan for the dependency being down.",
+      "distractors": [
+        "Assume network calls always succeed, so timeouts and retries are unnecessary.",
+        "Synchronous REST is the resilient default; async messaging couples availability.",
+        "A circuit breaker retries a failing dependency forever until it recovers.",
+        "Distributed tracing means attaching a debugger across the whole service call graph.",
+        "Bulkheads share one resource pool across services so a failure speeds up recovery.",
+        "Failure is exceptional in microservices, so handle it only when it actually occurs."
+      ],
+      "quizAnswer": "REST/gRPC with timeouts, retries, and circuit breakers, or async messaging; failure is normal, so plan for dependencies being down."
+    },
+    {
+      "front": "What's the difference between Kotlin and Java, and why use Kotlin?",
+      "back": "Kotlin is a JVM language fully interoperable with Java. Advantages: null safety in the type system (String? vs String, eliminating most NPEs at compile time), concise syntax (data classes, less boilerplate), immutability by default (val), coroutines for lightweight async, and extension functions. Use it for new services wanting safety and brevity while keeping the Java/Spring ecosystem — pragmatic, not a rewrite mandate.",
+      "distractors": [
+        "Kotlin runs on its own VM and cannot call Java libraries or use Spring.",
+        "Kotlin removes null safety, making NullPointerExceptions more common than in Java.",
+        "Kotlin is a dynamically typed scripting language with no compile-time type checks.",
+        "Kotlin variables are mutable by default (var), unlike Java's immutable defaults.",
+        "Kotlin requires rewriting the entire Java codebase before any of it can be used.",
+        "Coroutines are heavyweight OS threads, making Kotlin slower than Java for async."
+      ],
+      "quizAnswer": "A JVM language fully interoperable with Java, adding null safety, conciseness, immutability by default, and coroutines."
+    },
+    {
+      "front": "ACID transactions — what does Spring give you, and isolation levels?",
+      "back": "ACID: Atomicity (all-or-nothing), Consistency (valid→valid state), Isolation (concurrent txns don't corrupt), Durability (committed data survives crashes). Spring's @Transactional runs a method in a transaction that commits on success and rolls back on a runtime exception. Isolation levels: Read Uncommitted, Read Committed (common default), Repeatable Read, Serializable (safest, slowest). Anomalies: dirty read, non-repeatable read, phantom read.",
+      "distractors": [
+        "ACID stands for Atomic, Cached, Indexed, Distributed — properties of NoSQL stores.",
+        "@Transactional commits even when a runtime exception is thrown, to preserve work.",
+        "Serializable is the fastest isolation level because it skips locking entirely.",
+        "Read Uncommitted is the safest level, fully preventing dirty and phantom reads.",
+        "Higher isolation increases throughput because there is less coordination overhead.",
+        "Durability means uncommitted data is kept in memory and survives a power loss."
+      ],
+      "quizAnswer": "Atomicity, Consistency, Isolation, Durability; @Transactional commits or rolls back, and isolation levels trade consistency for concurrency."
+    }
+  ]
+}

@@ -1,0 +1,136 @@
+{
+  "title": "Distributed Systems & Event-Driven",
+  "description": "Kafka, queues, idempotency, DLQs, exactly-once, CAP.",
+  "cards": [
+    {
+      "front": "Monolith vs. microservices vs. event-driven — what's the distinction?",
+      "back": "Monolith: one deployable unit — simple to start but scales as a whole, tightly coupled, single point of failure. Microservices: independently deployable services owning their data — independent scaling, fault isolation, team autonomy, at the cost of distributed complexity. Event-driven: a style where services communicate via events through queues/streams — temporal decoupling, fault isolation, easy fan-out.",
+      "distractors": [
+        "Microservices are one deployable unit; monoliths are many small independent services.",
+        "Event-driven means every service calls every other service synchronously over HTTP.",
+        "A monolith always scales better than microservices because there are no network calls.",
+        "Microservices share a single database and transaction, which is what gives fault isolation.",
+        "Event-driven architecture eliminates the need for any queues or message brokers.",
+        "Microservices and event-driven are the same thing; the terms are fully interchangeable."
+      ],
+      "quizAnswer": "Monolith: one tightly-coupled unit. Microservices: independent services owning data. Event-driven: services communicate via events for decoupling."
+    },
+    {
+      "front": "Message queue (SQS) vs. event stream (Kafka) — when each?",
+      "back": "SQS is work distribution: producers enqueue tasks, consumers pull and a message is typically consumed once and removed — for 'one worker must do this task,' with load leveling, retries, DLQs. Kafka is an append-only, durable, replayable, partitioned log where many independent consumers read the same events at their own pace — for 'this happened and many systems may care,' with fan-out and replay.",
+      "distractors": [
+        "SQS retains every message forever for replay; Kafka deletes messages once consumed.",
+        "Kafka is best for one-worker task queues; SQS is best for fan-out to many consumers.",
+        "Both deliver each message to exactly one consumer and then delete it.",
+        "SQS is partitioned for high throughput; Kafka is a simple single-consumer queue.",
+        "Kafka cannot have multiple consumers; each event goes to one consumer group only.",
+        "SQS guarantees ordering across the whole queue, which Kafka cannot do at all."
+      ],
+      "quizAnswer": "SQS is a pull-based work queue consumed once; Kafka is a durable, replayable, partitioned log read by many consumers."
+    },
+    {
+      "front": "Explain at-most-once, at-least-once, and exactly-once delivery.",
+      "back": "At-most-once: 0 or 1 deliveries — may be lost, never duplicated (fire-and-forget). At-least-once: 1+ deliveries — never lost, may duplicate (the safe default, what SQS gives). Exactly-once delivery is essentially impossible over an unreliable network; systems achieve exactly-once processing = at-least-once delivery + idempotent consumers (or transactional dedupe).",
+      "distractors": [
+        "At-least-once means messages may be lost but never duplicated.",
+        "Exactly-once delivery is trivially guaranteed by any modern message broker.",
+        "At-most-once never loses messages; it just may deliver them several times.",
+        "Exactly-once processing requires neither idempotency nor at-least-once delivery.",
+        "At-least-once is unsafe and should be avoided; at-most-once is the production default.",
+        "Exactly-once is achieved by retrying until the consumer crashes, then stopping."
+      ],
+      "quizAnswer": "At-most-once may lose messages; at-least-once may duplicate (the safe default); exactly-once needs idempotent consumers."
+    },
+    {
+      "front": "What is idempotency and how do you implement it?",
+      "back": "An operation is idempotent if doing it multiple times has the same effect as once — the antidote to at-least-once delivery and retries. Implement with idempotency keys (check before processing, skip duplicates), natural idempotency ('set state to X' not 'increment'), conditional writes/optimistic locking ('update only if state is Y'), or a dedup table with TTL.",
+      "distractors": [
+        "An operation that can only ever be run once and then permanently locks itself.",
+        "Implemented by making every operation an 'increment,' which is naturally safe to repeat.",
+        "Achieved by retrying an operation until it finally succeeds at least once.",
+        "A property of the network that guarantees messages arrive in order.",
+        "Implemented by deleting the database row before each write to avoid conflicts.",
+        "Encrypting each request so duplicates produce different ciphertext and are rejected."
+      ],
+      "quizAnswer": "An operation whose repeats have the same effect as once; implemented with idempotency keys, conditional writes, or dedup tables."
+    },
+    {
+      "front": "What's a dead-letter queue (DLQ) and why do you need it?",
+      "back": "A separate queue where messages go after failing processing a set number of times. Without it, a poison message (always fails — bad data or a bug) gets retried forever, blocking the queue. The DLQ isolates these failures: the bad message is parked for inspection/replay while healthy traffic flows. You alert on DLQ depth, debug, fix, and optionally redrive.",
+      "distractors": [
+        "A queue that automatically deletes any message older than 24 hours.",
+        "A backup queue that mirrors all messages in case the primary queue is lost.",
+        "A high-priority queue where urgent messages skip ahead of normal traffic.",
+        "A queue that retries poison messages infinitely until they eventually succeed.",
+        "A queue used only during deployments to hold traffic while services restart.",
+        "A second consumer that processes the same messages in parallel for speed."
+      ],
+      "quizAnswer": "A queue for messages that fail repeatedly, isolating poison messages so they don't block the queue forever."
+    },
+    {
+      "front": "How do you handle retries safely and avoid retry storms?",
+      "back": "Exponential backoff + jitter (randomness so clients don't retry in sync and create a thundering herd), bounded retries then DLQ, idempotency as the prerequisite (retries safe only if reprocessing is harmless), a circuit breaker (stop calling a failing downstream for a cooldown, fail fast, then probe), and timeouts on every network call.",
+      "distractors": [
+        "Retry immediately and continuously until the downstream recovers, with no backoff.",
+        "Retry all clients on the same fixed interval so the load is predictable.",
+        "Remove timeouts so requests wait as long as needed for a slow dependency.",
+        "Keep the circuit closed permanently so requests are never blocked.",
+        "Retry without idempotency, since backoff alone prevents duplicate effects.",
+        "Increase retry counts to unlimited so no message is ever dead-lettered."
+      ],
+      "quizAnswer": "Exponential backoff with jitter, bounded retries to a DLQ, idempotency, circuit breakers, and timeouts on every call."
+    },
+    {
+      "front": "Explain the CAP theorem and where you'd land.",
+      "back": "During a network Partition (which will happen), you must choose Consistency (every read sees the latest write) or Availability (every request gets a response) — not both. CP systems (relational DB, ZooKeeper) sacrifice availability — use for money/balances/payment state. AP systems (Cassandra, DynamoDB eventual) stay available and reconcile later — use for likes, feeds, catalogs, telemetry. It's per-use-case.",
+      "distractors": [
+        "CAP says you can always have Consistency, Availability, and Partition tolerance at once.",
+        "Partition tolerance is optional; well-built systems simply avoid partitions.",
+        "CP systems stay available during partitions; AP systems refuse requests to stay correct.",
+        "You should always pick AP, since consistency is never worth losing uptime.",
+        "CAP applies only to single-node databases, not to distributed systems.",
+        "Choosing Consistency means every request always gets an instant response."
+      ],
+      "quizAnswer": "During a partition you must choose consistency or availability; CP for money, AP for feeds/catalogs. It's per-use-case."
+    },
+    {
+      "front": "Eventual consistency — what is it and when is it acceptable?",
+      "back": "After a write, replicas converge to the latest value eventually, but a read in the meantime may see stale data — the price of high availability and partition tolerance. Acceptable when a brief stale read causes no harm (social feeds, view counts, catalogs, dashboards, DNS). Not acceptable for read-your-writes-critical or financial-correctness paths.",
+      "distractors": [
+        "Replicas never converge; each holds a permanently different value.",
+        "Reads always return the latest write, just after a fixed one-second delay.",
+        "It is acceptable for payment balances because the values converge quickly.",
+        "It guarantees strong consistency as long as there is no network partition.",
+        "It means writes are eventually lost unless re-sent by the client.",
+        "It is the strongest consistency model, stronger than ACID transactions."
+      ],
+      "quizAnswer": "Replicas converge to the latest value eventually; a read meanwhile may be stale. Fine when brief staleness is harmless."
+    },
+    {
+      "front": "The dual-write problem and the outbox pattern.",
+      "back": "Dual-write problem: a service must atomically commit to its DB and publish an event, but they're separate systems with no shared transaction — if one succeeds and the other fails, state and events diverge. Outbox pattern: within the same DB transaction, also insert the event into an outbox table; a relay (or CDC like Debezium) reads the outbox and publishes. The event is published iff the state committed.",
+      "distractors": [
+        "The dual-write problem is writing to two database replicas; solved by picking a leader.",
+        "The outbox pattern publishes the event first, then commits the DB if publishing succeeds.",
+        "It uses a two-phase commit across the database and broker for true atomicity.",
+        "The outbox is an in-memory buffer that flushes events on a timer, losing them on crash.",
+        "Dual-write means two services writing the same row; solved with a database lock.",
+        "The outbox pattern requires the database and message broker to share one transaction."
+      ],
+      "quizAnswer": "The dual-write problem risks DB and events diverging; the outbox pattern writes the event in the same transaction, then relays it."
+    },
+    {
+      "front": "How does Kafka scale and guarantee ordering?",
+      "back": "Topics split into partitions distributed across brokers — the horizontal scaling unit (more partitions = more parallelism). Ordering is guaranteed only within a partition, so you pick a partition key (e.g. customer/notification ID) to keep an entity's events ordered together. Consumer groups: each partition is read by one consumer in a group. Replication (leader + followers, acks=all) gives durability.",
+      "distractors": [
+        "Kafka guarantees total ordering across an entire topic regardless of partitions.",
+        "Scaling is done by adding consumers beyond the partition count, each reading every partition.",
+        "Ordering is guaranteed globally because every event has a timestamp.",
+        "Partitions are replicas of each other, so each holds the complete topic for durability.",
+        "A partition can be consumed by every consumer in a group simultaneously for speed.",
+        "Kafka scales by deleting old partitions and merging their events into one stream."
+      ],
+      "quizAnswer": "Topics split into partitions for scale; ordering holds only within a partition, so choose a partition key per entity."
+    }
+  ]
+}

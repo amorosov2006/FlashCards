@@ -1,0 +1,123 @@
+{
+  "title": "Agents, MCP & LangGraph",
+  "description": "Agentic patterns, MCP, LangGraph, tools, guardrails, safety.",
+  "cards": [
+    {
+      "front": "What is an LLM agent, and how is it different from a chatbot?",
+      "back": "A chatbot maps prompt → text. An agent uses an LLM as a reasoning engine that takes actions through tools, observes results, and loops until a goal is met (the ReAct loop: Reason → Act → Observe → repeat). Components: an LLM for planning, tools, memory (short and long term), and a control loop. The leap is acting and iterating, not just answering.",
+      "distractors": [
+        "An agent is a chatbot fine-tuned on more data; both only map a prompt to a text reply.",
+        "An agent is a chatbot that runs on a server instead of a phone, with no other difference.",
+        "An agent generates the whole plan up front in one response and never observes results.",
+        "An agent is a smaller, faster model used to route requests to the real chatbot.",
+        "An agent replaces the LLM with hard-coded rules; the LLM only formats the final text.",
+        "An agent is a chatbot with a bigger context window, which is what lets it use tools."
+      ],
+      "quizAnswer": "An LLM that takes actions via tools, observes results, and loops toward a goal — not just mapping prompt to text."
+    },
+    {
+      "front": "What is MCP and what problem does it solve?",
+      "back": "Model Context Protocol — an open standard connecting LLMs to external tools and data through a uniform interface ('USB-C for AI tools'). A server exposes tools (callable functions), resources (readable data), and prompts (templates); any MCP client/host can discover and use them. It solves the N×M integration explosion: build each tool once, use it with any client.",
+      "distractors": [
+        "A model-compression protocol that shrinks context windows to fit more tools in memory.",
+        "A proprietary API from one vendor for calling that vendor's models only.",
+        "A prompt format that embeds tool instructions directly in the system prompt as plain text.",
+        "A multi-cloud provider that hosts models across AWS, Azure, and GCP simultaneously.",
+        "A caching layer that stores tool outputs so models avoid recomputing them.",
+        "A training method that bakes tool definitions into the model's weights to avoid wiring."
+      ],
+      "quizAnswer": "An open standard (USB-C for AI tools) where servers expose tools/resources so any client reuses them — solving N×M integration."
+    },
+    {
+      "front": "How does an LLM 'know' how to call a tool? (Function/tool calling)",
+      "back": "The model is trained for structured tool calling: you provide tool definitions as a schema (name, description, JSON-schema parameters). When it decides to use one, it emits a structured tool-call object (name + arguments) instead of prose; your orchestration executes it and feeds the result back as a tool message. Good descriptions/schemas and argument validation make it reliable.",
+      "distractors": [
+        "You parse the model's free-text reply with regular expressions to guess which tool it meant.",
+        "The model executes the function itself inside its weights and returns only the result.",
+        "Tools are hard-coded in a fixed order, and the model just signals 'next' to advance.",
+        "The model is shown example outputs and copies the closest one verbatim as the call.",
+        "Tool calls are chosen by a separate classifier model, never by the main LLM.",
+        "The host picks the tool randomly and the model only fills in the arguments afterward."
+      ],
+      "quizAnswer": "You give tool schemas; the model emits a structured tool-call object (name + arguments) that your code executes and feeds back."
+    },
+    {
+      "front": "Why LangGraph over a simple loop of prompts?",
+      "back": "Real agents need state, control flow, and recovery. LangGraph models the agent as a stateful graph: nodes are steps, edges define transitions (including conditional/cyclic), and a shared state object is threaded through. Benefits: explicit control flow and cycles, durable inspectable state, human-in-the-loop pause/resume, checkpointing, observability, and natural guardrail placement.",
+      "distractors": [
+        "LangGraph is a faster LLM that replaces the need for prompts entirely.",
+        "It is a vector database optimized for storing agent conversation history.",
+        "It compiles prompts into a single mega-prompt so the agent makes only one LLM call.",
+        "It removes loops and branches, forcing every agent to run as a strict linear chain.",
+        "It is a hosting service that runs your agent on managed GPUs for lower latency.",
+        "It auto-generates the agent's tools from the database schema at runtime."
+      ],
+      "quizAnswer": "It models the agent as a stateful graph with cycles, persistence, human-in-the-loop, and observability — beyond a naive loop."
+    },
+    {
+      "front": "How do you stop a runaway agent? (Guardrails & safety)",
+      "back": "Defense in depth: iteration caps / step budgets, timeouts and cost ceilings, tool allow-listing with least privilege (e.g. read-only DB creds), input/output validation, sandboxing code execution, human-in-the-loop approval for irreversible actions, confirmation/dry-runs for destructive ops, and full observability/logging for audit.",
+      "distractors": [
+        "Lower the temperature to 0 so the agent becomes deterministic and cannot loop.",
+        "Give the agent broad admin permissions so it can fix its own mistakes mid-run.",
+        "Trust a well-written system prompt to fully prevent any unsafe or runaway behavior.",
+        "Run the agent on a faster GPU so any infinite loop completes before causing harm.",
+        "Disable logging to reduce overhead, since traces slow the control loop down.",
+        "Let the agent self-approve high-impact actions to avoid blocking on a human."
+      ],
+      "quizAnswer": "Defense in depth: iteration/cost caps, least-privilege tools, input/output validation, sandboxing, and human approval for risky actions."
+    },
+    {
+      "front": "What's the security model / threat surface of tool-using agents?",
+      "back": "Treat the LLM as an untrusted, manipulable component; security lives in the deterministic layer around it. Key risks: prompt injection (malicious instructions in retrieved content/tool output — the #1 risk), SSRF/unsafe tool inputs, excessive agency/over-permissioned tools, sensitive data exposure, and insecure output handling. Mitigate with least privilege, input/output validation, sandboxing, and human gates.",
+      "distractors": [
+        "The main risk is the model's weights being stolen, so encryption of the checkpoint solves it.",
+        "Agents are safe as long as the LLM provider is reputable; the app layer adds no risk.",
+        "Prompt injection is fully solved by instructing the model to 'ignore malicious instructions.'",
+        "Give the agent the same permissions as the most privileged user so it never gets blocked.",
+        "Security is best handled inside the prompt; deterministic checks are redundant overhead.",
+        "Tool outputs are inherently trusted because they come from your own systems."
+      ],
+      "quizAnswer": "Treat the LLM as untrusted: defend against prompt injection, SSRF, excessive agency, and data leaks in the deterministic layer."
+    },
+    {
+      "front": "Single agent vs. multi-agent systems?",
+      "back": "Single agent: one LLM with a set of tools — simpler, cheaper, easier to debug, and the right default. Multi-agent: specialized agents collaborate (e.g. a supervisor delegating to workers) — separation of concerns and parallelism, but more complex, expensive, and harder to debug, with errors/latency compounding. Don't reach for multi-agent until a single well-equipped agent demonstrably can't cope.",
+      "distractors": [
+        "Multi-agent systems are always cheaper because each agent uses a smaller model.",
+        "Single-agent systems can't use tools; that's the whole reason multi-agent exists.",
+        "Multi-agent is the right default; a single agent is only for trivial demos.",
+        "Multi-agent systems are easier to debug because each agent is isolated.",
+        "The two are identical at runtime; 'multi-agent' is just a marketing term.",
+        "Multi-agent eliminates latency by running every agent on a separate GPU in parallel."
+      ],
+      "quizAnswer": "Single agent is the simpler, cheaper default; reach for multi-agent (e.g. a supervisor) only when one demonstrably can't cope."
+    },
+    {
+      "front": "How does agent memory work?",
+      "back": "Short-term/working memory is the conversation history and scratchpad in the context window (bounded, so you truncate or summarize older turns). Long-term memory persists across sessions, usually in a vector store (embed facts/past interactions, retrieve relevant ones — RAG over the agent's own history) or a structured store. It's fundamentally a context-management problem: keep, summarize, or offload.",
+      "distractors": [
+        "Agent memory is the GPU's VRAM; more VRAM directly means the agent remembers more turns.",
+        "Long-term memory means fine-tuning the model on each conversation after it ends.",
+        "Memory is unlimited because modern context windows hold the entire history verbatim.",
+        "Short-term memory is stored in a vector DB and long-term memory in the prompt.",
+        "Memory works by caching the KV-cache to disk and reloading it next session.",
+        "Agents have no memory; each tool call starts a completely fresh model instance."
+      ],
+      "quizAnswer": "Short-term working memory in the context window (summarized) plus long-term memory in a vector store — a context-management problem."
+    },
+    {
+      "front": "What is structured output and why does it matter for agents?",
+      "back": "Forcing the model to return data conforming to a schema (e.g. JSON matching a Pydantic model) instead of free prose, so downstream code can parse it deterministically. Enforced via constrained/grammar-based decoding (only tokens that keep JSON valid), provider JSON mode / function-calling schemas, or validate-and-retry. It's the seam between the probabilistic AI layer and deterministic systems.",
+      "distractors": [
+        "Formatting the model's prose answer with markdown headings for readability.",
+        "Limiting the output to a fixed number of tokens so responses stay short.",
+        "Making the model output the same text every time by setting temperature to 0.",
+        "Returning the raw token IDs so the application can decode them itself.",
+        "Structured output is purely cosmetic and has no effect on agent reliability.",
+        "Storing the output in a structured database table after the model replies."
+      ],
+      "quizAnswer": "Forcing schema-valid output (e.g. JSON/Pydantic) so downstream code can parse it; enforced by constrained decoding or validation."
+    }
+  ]
+}

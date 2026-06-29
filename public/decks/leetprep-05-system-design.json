@@ -1,0 +1,136 @@
+{
+  "title": "System Design (GenAI & Backend)",
+  "description": "RAG service, notification platform, agents w/ guardrails, on-prem serving, payments.",
+  "cards": [
+    {
+      "front": "In an event-driven notification platform, why use both SQS and Kafka?",
+      "back": "They do different jobs. SQS is a work queue: pull-based, decouples processing stages, gives per-stage retry and DLQs. Kafka is an event log for fan-out observability: many client systems subscribe to lifecycle events (generated, packaged, sent) in near real time without coupling to your internals.",
+      "distractors": [
+        "Kafka is the work queue and SQS is the event log; the names are just swapped by convention.",
+        "SQS and Kafka are interchangeable; using both is redundancy in case one provider has an outage.",
+        "SQS stores the database records while Kafka stores the binary message attachments.",
+        "Kafka handles synchronous requests and SQS handles only scheduled batch jobs.",
+        "SQS is for email and Kafka is for SMS; each channel needs its own dedicated queue.",
+        "Both are used only to increase throughput; neither affects coupling or observability."
+      ],
+      "quizAnswer": "SQS is a work queue (pull, retry, DLQ); Kafka is an event log for fan-out observability to many subscribers."
+    },
+    {
+      "front": "Why return a synchronous acknowledgment before generation and delivery?",
+      "back": "Deliberate decoupling: the front door does fast channel/preference resolution, validates, and immediately acks so upstream services don't wait on slow document generation, packaging, or external providers. The heavy work then runs asynchronously through queues, letting each stage scale and fail independently.",
+      "distractors": [
+        "To guarantee the message was delivered to the end user before responding.",
+        "Because synchronous processing is faster than asynchronous, so everything runs inline.",
+        "To bill the client immediately, before any work is attempted.",
+        "Because external providers require the ack to be sent before they accept the request.",
+        "To avoid using queues entirely, since the ack means the work is already done.",
+        "Because the database can only commit after the client receives the acknowledgment."
+      ],
+      "quizAnswer": "Decoupling: ack fast after validation so upstream clients don't wait on slow generation, packaging, or external providers."
+    },
+    {
+      "front": "SQS delivers at-least-once. How do consumers avoid double-sending a notification?",
+      "back": "Idempotency: each notification carries a unique idempotency key, and consumers record/check it before acting so a redelivered message short-circuits instead of sending twice. At-least-once delivery means duplicates are expected, so effects must be made idempotent.",
+      "distractors": [
+        "Switch SQS to exactly-once mode, which guarantees no message is ever redelivered.",
+        "Trust that SQS never redelivers, so no deduplication logic is necessary.",
+        "Send all notifications twice on purpose and let the provider drop duplicates.",
+        "Use a longer visibility timeout, which mathematically eliminates redelivery.",
+        "Process messages strictly in order, since ordering alone prevents duplicates.",
+        "Delete the message before processing it, so a redelivery finds nothing to do."
+      ],
+      "quizAnswer": "Idempotency keys: record and check each notification's key before sending, so redelivered messages don't double-send."
+    },
+    {
+      "front": "In an enterprise RAG service, how do you enforce access control on retrieval?",
+      "back": "Filter retrieval by the user's permissions using metadata stored alongside each chunk (source, date, access tags). You filter to what the requesting user is allowed to see — never the agent's broad permissions — so the model can only ground answers in authorized documents.",
+      "distractors": [
+        "Let the LLM decide which documents the user may see based on the question's tone.",
+        "Retrieve everything and instruct the model in the prompt to ignore unauthorized docs.",
+        "Fine-tune a separate model per user so each only knows its own documents.",
+        "Apply access control only at generation time by redacting the final answer text.",
+        "Encrypt the vectors so unauthorized users get garbled but still-retrieved chunks.",
+        "Filter by the agent's service-account permissions, which are broader than any user's."
+      ],
+      "quizAnswer": "Filter retrieval by the requesting user's permissions using per-chunk metadata, never the agent's broader permissions."
+    },
+    {
+      "front": "For on-prem single-machine LLM serving, why use a single-gateway pattern?",
+      "back": "The model weights and KV cache are the scarce resource. Route all components (chat, OCR, transcription, translation) through one model server behind a gateway instead of each loading its own copy, and queue requests with bounded concurrency — because KV-cache memory bounds simultaneous requests, so you prevent GPU memory thrashing.",
+      "distractors": [
+        "So each component can load its own private copy of the model for isolation.",
+        "Because a gateway encrypts traffic, which is the main on-prem requirement.",
+        "To allow unlimited concurrent requests, since the gateway removes memory limits.",
+        "Because llama.cpp requires every request to come from a different process.",
+        "So the model can be retrained on each request before responding.",
+        "To round-robin requests across multiple GPUs, which the single machine has."
+      ],
+      "quizAnswer": "Route every component through one model server and queue with bounded concurrency, because weights and KV cache are scarce."
+    },
+    {
+      "front": "llama.cpp / GGUF vs. vLLM — when do you use each for serving?",
+      "back": "llama.cpp/GGUF wins for CPU/consumer/offline single-machine serving (quantized weights, mixed CPU/GPU). vLLM wins for high-concurrency GPU serving — PagedAttention manages KV-cache memory and continuous batching packs many requests per GPU. Switch to vLLM when you have a GPU farm and many concurrent users.",
+      "distractors": [
+        "llama.cpp is for high-concurrency GPU farms; vLLM is the lightweight CPU option.",
+        "They are the same engine with different names; choice is purely cosmetic.",
+        "vLLM only runs quantized GGUF files, while llama.cpp requires full FP16 weights.",
+        "Use vLLM for offline no-internet deployments and llama.cpp for cloud GPU serving.",
+        "llama.cpp is a training framework and vLLM is an inference framework.",
+        "vLLM is for single users and llama.cpp scales to thousands of concurrent requests."
+      ],
+      "quizAnswer": "llama.cpp/GGUF for CPU/consumer/offline single machines; vLLM for high-concurrency GPU serving with PagedAttention."
+    },
+    {
+      "front": "What is the outbox pattern and what problem does it solve?",
+      "back": "To publish an event and commit DB state atomically, write the event to an outbox table within the same database transaction, then relay it to the message bus separately. It solves the dual-write problem — where the DB commits but the event is lost (or vice versa) — so state changes and their events never diverge.",
+      "distractors": [
+        "A pattern where outgoing emails are batched in an outbox folder before sending.",
+        "Writing events to a queue first and the database second, to prioritize messaging.",
+        "Caching outbound API responses so retries return the same result.",
+        "Splitting reads and writes across two databases to scale throughput.",
+        "Storing failed messages in a dead-letter queue for later manual replay.",
+        "A two-phase commit across the database and the message broker for exactly-once delivery."
+      ],
+      "quizAnswer": "Write the event to an outbox table in the same DB transaction, then relay it — solving the dual-write problem."
+    },
+    {
+      "front": "For a payment status system, which consistency model do you choose, and why?",
+      "back": "Strong consistency with ACID transactions (a relational DB), not eventual consistency — you cannot have two truths about whether money moved. By CAP, for money you pick consistency over availability. Pair it with idempotency keys, an explicit state machine, an append-only audit log, and reconciliation against the provider.",
+      "distractors": [
+        "Eventual consistency, because payments are high-throughput and availability matters most.",
+        "No consistency guarantees are needed if every request has an idempotency key.",
+        "Strong consistency only for reads; writes can be eventually consistent to scale.",
+        "By CAP you must pick availability for money, since users can't tolerate downtime.",
+        "Use a cache as the source of truth and reconcile the database to it nightly.",
+        "Consistency is the database's job entirely, so the application needs no state machine."
+      ],
+      "quizAnswer": "Strong consistency with ACID transactions; by CAP you pick consistency over availability for money."
+    },
+    {
+      "front": "What is an idempotency key and why does it enable safe retries?",
+      "back": "A unique client-supplied identifier attached to a request; the service records it before acting and short-circuits any duplicate carrying the same key. This makes repeated delivery (from at-least-once messaging or network retries) have no extra effect — e.g. no double-charge — so clients can safely retry.",
+      "distractors": [
+        "An encryption key that signs each request so duplicates can be rejected as forgeries.",
+        "A timestamp that lets the server discard any request older than a few seconds.",
+        "A counter that limits how many times a client may retry before being blocked.",
+        "A session token that authenticates the user across multiple requests.",
+        "A hash of the response used to verify the client received the correct result.",
+        "A database lock held for the duration of the request to serialize all processing."
+      ],
+      "quizAnswer": "A unique client-supplied key the service records before acting, so duplicate deliveries or retries have no extra effect."
+    },
+    {
+      "front": "What do system-design interviewers actually reward?",
+      "back": "Driving requirements/scale gathering before drawing, thinking in trade-offs rather than one 'correct' answer, naming failure modes unprompted (DLQs, retries, idempotency, timeouts, poison messages, dual-write), tying to real shipped experience, and knowing the scaling story (where the first design breaks and the next move).",
+      "distractors": [
+        "Drawing the full architecture diagram first, before asking any clarifying questions.",
+        "Naming as many AWS services as possible to show breadth of tool knowledge.",
+        "Picking the single industry-standard 'correct' design and defending it without trade-offs.",
+        "Optimizing for the lowest possible cost on every component from the start.",
+        "Avoiding discussion of failure modes so the design appears robust and simple.",
+        "Memorizing a reference architecture and reproducing it regardless of the requirements."
+      ],
+      "quizAnswer": "Driving requirements, thinking in trade-offs, naming failure modes unprompted, tying to real experience, and knowing the scaling story."
+    }
+  ]
+}

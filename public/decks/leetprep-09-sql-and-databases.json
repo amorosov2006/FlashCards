@@ -1,0 +1,123 @@
+{
+  "title": "SQL & Databases",
+  "description": "Joins, indexing, window functions, transactions, NoSQL modeling, OLTP/OLAP.",
+  "cards": [
+    {
+      "front": "Explain the types of JOINs.",
+      "back": "INNER: only rows matching in both tables. LEFT OUTER: all left rows + matched right columns, NULLs where no match (good for finding missing relationships). RIGHT: mirror of LEFT. FULL OUTER: all rows from both, NULLs where unmatched. CROSS: Cartesian product. SELF: a table joined to itself. Gotcha: a right-table filter in WHERE silently turns a LEFT JOIN into an inner join — put it in ON.",
+      "distractors": [
+        "INNER JOIN returns all rows from both tables, with NULLs where there is no match.",
+        "LEFT JOIN returns only rows that match in both tables; unmatched rows are dropped.",
+        "CROSS JOIN matches rows on a shared key, returning one row per match.",
+        "FULL OUTER JOIN returns only the rows that fail to match in either table.",
+        "A self join requires two physically separate copies of the table on disk.",
+        "Putting a right-table filter in the ON clause turns a LEFT JOIN into an inner join."
+      ],
+      "quizAnswer": "INNER keeps matches in both; LEFT keeps all left rows with NULLs; FULL keeps both; CROSS is the Cartesian product."
+    },
+    {
+      "front": "WHERE vs. HAVING, and the logical order of execution?",
+      "back": "WHERE filters individual rows before grouping and can't reference aggregates; HAVING filters groups after GROUP BY for aggregate conditions (HAVING COUNT(*) > 5). Logical order: FROM/JOIN → WHERE → GROUP BY → HAVING → SELECT → DISTINCT → ORDER BY → LIMIT. That's why a SELECT alias can't be used in WHERE (runs before SELECT) but can in ORDER BY (runs after).",
+      "distractors": [
+        "WHERE filters groups after GROUP BY; HAVING filters individual rows before grouping.",
+        "Both WHERE and HAVING can reference SELECT-list aliases and aggregate functions.",
+        "The execution order is exactly the written order: SELECT first, then FROM, then WHERE.",
+        "ORDER BY runs before SELECT, so you can't use an alias there.",
+        "HAVING runs before GROUP BY, which is why it can filter on aggregates.",
+        "WHERE can reference aggregates like COUNT(*) as long as there is a GROUP BY."
+      ],
+      "quizAnswer": "WHERE filters rows before grouping; HAVING filters groups after GROUP BY. Logical order runs FROM→WHERE→GROUP BY→HAVING→SELECT."
+    },
+    {
+      "front": "What are window functions and why are they powerful?",
+      "back": "They compute across a set of rows related to the current row without collapsing them like GROUP BY — you keep every row and add the value alongside. Syntax: FUNCTION() OVER (PARTITION BY ... ORDER BY ...). Ranking (ROW_NUMBER/RANK/DENSE_RANK — top-N-per-group, dedup), windowed aggregates (SUM/AVG OVER — running totals), and offsets (LAG/LEAD — period-over-period deltas).",
+      "distractors": [
+        "They collapse each group into a single summary row, exactly like GROUP BY does.",
+        "They can only compute over the entire table at once, never per-partition.",
+        "ROW_NUMBER() returns the total number of rows in the table, not a per-row rank.",
+        "LAG() and LEAD() rename columns; they cannot compare a row to its neighbors.",
+        "Window functions require a subquery for every row and are always slower than a self-join.",
+        "OVER (PARTITION BY ...) filters out rows, behaving like a WHERE clause."
+      ],
+      "quizAnswer": "Compute across related rows without collapsing them (OVER PARTITION BY), enabling ranking, running totals, and period-over-period deltas."
+    },
+    {
+      "front": "What is database indexing and how does it work?",
+      "back": "A separate structure (usually a B-tree) that finds rows by a column's value without scanning the whole table — turning an O(n) scan into ~O(log n) lookups. Trade-offs: faster reads but slower writes (every write updates indexes) and extra storage, so index selectively — the columns in WHERE/JOIN/ORDER BY. Composite indexes follow the leftmost-prefix rule; a covering index answers a query from the index alone.",
+      "distractors": [
+        "An index is a copy of the entire table sorted differently, doubling storage and read time.",
+        "Indexes speed up writes because the database can append rows without checking order.",
+        "You should index every column, since more indexes always make the database faster.",
+        "A composite index on (a, b) speeds up queries filtering on b alone.",
+        "Indexing turns O(log n) lookups into O(n) scans for guaranteed correctness.",
+        "A covering index forces the database to read the full table for every query."
+      ],
+      "quizAnswer": "A B-tree structure for fast lookups without full scans; speeds reads but slows writes, so index selective columns."
+    },
+    {
+      "front": "How do you find and fix a slow query?",
+      "back": "EXPLAIN ANALYZE and read the plan — look for sequential scans on big tables, expensive nested-loop joins, and bad row estimates (stale statistics). Add/fix indexes on filtered/joined/sorted columns, reduce work (avoid SELECT *, avoid functions on indexed columns in WHERE), fix N+1 patterns (batch with JOIN/IN), update statistics (ANALYZE), and beyond one query: caching, read replicas, denormalization, partitioning.",
+      "distractors": [
+        "Add an index to every column in the table, then the planner will always be fast.",
+        "Wrap indexed columns in functions like UPPER() in WHERE to help the planner use them.",
+        "Always SELECT * so the planner has all columns available to optimize.",
+        "Run the query repeatedly until it caches; query plans are irrelevant to performance.",
+        "Replace JOINs with N separate queries in a loop to reduce each query's complexity.",
+        "Never run ANALYZE; stale statistics make the planner more conservative and safer."
+      ],
+      "quizAnswer": "Read the EXPLAIN plan, add indexes on filtered/joined columns, avoid SELECT *, fix N+1 patterns, and update statistics."
+    },
+    {
+      "front": "Normalization vs. denormalization.",
+      "back": "Normalization organizes data to eliminate redundancy (each fact stored once, normal forms 1NF-3NF): no update anomalies, integrity, less storage, but more JOINs to reassemble (slower reads). Denormalization deliberately duplicates data to avoid JOINs and speed reads, at the cost of redundancy and keeping copies in sync. Rule: normalize for write-heavy OLTP integrity, denormalize for read-heavy OLAP/NoSQL performance.",
+      "distractors": [
+        "Normalization duplicates data to speed reads; denormalization removes redundancy.",
+        "Normalized schemas are always faster for reads because they need fewer JOINs.",
+        "Denormalization improves write integrity by storing each fact exactly once.",
+        "Normalization is for analytical (OLAP) workloads; denormalization for transactional (OLTP).",
+        "Denormalized data never needs to be kept in sync because copies update automatically.",
+        "Higher normal forms (1NF-3NF) progressively add redundancy to improve read speed."
+      ],
+      "quizAnswer": "Normalize to remove redundancy (write integrity, more joins); denormalize to duplicate data and speed reads. OLTP vs OLAP."
+    },
+    {
+      "front": "SQL (relational) vs. NoSQL — how do you choose?",
+      "back": "SQL/relational: structured data with relationships, strong consistency/ACID, flexible ad-hoc queries and joins — for systems of record, transactions, evolving query needs. NoSQL: key-value/document (DynamoDB, Mongo) for scale + known patterns, wide-column (Cassandra) for write throughput, graph (Neo4j) for traversals, vector (pgvector, Qdrant) for similarity. Choose by access patterns, consistency, and scale — often polyglot.",
+      "distractors": [
+        "Always choose NoSQL; relational databases cannot scale horizontally at all.",
+        "NoSQL provides full ACID transactions and joins, so it replaces relational entirely.",
+        "Choose by which is newer; SQL is legacy and should be avoided in new systems.",
+        "Relational databases can't do ad-hoc queries, which is why NoSQL exists.",
+        "All NoSQL databases are the same key-value store with different marketing names.",
+        "A single system should never mix relational and NoSQL; polyglot persistence is an anti-pattern."
+      ],
+      "quizAnswer": "Relational for ACID, joins, and ad-hoc queries; NoSQL for scale on known patterns. Choose by access patterns; often polyglot."
+    },
+    {
+      "front": "OLTP vs. OLAP — and where does Snowflake fit?",
+      "back": "OLTP (transactional): many small fast reads/writes on current data, normalized, row-oriented — your app's operational DB. OLAP (analytical): few large aggregating queries over historical data, denormalized star schemas, column-oriented for fast scans over billions of rows — your warehouse. Snowflake is a cloud OLAP warehouse whose key idea is separation of storage and compute: independent virtual warehouses query shared storage and scale elastically.",
+      "distractors": [
+        "OLTP is column-oriented for analytics; OLAP is row-oriented for fast single-row writes.",
+        "Snowflake is an OLTP transactional database optimized for high-frequency single-row updates.",
+        "OLAP handles many tiny concurrent writes; OLTP runs a few huge aggregating queries.",
+        "Snowflake couples storage and compute tightly so they must always scale together.",
+        "OLTP databases use denormalized star schemas; OLAP databases are fully normalized.",
+        "Snowflake is a vector database used primarily for similarity search in RAG pipelines."
+      ],
+      "quizAnswer": "OLTP is row-oriented for fast small transactions; OLAP is column-oriented for analytics. Snowflake separates storage and compute."
+    },
+    {
+      "front": "What is a transaction, and what's optimistic vs. pessimistic locking?",
+      "back": "A transaction groups operations into an atomic unit that fully commits or fully rolls back. Pessimistic locking: lock the row on read (SELECT ... FOR UPDATE) so no one else can modify it — safe under high contention but reduces concurrency and risks deadlocks. Optimistic locking: don't lock; read a version number and on update check it hasn't changed (UPDATE ... WHERE version = :v), reject/retry if it did — higher concurrency when conflicts are rare.",
+      "distractors": [
+        "Optimistic locking holds a row lock from read to commit; pessimistic locking uses version numbers.",
+        "A transaction commits each operation independently, so a later failure doesn't roll back earlier ones.",
+        "Pessimistic locking gives the highest concurrency because it never blocks other readers.",
+        "Optimistic locking is best under heavy contention because retries are cheap.",
+        "Both locking strategies require SELECT ... FOR UPDATE; they differ only in syntax.",
+        "A transaction is a single SQL statement; multiple statements can't be grouped atomically."
+      ],
+      "quizAnswer": "An atomic commit-or-rollback unit; pessimistic locking locks rows on read, optimistic checks a version on update."
+    }
+  ]
+}

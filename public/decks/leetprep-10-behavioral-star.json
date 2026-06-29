@@ -1,0 +1,97 @@
+{
+  "title": "Behavioral / STAR Method",
+  "description": "How to structure behavioral interview answers: STAR, ownership, failure stories.",
+  "cards": [
+    {
+      "front": "What does the STAR method stand for?",
+      "back": "Situation (brief context), Task (your specific responsibility/goal), Action (what YOU did — the bulk of the answer, using 'I'), and Result (the outcome, quantified where possible, plus what you learned).",
+      "distractors": [
+        "Strategy, Tactics, Analysis, Review — a planning framework for projects.",
+        "Situation, Timeline, Approach, Retrospective.",
+        "Scope, Task, Action, Reflection.",
+        "Story, Theme, Argument, Resolution — a narrative structure.",
+        "Setup, Trigger, Action, Reward — a behavioral-habit loop.",
+        "Specifics, Team, Achievement, Recognition."
+      ],
+      "quizAnswer": "Situation, Task, Action, Result — brief context, your goal, what you did, and the quantified outcome plus the lesson."
+    },
+    {
+      "front": "In the Action step of a STAR answer, should you say 'I' or 'we'?",
+      "back": "Use 'I' — interviewers are grading YOUR specific contribution, not the team's. The team is context; the Action step should make clear exactly what you personally did.",
+      "distractors": [
+        "Use 'we' throughout, so you come across as a humble team player.",
+        "Alternate evenly between 'I' and 'we' to sound balanced.",
+        "Use 'we' in the Action step and 'I' only in the Result.",
+        "Avoid pronouns entirely and describe the work in the passive voice.",
+        "Use 'the team' so you never appear to take individual credit.",
+        "Use 'I' only when the outcome was positive, and 'we' when it failed."
+      ],
+      "quizAnswer": "Use 'I' — interviewers grade your specific contribution, not the team's; the team is just context."
+    },
+    {
+      "front": "How should you end a behavioral (STAR) answer?",
+      "back": "End with the result and the lesson you learned — quantified where you honestly can, otherwise a concrete before/after. Closing with the lesson shows growth and reflection, which interviewers reward.",
+      "distractors": [
+        "End on the Situation, restating the context so the interviewer remembers it.",
+        "End by asking the interviewer whether your answer was good enough.",
+        "End with a list of everyone on the team and what each person did.",
+        "End abruptly after the Action; the result is implied and adds nothing.",
+        "End with what you would do differently only if the story was a failure.",
+        "End by pivoting to an unrelated accomplishment to maximize coverage."
+      ],
+      "quizAnswer": "End with the result and the lesson you learned, quantified where honest, showing growth and reflection."
+    },
+    {
+      "front": "Roughly how long should each STAR answer be?",
+      "back": "About two minutes — long enough to cover Situation, Task, Action, and Result with substance, but tight enough to stay focused and let the interviewer probe.",
+      "distractors": [
+        "About 30 seconds — keep it to a single sentence per letter.",
+        "About 10 minutes — give exhaustive detail so nothing is left out.",
+        "As long as it takes; there is no need to manage the length.",
+        "Under 15 seconds, then wait for the interviewer to ask for more.",
+        "About 5 minutes, spending most of it on the Situation for context.",
+        "Exactly one minute, split 15 seconds per STAR letter."
+      ],
+      "quizAnswer": "About two minutes — enough to cover all four parts with substance, but tight enough for the interviewer to probe."
+    },
+    {
+      "front": "How do you answer a 'tell me about a failure' question well?",
+      "back": "Pick one real failure you genuinely owned (not a humblebrag): briefly set up what went wrong, then focus on the Action — how you diagnosed and fixed it, communicated honestly, and made a process change (a test, guardrail, or check) so it couldn't recur — and close with the durable lesson.",
+      "distractors": [
+        "Give a disguised strength like 'I work too hard' so you reveal no real weakness.",
+        "Describe a failure that was entirely someone else's fault to protect your record.",
+        "Say you can't recall ever failing, to project confidence and competence.",
+        "Pick the biggest possible disaster to show how much you can endure.",
+        "Describe the failure in detail but skip how you fixed it, to stay humble.",
+        "Blame unclear requirements and leave it there, since that's an honest cause."
+      ],
+      "quizAnswer": "Pick one real failure you owned, focus on how you fixed it and the process change made, and close with the lesson."
+    },
+    {
+      "front": "How do you honestly frame leadership when you lack formal management experience?",
+      "back": "Frame it as leading through technical ownership and building tools that scale other people's productivity (e.g. onboarding tooling, owning a shared component, setting a standard), and say you're ready to grow the people-leadership side. Never invent direct reports you didn't have.",
+      "distractors": [
+        "Claim you managed a team of direct reports to match the seniority of the role.",
+        "Say leadership isn't relevant to engineering and decline to answer.",
+        "Insist that writing the most code on the team is the definition of leadership.",
+        "Describe a time you told teammates what to do, regardless of outcome.",
+        "Exaggerate an informal mentoring moment into a formal management role.",
+        "Say you prefer to work alone and have never needed to lead anyone."
+      ],
+      "quizAnswer": "Frame leadership through technical ownership and tooling that scales others, and say you're ready to grow people-leadership. Never invent reports."
+    },
+    {
+      "front": "Should you quantify results in a behavioral answer?",
+      "back": "Yes, quantify where you honestly can (e.g. measured throughput improvement, reduced ramp-up time). Where you can't put a number on it, describe a concrete before/after. Never fabricate metrics — an honest before/after beats an invented statistic.",
+      "distractors": [
+        "No — numbers sound boastful, so keep results purely qualitative.",
+        "Always invent a precise percentage even if you didn't measure it, for impact.",
+        "Only quantify failures, never successes, to appear modest.",
+        "Quantify only if the interviewer explicitly asks for numbers.",
+        "Round every result up to the nearest impressive-sounding figure.",
+        "Avoid results altogether and focus only on the actions you took."
+      ],
+      "quizAnswer": "Yes, quantify where honest; otherwise give a concrete before/after. Never fabricate a number."
+    }
+  ]
+}

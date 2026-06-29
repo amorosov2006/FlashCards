@@ -1,0 +1,188 @@
+{
+  "title": "NCA-GENL · Software Dev & NVIDIA",
+  "description": "Python libraries, NVIDIA stack (Triton, TensorRT, NeMo, ONNX), serving (exam domain 2, 24%).",
+  "cards": [
+    {
+      "front": "Which NVIDIA component is purpose-built to host and serve trained models for inference at scale?",
+      "back": "NVIDIA Triton Inference Server. It hosts models from multiple frameworks (TensorRT, ONNX, PyTorch, TensorFlow), supports concurrent execution, dynamic batching, and model ensembles. Nsight is profiling, RAPIDS is GPU data science, and cuDNN is a low-level DL primitive library.",
+      "quizAnswer": "NVIDIA Triton Inference Server — hosts multi-framework models with concurrent execution, dynamic batching, and ensembles.",
+      "distractors": [
+        "NVIDIA Nsight Systems, which serves trained models over HTTP with dynamic batching and scheduling.",
+        "NVIDIA RAPIDS, the GPU-accelerated serving stack that exposes inference endpoints for any framework.",
+        "NVIDIA cuDNN, a high-level server that hosts PyTorch and ONNX models with concurrent execution.",
+        "NVIDIA TensorRT, which is purpose-built to host and serve many models simultaneously over gRPC.",
+        "NVIDIA NeMo, the production inference server that batches requests across multiple model frameworks.",
+        "NVIDIA NGC, a hosted endpoint service that serves validated models with dynamic batching."
+      ]
+    },
+    {
+      "front": "What does NVIDIA TensorRT primarily do?",
+      "back": "Optimizes a trained neural network for low-latency, high-throughput inference on NVIDIA GPUs (kernel fusion, precision calibration, layer scheduling). TensorRT compiles a model into an optimized engine targeting specific GPUs; TensorRT-LLM extends this with LLM-specific kernels (paged KV cache, in-flight batching, quantization).",
+      "quizAnswer": "Optimizes a trained network into a fast GPU inference engine via kernel fusion, precision calibration, and layer scheduling.",
+      "distractors": [
+        "Trains language models from scratch on multiple GPUs using data and tensor parallelism.",
+        "Manages a Kubernetes cluster of GPU nodes and schedules the inference pods across them.",
+        "Replaces Python in production by compiling model-serving code into standalone binaries.",
+        "Serves trained models over HTTP/gRPC endpoints with dynamic batching and versioning.",
+        "Curates and deduplicates pre-training data so the model trains on higher-quality text.",
+        "Converts a model into a portable format so it can move between different frameworks."
+      ]
+    },
+    {
+      "front": "Which library is the standard choice for accelerated DataFrame and ML workflows on NVIDIA GPUs?",
+      "back": "NVIDIA RAPIDS (cuDF, cuML). RAPIDS provides drop-in GPU replacements for pandas (cuDF) and scikit-learn (cuML), often 10–50× faster on large data. NumPy and pandas run on CPU.",
+      "quizAnswer": "NVIDIA RAPIDS (cuDF, cuML) — GPU drop-in replacements for pandas and scikit-learn, often 10–50× faster.",
+      "distractors": [
+        "NumPy, which provides GPU-accelerated DataFrames and machine learning at very large scale.",
+        "Matplotlib, the GPU-accelerated library for DataFrame operations and classical ML models.",
+        "Pickle, which serializes pandas DataFrames so they run on the GPU without code changes.",
+        "spaCy, the GPU data-science suite that replaces pandas and scikit-learn for tabular workflows.",
+        "cuDNN, a high-level GPU DataFrame library offering drop-in replacements for pandas.",
+        "Triton, the GPU data-processing framework that accelerates scikit-learn pipelines."
+      ]
+    },
+    {
+      "front": "Which framework is NVIDIA's end-to-end toolkit for building, customizing, and deploying generative-AI/LLM models?",
+      "back": "NVIDIA NeMo. It offers training, fine-tuning (PEFT, LoRA, SFT, RLHF/DPO via NeMo-Aligner), data curation (NeMo Curator), and deployment paths to Triton/TensorRT-LLM. cuBLAS is linear algebra, OptiX is ray tracing, and Maxine is video AI.",
+      "quizAnswer": "NVIDIA NeMo — end-to-end training, fine-tuning (LoRA/SFT/RLHF), data curation, and export to Triton/TensorRT-LLM.",
+      "distractors": [
+        "NVIDIA cuBLAS, the end-to-end toolkit for building, customizing, and deploying LLMs.",
+        "NVIDIA OptiX, NVIDIA's full LLM lifecycle framework for training and deployment.",
+        "NVIDIA Maxine, the generative-AI toolkit for fine-tuning and serving language models.",
+        "NVIDIA Triton, which trains, fine-tunes, and curates data for generative-AI models.",
+        "NVIDIA TensorRT, the framework for building and customizing LLMs from scratch.",
+        "NVIDIA NGC, an end-to-end toolkit that trains and aligns large language models."
+      ]
+    },
+    {
+      "front": "Which Python library is best suited for industrial-grade NLP preprocessing (tokenization, lemmatization, NER)?",
+      "back": "spaCy. It ships pretrained pipelines for tokenization, POS tagging, NER, and dependency parsing, optimized for production. The other options are not NLP toolkits. (Exam trap: spaCy is for preprocessing; Hugging Face transformers is for model training/inference.)",
+      "quizAnswer": "spaCy — production NLP pipelines for tokenization, lemmatization, POS tagging, NER, and dependency parsing.",
+      "distractors": [
+        "NumPy, which ships pretrained pipelines for tokenization, NER, and dependency parsing.",
+        "TensorRT, the production NLP toolkit for lemmatization and named-entity recognition.",
+        "cuDNN, an industrial NLP library offering tokenization and part-of-speech tagging.",
+        "Hugging Face transformers, which is purpose-built for NER and dependency-parsing pipelines.",
+        "matplotlib, the standard library for tokenization, lemmatization, and entity extraction.",
+        "pandas, which provides pretrained pipelines for POS tagging and dependency parsing."
+      ]
+    },
+    {
+      "front": "What is ONNX in the context of LLM deployment?",
+      "back": "An open exchange format for representing trained models so they can move between frameworks and runtimes (e.g., PyTorch → TensorRT). ONNX is a portable neural-network graph format; exporting to it lets you import into TensorRT, ONNX Runtime, or other deployment stacks regardless of the original framework.",
+      "quizAnswer": "An open, portable format for trained models so they move between frameworks and runtimes (e.g., PyTorch → TensorRT).",
+      "distractors": [
+        "A web framework for hosting chatbots and exposing them to clients over HTTP endpoints.",
+        "A GPU memory profiler that reports how much HBM a model's weights and KV cache use.",
+        "A Python static type checker that validates model-serving code before deployment.",
+        "A quantization algorithm that compresses model weights to INT4 for faster inference.",
+        "A vector database format for storing embeddings so they can be searched across frameworks.",
+        "A container runtime that packages a model with its dependencies for one-command deployment."
+      ]
+    },
+    {
+      "front": "Why is dynamic batching used in inference servers like Triton?",
+      "back": "To group multiple inbound requests into a single GPU forward pass, increasing throughput at a small latency cost. Dynamic batching collects requests within a small time window and runs them as one batch, amortizing fixed per-call overhead — especially impactful for small or variable workloads.",
+      "quizAnswer": "It groups inbound requests within a time window into one GPU forward pass, raising throughput at small latency cost.",
+      "distractors": [
+        "To delay every request by a fixed amount so that all clients experience identical latency.",
+        "To shard the model's layers across multiple GPUs so each handles part of every request.",
+        "To replace authentication by batching trusted and untrusted requests into one pass.",
+        "To cache previous responses so that identical prompts skip the GPU forward pass entirely.",
+        "To split one large request into many small ones so each fits in a single GPU pass.",
+        "To run each request on its own GPU stream, eliminating any batching across requests."
+      ]
+    },
+    {
+      "front": "What is the difference between TensorRT and Triton?",
+      "back": "TensorRT optimizes a model for fast GPU inference; Triton serves models (any framework) over HTTP/gRPC with batching, scheduling, and multi-model support. Compile-then-serve is canonical: TensorRT produces an engine, Triton hosts it alongside ONNX, PyTorch, TF, etc.",
+      "quizAnswer": "TensorRT optimizes (compiles) a model for fast inference; Triton serves models over HTTP/gRPC with batching and scheduling.",
+      "distractors": [
+        "They are the same product with different names, used interchangeably for serving models.",
+        "TensorRT serves models over HTTP, while Triton compiles them into optimized GPU engines.",
+        "TensorRT is for training and Triton is for evaluation only; neither serves live inference.",
+        "Triton replaces CUDA, while TensorRT is a high-level framework for building models.",
+        "TensorRT curates training data and Triton optimizes the model for low-latency inference.",
+        "Both only optimize models; serving is handled separately by a Kubernetes GPU Operator."
+      ]
+    },
+    {
+      "front": "Which container/orchestration combination is most common when scaling LLM inference in production?",
+      "back": "Docker containers orchestrated by Kubernetes (often with the NVIDIA GPU Operator). This is the de-facto pattern; the GPU Operator manages drivers, container runtime, and monitoring on each GPU node so pods can request GPUs declaratively.",
+      "quizAnswer": "Docker containers orchestrated by Kubernetes, often with the NVIDIA GPU Operator managing drivers and runtime.",
+      "distractors": [
+        "Bash scripts running on a single bare-metal machine, restarted manually when they crash.",
+        "FTP servers that transfer the model file to each client for local inference.",
+        "Visual Basic services on Windows Server, scaled by adding more physical machines.",
+        "A single Triton process per GPU with no container runtime or orchestration layer.",
+        "Cron jobs that launch a fresh model process for each incoming inference request.",
+        "Serverless functions that load the full model weights from disk on every cold start."
+      ]
+    },
+    {
+      "front": "Which sequence is correct for deploying a fine-tuned LLM with NVIDIA tooling?",
+      "back": "Train with NeMo → export → optimize with TensorRT-LLM → serve with Triton. NeMo handles training/customization, TensorRT-LLM compiles a fast inference engine, and Triton serves it. NIM (NVIDIA Inference Microservice) packages this entire stack as a turnkey container.",
+      "quizAnswer": "Train with NeMo → export → optimize with TensorRT-LLM → serve with Triton (NIM packages this as one container).",
+      "distractors": [
+        "Serve with Triton → optimize with TensorRT-LLM → export → train with NeMo, in reverse.",
+        "Optimize with TensorRT-LLM first, then train with NeMo, then serve directly from NGC.",
+        "Train with TensorRT-LLM, optimize with NeMo, then serve the engine with cuDNN.",
+        "Train with NeMo, serve with NeMo, and use Triton only to curate the training data.",
+        "Export to ONNX, train with Triton, then optimize and serve with NeMo Guardrails.",
+        "Train with NeMo → serve with NIM → optimize with Triton → export with TensorRT."
+      ]
+    },
+    {
+      "front": "What does NumPy primarily provide?",
+      "back": "High-performance N-dimensional arrays and vectorized math operations on CPU. NumPy is the bedrock array library underlying most Python ML stacks; GPU equivalents are CuPy and cuDF via RAPIDS, or device tensors in PyTorch.",
+      "quizAnswer": "High-performance N-dimensional arrays and vectorized math on CPU — the bedrock under most Python ML stacks.",
+      "distractors": [
+        "Distributed training of large models across multiple data centers and GPU clusters.",
+        "An LLM evaluation harness that computes BLEU, ROUGE, and perplexity on test sets.",
+        "A managed Kubernetes cluster for orchestrating GPU inference workloads at scale.",
+        "GPU-accelerated DataFrames and machine-learning algorithms as drop-in pandas replacements.",
+        "A unified API for loading and fine-tuning thousands of pretrained transformer models.",
+        "A serving framework that exposes models over HTTP endpoints with dynamic batching."
+      ]
+    },
+    {
+      "front": "What is true about Hugging Face's transformers library?",
+      "back": "It provides a unified API to load, fine-tune, and run thousands of pretrained transformer models across PyTorch, TensorFlow, and JAX. The Hub hosts hundreds of thousands of models with a consistent loading API and integrates with Accelerate, PEFT, TRL, and bitsandbytes — the most common entry point for LLM development.",
+      "quizAnswer": "A unified API to load, fine-tune, and run thousands of pretrained transformer models across PyTorch, TensorFlow, and JAX.",
+      "distractors": [
+        "It supports only a single model architecture, which must be trained from scratch each time.",
+        "It is a proprietary product owned by NVIDIA and runs only inside NeMo containers.",
+        "It runs exclusively on CPU and cannot load models onto a GPU for inference.",
+        "It is a vector database for storing and searching document embeddings in RAG pipelines.",
+        "It is a low-level CUDA primitive library for writing custom attention kernels.",
+        "It provides GPU-accelerated DataFrames that replace pandas in data-loading pipelines."
+      ]
+    },
+    {
+      "front": "What is a REST API endpoint typically used for in an LLM application?",
+      "back": "Exposing the model so client applications can send a prompt and receive a generated response over HTTP. REST (or gRPC) endpoints are the standard interface between an LLM-serving stack (Triton, NIM, a FastAPI wrapper) and downstream applications; streaming responses use SSE or chunked transfer.",
+      "quizAnswer": "Exposing the model so client apps send a prompt and receive a generated response over HTTP (or gRPC).",
+      "distractors": [
+        "Encrypting the model weights at rest so they cannot be copied off the inference server.",
+        "Compiling CUDA kernels on the fly so the model runs faster on each new GPU.",
+        "Performing dropout on the input prompt to regularize the model during serving.",
+        "Storing conversation history in a vector database for long-term agent memory.",
+        "Sharding the model's layers across GPUs so that larger models fit in HBM.",
+        "Batching training examples into mini-batches before each gradient-descent step."
+      ]
+    },
+    {
+      "front": "Why is GPU memory often the binding constraint when deploying an LLM?",
+      "back": "LLM weights, activations, and KV cache must fit in HBM during inference; running out of memory crashes the request. A 70B-param FP16 model is ~140 GB just for weights, and KV cache adds GBs per concurrent request — which is why quantization, tensor parallelism, and PagedAttention exist.",
+      "quizAnswer": "Weights, activations, and the KV cache must all fit in GPU HBM during inference; running out crashes the request.",
+      "distractors": [
+        "GPUs have unlimited memory, so memory is never actually the binding constraint at inference.",
+        "GPU memory only matters during training; inference streams the weights from disk as needed.",
+        "Triton ignores model size, so the constraint is network bandwidth rather than GPU memory.",
+        "The constraint is CPU RAM, since the GPU only stores the final output logits.",
+        "Memory is bounded by the vocabulary size rather than by the model weights or KV cache.",
+        "The KV cache shrinks as the sequence grows, so long contexts actually free up GPU memory."
+      ]
+    }
+  ]
+}

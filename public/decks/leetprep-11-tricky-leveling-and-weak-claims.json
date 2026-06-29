@@ -1,0 +1,136 @@
+{
+  "title": "Tricky Leveling & Weak Claims",
+  "description": "Handling probes on title, gaps, and over-claims: calm, honest, specific, redirect.",
+  "cards": [
+    {
+      "front": "Probe: 'You're an SE II — why apply to a Lead/VP role?'",
+      "back": "Frame scope, not title: explain your title band has lagged your actual scope (cite Lead-level work you've owned — architecture, key decisions), back it with demonstrable output, and stay explicitly open to a leveling conversation grounded in what you can show. Confident, not defensive.",
+      "distractors": [
+        "Insist the title is just a formality and refuse to discuss leveling at all.",
+        "Apologize for applying above your band and offer to take a lower-level role.",
+        "Claim the title was an HR mistake and that you were really a VP already.",
+        "Argue that titles are meaningless and pivot away from the question entirely.",
+        "List years of experience as the sole justification, with no evidence of scope.",
+        "Become defensive and explain that your manager unfairly held back your promotion."
+      ],
+      "quizAnswer": "Frame scope, not title: cite Lead-level work you owned, back it with evidence, and stay open to a leveling conversation."
+    },
+    {
+      "front": "Probe: 'These roles want 5+ years of GenAI; you have ~2. Why talk?'",
+      "back": "Don't inflate the number — state ~2 years of GenAI on top of ~6 years of production engineering, then convert the gap into a differentiator: many people have GenAI demos but can't ship fault-tolerant distributed systems, and vice versa; you've done both. Back it with concrete projects.",
+      "distractors": [
+        "Round your GenAI experience up to 5 years by counting unrelated coursework.",
+        "Concede that you're underqualified and ask them to consider you for a junior role.",
+        "Argue that years of experience don't matter and dismiss the requirement.",
+        "Claim GenAI is so new that nobody truly has 5 years, so the bar is invalid.",
+        "Pad the number by including time spent merely calling an LLM API occasionally.",
+        "Avoid the number entirely and hope the interviewer forgets they asked."
+      ],
+      "quizAnswer": "Don't inflate the number; turn it into a differentiator — strong engineering plus real GenAI — backed by concrete projects."
+    },
+    {
+      "front": "Probe: 'You said principal developer — how big was the team and what did YOU own?'",
+      "back": "Answer with precise ownership boundaries: name your specific components, name what other engineers owned (signals honesty and team awareness), and define what the title meant (you drove design/decisions on those pieces, not that you were the only person). Have the real team size ready.",
+      "distractors": [
+        "Claim you personally built the entire platform single-handedly.",
+        "Stay vague about who did what so your contribution sounds maximal.",
+        "Say it was 'a team effort' and decline to specify what you owned.",
+        "Take credit for the components other engineers actually owned.",
+        "Downplay your role entirely and credit the whole outcome to the team.",
+        "Dodge the team-size question because a real number would undercut the title."
+      ],
+      "quizAnswer": "Name your specific components and what others owned, and define what the title meant. Have the real team size ready."
+    },
+    {
+      "front": "Probe: 'You list a production RAG service — production how? QPS? users?'",
+      "back": "Calibrate the claim honestly: soften 'production' to what's true (e.g. a team-adopted internal tool with real users on real data, not a high-QPS public system; or a portfolio implementation on public data) while keeping the technical depth intact — the chunking, hybrid retrieval, reranking, and recall@k evaluation are the same regardless of scale. Never defend a number you don't have.",
+      "distractors": [
+        "Invent a QPS and user count on the spot so 'production' sounds impressive.",
+        "Insist it's a massive high-scale public system and dare them to disprove it.",
+        "Refuse to define 'production' and move on quickly to another topic.",
+        "Claim the numbers are confidential to avoid calibrating the claim at all.",
+        "Defend the inflated wording rather than right-sizing it to the truth.",
+        "Say scale doesn't matter and dismiss the question as irrelevant."
+      ],
+      "quizAnswer": "Calibrate honestly what 'production' means while keeping the technical depth intact; never defend a number you don't have."
+    },
+    {
+      "front": "Probe: 'Your resume says expert in Azure / [thin skill]. Tell me about that.'",
+      "back": "If a claim is thin, proactively downgrade it and stay consistent: call it exposure rather than expertise, point to where you're genuinely deep (e.g. AWS), and note the concepts transfer so you ramp fast. Correcting an inflated claim raises your credibility for everything else — make sure your spoken answer matches the resume.",
+      "distractors": [
+        "Defend the 'expert' label and improvise details to sound deep in Azure.",
+        "Claim equal expertise across every cloud to appear maximally versatile.",
+        "Blame the resume writer for the wording and move on without calibrating.",
+        "Bluff through specific Azure services you've never actually used.",
+        "Insist all clouds are identical, so expertise in one means expertise in all.",
+        "Over-apologize and say you have no real cloud skills at all."
+      ],
+      "quizAnswer": "Proactively downgrade a thin claim to 'exposure,' point to where you're genuinely deep, and stay consistent with your resume."
+    },
+    {
+      "front": "Probe: 'Why are you leaving after ~1 year?' (job-hopping concern)",
+      "back": "Be forward-looking and positive, with no badmouthing — lead with pull (where you're going) not push (what you're escaping): name the real, valuable work you did, then say you want a role where GenAI/platform engineering is the core mandate, and tie it specifically to this role.",
+      "distractors": [
+        "Explain in detail what was wrong with the current company and manager.",
+        "Say you're mainly leaving for a bigger paycheck and a shorter commute.",
+        "Claim you're always restless and tend to move on every year or so.",
+        "Avoid the question and insist your tenure is nobody's business.",
+        "Badmouth the team to show you have high standards.",
+        "Say you have no particular reason; the recruiter just reached out first."
+      ],
+      "quizAnswer": "Lead with pull, not push: name the valuable work done, then tie your goals to this specific role. No badmouthing."
+    },
+    {
+      "front": "How should you structure 'tell me about yourself' / walk through your resume?",
+      "back": "A ~90-second opener, chronological-ish but themed around your value proposition (e.g. solid distributed-systems engineering + hands-on GenAI). Lead with the strongest, most relevant work, hit a couple of signature projects, and end by connecting your sweet spot to their specific role.",
+      "distractors": [
+        "Recite your entire work history year by year, including every job and duty.",
+        "Open with your personal life and hobbies before getting to the work.",
+        "Give a 10-minute exhaustive tour so nothing on the resume is missed.",
+        "List technologies as a flat keyword dump with no narrative or theme.",
+        "Start at your earliest job and save the most relevant work for the end.",
+        "Keep it generic so it works for any role without mentioning theirs."
+      ],
+      "quizAnswer": "A ~90-second themed opener around your value proposition, leading with your strongest relevant work and connecting to their role."
+    },
+    {
+      "front": "How do you answer 'what's your biggest weakness?'",
+      "back": "Give a real growth area with active mitigation — not a disguised brag. Tie it to your actual profile (e.g. formal people-leadership: you've led through technical ownership and tooling but haven't managed a team directly, and you're deliberately targeting roles to grow it). Avoid clichés like 'I work too hard,' which read as evasive.",
+      "distractors": [
+        "Say 'I work too hard' or 'I'm a perfectionist' — a strength in disguise.",
+        "Claim you have no real weaknesses you can think of.",
+        "Name a weakness central to the job, with no plan to address it.",
+        "Pick something trivial and unrelated so it can't count against you.",
+        "Deflect by describing a former colleague's weakness instead of your own.",
+        "List several severe weaknesses to seem brutally honest."
+      ],
+      "quizAnswer": "Give a real growth area with active mitigation, tied to your profile — not a disguised brag or cliché."
+    },
+    {
+      "front": "What's the meta-principle for handling every tough/probing question?",
+      "back": "Pause and stay calm (these are expected, not attacks), be honest and specific (calibrate every claim to what's true), redirect to genuine strength (every gap has adjacent real depth), never bluff a technical boundary ('what I've run vs. what I understand' beats getting caught), and stay open to leveling and learning. Honesty is the strategy — right-sizing one claim makes every other claim more believable.",
+      "distractors": [
+        "Project total confidence by never admitting any gap or limitation.",
+        "Bluff through technical boundaries; admitting limits loses the offer.",
+        "Over-apologize for every gap so the interviewer sees you're self-aware.",
+        "Memorize one scripted answer and give it verbatim regardless of the question.",
+        "Stay rigid on your title and refuse any leveling discussion.",
+        "Deflect every hard question with a joke to defuse the tension."
+      ],
+      "quizAnswer": "Stay calm, be honest and specific, redirect to genuine strength, never bluff a boundary, and stay open to leveling."
+    },
+    {
+      "front": "When asked 'do you have questions for us?', what's the right move?",
+      "back": "Always have 3+ ready — never say no. Ask level-appropriate questions that show you think about real engineering and their world: how the team uses GenAI today vs. what's actually in production, what success looks like at 6 and 12 months, how they balance shipping AI features with guardrails/governance, and the biggest technical challenge the team faces.",
+      "distractors": [
+        "Say no — it signals you're decisive and already fully informed.",
+        "Ask only about salary, vacation days, and remote-work perks.",
+        "Ask a single generic question like 'what's the culture like?' and stop.",
+        "Ask whether they'll definitely make you an offer.",
+        "Decline, since asking questions risks exposing what you don't know.",
+        "Ask questions you could trivially answer from their public website."
+      ],
+      "quizAnswer": "Always have three or more thoughtful, level-appropriate questions about the role, the team, and their real engineering challenges."
+    }
+  ]
+}

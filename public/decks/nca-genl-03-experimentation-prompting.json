@@ -1,0 +1,175 @@
+{
+  "title": "NCA-GENL · Experimentation & Prompting",
+  "description": "Prompting, sampling, A/B testing, metrics (BLEU/ROUGE/perplexity), eval (exam domain 3, 22%).",
+  "cards": [
+    {
+      "front": "What is a zero-shot prompt?",
+      "back": "A prompt that asks the model to perform a task without any examples in the prompt. Zero-shot relies on the model's pretrained capability to follow an instruction; one-shot adds a single example, and few-shot adds 2–N examples to demonstrate format and style.",
+      "quizAnswer": "A prompt that asks the model to do a task with no examples provided, relying on its pretrained capability.",
+      "distractors": [
+        "A prompt with no instruction at all, leaving the model to guess which task to perform.",
+        "A prompt that always returns an empty string because the temperature is set to zero.",
+        "A prompt limited to zero tokens, used to measure the model's idle inference latency.",
+        "A prompt containing a single worked example that demonstrates the desired output format.",
+        "A prompt that includes several examples so the model can imitate their style and format.",
+        "A prompt that disables sampling so the model deterministically picks the top token."
+      ]
+    },
+    {
+      "front": "Which sampling parameter most directly controls the randomness of generated text?",
+      "back": "Temperature. It divides the logits before softmax: T<1 sharpens the distribution (more deterministic), T>1 flattens it (more random), and T=0 is greedy. Top-k and top-p truncate the candidate set rather than reshape the whole distribution.",
+      "quizAnswer": "Temperature — it divides logits before softmax; T<1 is more deterministic, T>1 more random, T=0 greedy.",
+      "distractors": [
+        "Top-k, which divides the logits before softmax to make the whole distribution sharper or flatter.",
+        "Beam width, which directly controls how random each sampled token is at every step.",
+        "Maximum tokens, which sets the randomness by capping how long the generated text can be.",
+        "Repetition penalty, which is the single knob that flattens or sharpens the output distribution.",
+        "Top-p, which rescales every logit by a temperature factor to control overall randomness.",
+        "Learning rate, which determines how random the model's token choices are at inference."
+      ]
+    },
+    {
+      "front": "What does top-p (nucleus) sampling do?",
+      "back": "Samples from the smallest set of tokens whose cumulative probability exceeds p. Nucleus sampling adapts the candidate-set size to the distribution shape: peaky distributions yield few candidates, flat distributions yield many. It is often combined with temperature and top-k for quality control.",
+      "quizAnswer": "It samples from the smallest set of tokens whose cumulative probability exceeds p, adapting to the distribution's shape.",
+      "distractors": [
+        "It always picks the single most likely token, ignoring the rest of the distribution.",
+        "It samples from exactly the top p tokens by count, regardless of their probabilities.",
+        "It disables sampling entirely and falls back to deterministic greedy decoding.",
+        "It replaces the softmax with a sigmoid so each token is chosen independently.",
+        "It keeps the p highest-scoring partial sequences and extends each one in parallel.",
+        "It divides the logits by p before softmax to control how random the output is."
+      ]
+    },
+    {
+      "front": "In a deployed-model A/B test, what traffic split is typically recommended for an unbiased comparison?",
+      "back": "50/50 between control (current model) and treatment (new model). An even split maximizes statistical power per unit traffic and minimizes confounding by time-of-day or user segment. Always pre-compute the required sample size and define a primary metric.",
+      "quizAnswer": "A 50/50 split between control and treatment — it maximizes statistical power and minimizes confounding.",
+      "distractors": [
+        "A 99/1 split sending almost all traffic to control, to protect users from the new model.",
+        "A 0/100 split sending all traffic to the new model so it gets the most exposure.",
+        "A random per-second split with no logging, so neither variant biases the other.",
+        "A 90/10 split, since the treatment needs only a tiny sample to reach significance.",
+        "A split that changes hourly so each variant sees every time-of-day segment equally.",
+        "A single-arm rollout with no control group, compared against last week's metrics."
+      ]
+    },
+    {
+      "front": "What does the BLEU metric measure?",
+      "back": "n-gram overlap between the model's output and one or more reference texts (translation/summarization quality). BLEU is a precision-oriented n-gram match metric, originally for machine translation; it rewards lexical overlap with the reference, penalizes brevity, but is insensitive to paraphrase quality. It does NOT measure vocabulary size.",
+      "quizAnswer": "n-gram overlap (precision) between the output and reference texts — a translation/summarization quality metric.",
+      "distractors": [
+        "The token-level entropy of the generated text, measuring how diverse its vocabulary is.",
+        "The cosine similarity between the output embedding and the reference embedding.",
+        "The inference latency per token, used to compare the speed of two decoding strategies.",
+        "Recall-oriented overlap with the reference, making it the standard metric for summarization.",
+        "The exponential of the average per-token cross-entropy on a held-out test set.",
+        "The fraction of relevant documents retrieved in the top-k for a RAG query."
+      ]
+    },
+    {
+      "front": "What does ROUGE typically measure?",
+      "back": "Recall-oriented n-gram and longest-common-subsequence overlap with references, common for summarization. ROUGE-N, ROUGE-L, and ROUGE-W are recall-oriented (and combined F-measures), complementary to BLEU's precision-orientation, and standard for summarization evaluation.",
+      "quizAnswer": "Recall-oriented n-gram and longest-common-subsequence overlap with references — standard for summarization.",
+      "distractors": [
+        "Precision-oriented n-gram overlap with references, the standard metric for machine translation.",
+        "The memory bandwidth consumed while generating the summary on the GPU.",
+        "The number of attention heads the model uses when producing the summary.",
+        "The number of GPU cores allocated to the summarization inference request.",
+        "The cosine similarity between the summary and the source-document embeddings.",
+        "The exponential of the average cross-entropy, measuring how surprised the model is."
+      ]
+    },
+    {
+      "front": "What does perplexity quantify for a language model?",
+      "back": "The exponential of the average per-token cross-entropy — roughly, how 'surprised' the model is by the test text (lower is better). Perplexity = exp(mean NLL). It is the standard intrinsic LM metric but should be paired with downstream/task metrics, since lower perplexity does not always mean better task quality.",
+      "quizAnswer": "The exponential of the average per-token cross-entropy — how surprised the model is by the text (lower is better).",
+      "distractors": [
+        "The wall-clock latency per generated token, measuring how fast the model produces text.",
+        "The number of transformer layers in the model, which correlates with its capacity.",
+        "The CPU memory footprint of the model while it generates the test sequence.",
+        "The n-gram overlap between the model's output and a set of reference texts.",
+        "The fraction of test examples the model classifies correctly after fine-tuning.",
+        "The cosine similarity between the model's output and the ground-truth embedding."
+      ]
+    },
+    {
+      "front": "What is early stopping?",
+      "back": "Stopping training when the validation metric stops improving for a configured number of evaluations, to prevent overfitting. Early stopping uses validation loss/metric as the stopping signal and is one of the simplest, most reliable forms of regularization; pair it with checkpointing the best model so far.",
+      "quizAnswer": "Stopping training once the validation metric stops improving for a set number of evals — a simple regularizer.",
+      "distractors": [
+        "Killing a Triton container before it finishes warming up so resources are freed sooner.",
+        "Stopping training as soon as the training loss stops decreasing, regardless of validation.",
+        "A firewall rule that halts the model if it processes too many requests per second.",
+        "An ablation technique that removes layers one at a time to measure their contribution.",
+        "Ending generation as soon as the model emits a low-probability token during sampling.",
+        "Capping the number of epochs in advance, independent of any validation signal."
+      ]
+    },
+    {
+      "front": "Why is a held-out test set distinct from the validation set?",
+      "back": "The validation set is used for hyperparameter tuning — if you also reported on it you would leak, so the test set provides an unbiased estimate of generalization. Touching the test set during tuning is a classic source of optimistic bias; lock it away until the final evaluation, and use cross-validation on the validation portion if you must iterate.",
+      "quizAnswer": "Validation is used for tuning; reporting on it would leak — the test set gives an unbiased generalization estimate.",
+      "distractors": [
+        "The test set simply has more rows, so it produces a lower-variance estimate of accuracy.",
+        "They are interchangeable; you can tune on either one and report on the other freely.",
+        "The test set is used during training, while the validation set is reserved for the final report.",
+        "The validation set must come from a different distribution than the training data.",
+        "The test set is used to pick hyperparameters, and the validation set estimates generalization.",
+        "Only the test set may be used for early stopping; the validation set is for the final score."
+      ]
+    },
+    {
+      "front": "Which is a chain-of-thought (CoT) prompt?",
+      "back": "'Let's think step by step.' Chain-of-thought prompting elicits intermediate reasoning steps before the final answer and substantially improves accuracy on multi-step reasoning. It works best on larger models.",
+      "quizAnswer": "'Let's think step by step' — it elicits intermediate reasoning before the answer, improving multi-step tasks.",
+      "distractors": [
+        "'Output only one token,' which forces the model to reason internally before answering.",
+        "'Set temperature to 0,' which makes the model reason deterministically step by step.",
+        "'Use FP8 precision,' which speeds up the intermediate reasoning the model performs.",
+        "'Answer in one word,' which compresses the model's reasoning into the final token.",
+        "'Ignore previous instructions,' which unlocks the model's hidden reasoning chain.",
+        "'Return valid JSON only,' which structures the model's step-by-step reasoning."
+      ]
+    },
+    {
+      "front": "What is hyperparameter tuning?",
+      "back": "Searching over settings that are not learned by gradient descent (e.g., learning rate, batch size, dropout) to optimize a chosen metric. Common strategies: grid, random, Bayesian (Optuna, Hyperopt), and bandit-based (ASHA). Always tune on the validation set, not the test set.",
+      "quizAnswer": "Searching over settings not learned by gradient descent (learning rate, batch size, dropout) to optimize a metric.",
+      "distractors": [
+        "Editing the trained model's weights by hand to improve its score on the validation set.",
+        "Recompiling the CUDA kernel so the model trains faster on the available GPUs.",
+        "Switching between PyTorch and TensorFlow to find which framework gives higher accuracy.",
+        "Adjusting the learned weights during back-propagation to minimize the training loss.",
+        "Changing the model's vocabulary size after training to better fit the downstream task.",
+        "Tuning the sampling temperature on the test set to maximize the reported accuracy."
+      ]
+    },
+    {
+      "front": "What does 'few-shot' prompting mean?",
+      "back": "Including a small number of input/output examples in the prompt to demonstrate the task. Few-shot leverages the model's in-context learning to imitate the format and style of the demonstrations; the order, diversity, and similarity-to-query of the examples all materially affect quality.",
+      "quizAnswer": "Including a few input/output examples in the prompt to demonstrate the task via in-context learning.",
+      "distractors": [
+        "Generating only a few output tokens so the response stays short and focused.",
+        "Using only a few GPUs to fine-tune the model on the downstream task.",
+        "Training the model for only a few epochs to avoid overfitting the small dataset.",
+        "Providing no examples and relying purely on the model's pretrained knowledge.",
+        "Splitting the prompt into a few separate calls and averaging the model's answers.",
+        "Limiting the context window to a few hundred tokens to reduce inference cost."
+      ]
+    },
+    {
+      "front": "Which is true about evaluation of generative models?",
+      "back": "Multiple complementary metrics are needed — automatic metrics (BLEU, ROUGE, perplexity), task-specific metrics, and often human or LLM-as-judge evaluation — because no single metric correlates perfectly with quality. Each metric has known biases; cross-checking them limits Goodhart's law.",
+      "quizAnswer": "Use multiple complementary metrics — automatic, task-specific, and human/LLM-judge — since no single one captures quality.",
+      "distractors": [
+        "A single metric such as BLEU is sufficient, since it correlates perfectly with human judgment.",
+        "Human evaluation is forbidden, so you must rely solely on automatic n-gram metrics.",
+        "Latency is the only metric that matters once the model passes a basic accuracy threshold.",
+        "Only perplexity is needed, because lower perplexity always means higher task quality.",
+        "Report just one task-specific metric; combining metrics only introduces conflicting signals.",
+        "Use accuracy alone, since precision, recall, and F1 are redundant for generative models."
+      ]
+    }
+  ]
+}

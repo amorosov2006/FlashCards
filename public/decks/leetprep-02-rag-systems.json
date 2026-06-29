@@ -1,0 +1,149 @@
+{
+  "title": "RAG Systems",
+  "description": "Chunking, retrieval, hybrid search, reranking, grounding, evaluation.",
+  "cards": [
+    {
+      "front": "What is RAG and why use it instead of fine-tuning?",
+      "back": "Retrieval-Augmented Generation connects an LLM to an external knowledge source at inference time: retrieve relevant chunks for the query and inject them into the prompt so the model answers from grounded material. Preferred over fine-tuning for knowledge because of freshness, provenance/citations, cost, and access control.",
+      "distractors": [
+        "A fine-tuning method that retrains the model nightly on new documents so facts stay current in its weights.",
+        "A decoding strategy that samples from retrieved tokens instead of the model's vocabulary distribution.",
+        "A prompt-compression technique that summarizes long documents to fit the context window.",
+        "Caching past question/answer pairs so identical queries skip the model entirely.",
+        "Replacing the LLM with a search engine that returns documents verbatim, with no generation involved.",
+        "Training a separate embedding model end-to-end with the LLM so retrieval and generation share weights."
+      ],
+      "quizAnswer": "Retrieving relevant documents at inference time and injecting them into the prompt so the model answers from grounded sources."
+    },
+    {
+      "front": "How do you choose a chunking strategy for RAG?",
+      "back": "Splitting documents into retrievable pieces. Too large dilutes embeddings and wastes tokens; too small loses context. Options: fixed-size with overlap, recursive/structural splitting, semantic chunking, and document-structure-aware (sections, headers, table rows). Chunk by tokens, not characters.",
+      "distractors": [
+        "Chunking means limiting the LLM's output to a fixed number of tokens per response.",
+        "Always use the largest possible chunk so each embedding captures the whole document's meaning.",
+        "Split strictly every N characters with no overlap; overlap only creates useless duplicate retrievals.",
+        "Chunking is choosing how many documents to retrieve per query (the top-k value).",
+        "Break every document into single sentences, since smaller chunks are universally better.",
+        "Group documents into topic clusters and store just one embedding per cluster."
+      ],
+      "quizAnswer": "Splitting documents into retrievable pieces by tokens; too large dilutes embeddings, too small loses context. Use overlap and structure."
+    },
+    {
+      "front": "Walk through how retrieval works. What is ANN?",
+      "back": "Embed the query into the same space as the chunks and find the closest vectors (cosine similarity). Exact search over millions of vectors is too slow, so production uses Approximate Nearest Neighbor indexes — HNSW (graph), IVF (cluster-then-search), or Product Quantization — trading a little recall for big speed.",
+      "distractors": [
+        "ANN means an Artificial Neural Network that scores each document's relevance to the query.",
+        "Retrieval scans every document with BM25 keyword matching; vectors are only used for final ranking.",
+        "ANN does an exact brute-force comparison against all vectors, which is why it is slow but accurate.",
+        "The query is fed through the LLM, which outputs the IDs of the documents to fetch.",
+        "Approximate Nearest Neighbor compresses the query down to a single keyword before searching.",
+        "Retrieval re-embeds the entire corpus on every query to guarantee freshness."
+      ],
+      "quizAnswer": "Embed the query and find nearest-neighbor chunks; production uses Approximate Nearest Neighbor indexes (HNSW, IVF, PQ) for speed."
+    },
+    {
+      "front": "What is hybrid search and why does it beat pure vector search?",
+      "back": "Combining dense (vector/semantic) retrieval with sparse keyword retrieval (BM25) and fusing the rankings — often with Reciprocal Rank Fusion. It beats pure vector search because semantic search misses exact matches like identifiers, error codes, acronyms or statute numbers, which lexical search catches.",
+      "distractors": [
+        "Running the same vector search on two different embedding models and averaging the scores.",
+        "Searching across multiple vector databases at once and returning whichever responds first.",
+        "Combining retrieval with fine-tuning so the model gradually learns the documents.",
+        "Mixing text and image embeddings in one index to support multimodal queries.",
+        "Alternating semantic search on weekdays and keyword search on weekends to balance load.",
+        "Using the LLM to keyword-search the public web and the vector DB simultaneously."
+      ],
+      "quizAnswer": "Combining dense vector search with sparse keyword search (BM25) and fusing the rankings, so exact terms aren't missed."
+    },
+    {
+      "front": "What is reranking and where does it fit in RAG?",
+      "back": "A precision step after retrieval: fast ANN pulls ~50-100 candidates (recall-oriented), then a heavier cross-encoder scores each (query, chunk) pair together and keeps only the top ~5 for the LLM. Cross-encoders judge relevance far better than the separate bi-encoder embeddings — 'retrieve wide, rerank narrow.'",
+      "distractors": [
+        "Re-embedding the retrieved chunks with a larger embedding model to improve their vectors.",
+        "Sorting the retrieved chunks by document date so the newest appears first.",
+        "Asking the user to manually reorder the retrieved results before generation.",
+        "A bi-encoder that re-scores chunks faster than the original retrieval step.",
+        "Compressing the top chunks into a summary so more of them fit in the context window.",
+        "Running retrieval a second time with a higher top-k to catch any missed chunks."
+      ],
+      "quizAnswer": "A cross-encoder rescores the retrieved candidates by relevance, keeping the top few — 'retrieve wide, rerank narrow.'"
+    },
+    {
+      "front": "How do you stop a RAG system from hallucinating?",
+      "back": "Layered defense: fix retrieval quality first (most 'hallucinations' are retrieval failures — better chunking, hybrid search, reranking), then a grounding prompt ('answer only from context, else say I don't know'), require citations, allow an abstain path, lower temperature, and add post-generation faithfulness verification.",
+      "distractors": [
+        "Fine-tune the model on the documents so it memorizes the facts and stops improvising.",
+        "Raise the temperature so the model explores more answers and self-corrects.",
+        "Always retrieve the maximum number of chunks so the right one is guaranteed to be present.",
+        "Disable the system prompt so the model relies purely on the retrieved context.",
+        "Switch to a larger context window; hallucination disappears once everything fits.",
+        "Remove citations, since asking for sources distracts the model from answering."
+      ],
+      "quizAnswer": "Fix retrieval first, then ground the prompt, require citations, allow abstaining, lower temperature, and verify faithfulness."
+    },
+    {
+      "front": "How do you evaluate a RAG system?",
+      "back": "Evaluate the two stages separately. Retrieval: recall@k (most important), precision@k, MRR, nDCG. Generation: faithfulness/groundedness, answer relevance, context precision/recall (e.g. RAGAS with LLM-as-judge). Build a small golden set of (question, ideal answer, relevant source) and run it on every change.",
+      "distractors": [
+        "Measure only end-to-end user thumbs-up ratings; stage-level metrics add no value.",
+        "Track GPU utilization and tokens-per-second, since latency is the main quality signal.",
+        "Use BLEU score against the source documents to confirm the answer copied them exactly.",
+        "Evaluate generation first; if the answers read well, retrieval quality can be ignored.",
+        "Compare the answer's embedding to the query's embedding — high cosine similarity means correct.",
+        "Count how many documents are in the vector store; more documents means better recall."
+      ],
+      "quizAnswer": "Measure retrieval (recall@k, MRR, nDCG) and generation (faithfulness, answer relevance) separately against a golden eval set."
+    },
+    {
+      "front": "Your RAG retrieval returns irrelevant results. How do you debug?",
+      "back": "Isolate which stage is broken before changing anything: inspect what's retrieved (is the right chunk even indexed?), check chunking, check the embedding model (wrong domain, or query and docs embedded with different models), add hybrid search for exact-term misses, add a reranker, check metadata filters, and try query transformation.",
+      "distractors": [
+        "Immediately switch to a larger LLM, since generation quality drives retrieval relevance.",
+        "Lower the temperature; irrelevant retrieval is usually caused by random sampling.",
+        "Delete and rebuild the entire vector store from scratch before investigating anything.",
+        "Increase top-k to 1,000 so the irrelevant results are diluted by relevant ones.",
+        "Embed the documents again with the same model to refresh the vectors.",
+        "Assume the documents are wrong and ask users to re-upload cleaner files first."
+      ],
+      "quizAnswer": "Isolate the broken stage first: check indexing, chunking, the embedding model, and filters, then add hybrid search or reranking."
+    },
+    {
+      "front": "What is query transformation / multi-query retrieval?",
+      "back": "Techniques for short, ambiguous, or compound queries: query rewriting/expansion (LLM rephrases before embedding), multi-query (generate several paraphrases, retrieve each, union results), HyDE (LLM writes a fake ideal answer and you embed that), and sub-question decomposition (split, retrieve/answer parts, synthesize).",
+      "distractors": [
+        "Translating the query into another language to widen the pool of matching documents.",
+        "Truncating the query to its first three words so it embeds more cleanly.",
+        "Converting the query into a SQL statement and running it against the vector DB.",
+        "HyDE means embedding the query twice and averaging the two vectors to reduce noise.",
+        "Compressing several user queries into one batch request to save tokens.",
+        "Caching transformed queries so repeated questions skip retrieval entirely."
+      ],
+      "quizAnswer": "Rewriting, expanding, or splitting queries (multi-query, HyDE, sub-questions) to improve retrieval for vague or compound questions."
+    },
+    {
+      "front": "When is RAG the wrong tool?",
+      "back": "When the problem isn't retrieving unstructured knowledge: behavioral/format problems (→ fine-tune or prompt), reasoning/computation over structured data (→ give the model a tool like SQL/code), small stable knowledge that fits in context (→ just put it in the prompt), and real-time/transactional facts (→ call an API).",
+      "distractors": [
+        "When the corpus is very large; RAG only works for a few hundred documents.",
+        "When you need citations, since RAG cannot trace which source an answer came from.",
+        "Whenever the LLM has a long context window, because retrieval is then always inferior.",
+        "When the documents are PDFs, which vector databases are unable to index.",
+        "When latency matters at all; RAG is only acceptable for offline batch jobs.",
+        "When you want answers grounded in sources — that is fine-tuning's job, not RAG's."
+      ],
+      "quizAnswer": "When you need behavior/format, computation over structured data, tiny stable knowledge, or live facts — use prompting, tools, or APIs."
+    },
+    {
+      "front": "Agentic RAG vs. classic RAG?",
+      "back": "Classic RAG is a fixed pipeline: retrieve once, generate once. Agentic RAG puts an LLM agent in control — it decides whether to retrieve, what to query, can retrieve multiple times, reformulate after weak results, choose among sources/tools, and reflect on whether it has enough. It trades latency/cost for handling complex multi-hop questions.",
+      "distractors": [
+        "Agentic RAG removes the LLM and lets the vector database answer queries directly.",
+        "Classic RAG uses an agent loop, while agentic RAG retrieves exactly once for speed.",
+        "Agentic RAG means multiple users share one retrieval agent to save compute.",
+        "Agentic RAG fine-tunes the retriever during the conversation based on user feedback.",
+        "The only difference is that agentic RAG runs on GPUs and classic RAG runs on CPUs.",
+        "Agentic RAG always retrieves from the web, whereas classic RAG uses a local store."
+      ],
+      "quizAnswer": "Classic RAG retrieves once then generates; agentic RAG lets an agent decide when, what, and how often to retrieve."
+    }
+  ]
+}
