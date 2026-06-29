@@ -19,9 +19,14 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      # Enables GitHub Pages for the repo if it isn't already, avoiding the
+      # "Failed to create deployment (404) - Ensure GitHub Pages has been enabled" error.
+      - uses: actions/configure-pages@v5
+        with:
+          enablement: true
       - uses: actions/setup-node@v4
         with:
-          node-version: 20
+          node-version: 22
           cache: npm
       - run: npm ci
       # Build with base path = "/<repo-name>/" so assets resolve on Pages.
