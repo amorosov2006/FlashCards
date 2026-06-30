@@ -1,0 +1,222 @@
+{
+  "title": "Citizenship · Rights & Responsibilities",
+  "description": "Voting, the duties and rights of citizens, the Pledge and the Oath, taxes and Selective Service, and the amendments that protect rights.",
+  "cards": [
+    {
+      "front": "There are four amendments about who can vote. Describe one of them.",
+      "back": "Citizens eighteen (18) and older can vote (26th); you don't have to pay a poll tax to vote (24th); any citizen can vote — women and men (19th); a male citizen of any race can vote (15th). Any one is accepted.",
+      "quizAnswer": "Any citizen 18 or older can vote, regardless of race, sex, or wealth.",
+      "distractors": [
+        "Only property owners may cast a vote.",
+        "Only men over twenty-one may vote.",
+        "Voting requires passing a literacy test.",
+        "Only native-born citizens may vote.",
+        "States may charge a fee to vote."
+      ]
+    },
+    {
+      "front": "What is one responsibility that is only for United States citizens?",
+      "back": "To serve on a jury, or to vote in a federal election. These civic duties are reserved for citizens.",
+      "quizAnswer": "Serve on a jury, or vote in a federal election.",
+      "distractors": [
+        "Pay federal income taxes each year.",
+        "Obey all the laws of the nation.",
+        "Register men for the Selective Service.",
+        "Respect the rights of other people.",
+        "Defend the country in a war."
+      ]
+    },
+    {
+      "front": "What is one right only for United States citizens?",
+      "back": "To vote in a federal election, or to run for federal office. Non-citizens do not have these rights.",
+      "quizAnswer": "Vote in a federal election, or run for federal office.",
+      "distractors": [
+        "Freedom of speech and religion.",
+        "The right to a fair, fast trial.",
+        "The right to keep and bear arms.",
+        "Protection from unreasonable searches.",
+        "The right to peaceably assemble."
+      ]
+    },
+    {
+      "front": "What are two rights of everyone living in the United States?",
+      "back": "Examples: freedom of expression, freedom of speech, freedom of assembly, freedom to petition the government, freedom of religion, and the right to bear arms. These apply to citizens and non-citizens alike.",
+      "quizAnswer": "Freedom of speech, religion, assembly, petition, and expression.",
+      "distractors": [
+        "Voting in elections and running for office.",
+        "Serving on a jury and holding office.",
+        "Receiving a U.S. passport and voting.",
+        "Working for the federal government only.",
+        "Choosing the President and Vice President."
+      ]
+    },
+    {
+      "front": "When we say the Pledge of Allegiance, what do we show loyalty to?",
+      "back": "The United States, and the flag. The Pledge is a promise of loyalty to the nation and its flag.",
+      "quizAnswer": "The United States and the flag.",
+      "distractors": [
+        "The President and the Congress.",
+        "The Constitution and the courts.",
+        "The state and its governor.",
+        "The military and its leaders.",
+        "The founders and their ideals."
+      ]
+    },
+    {
+      "front": "What is one promise you make when you become a United States citizen?",
+      "back": "Give up loyalty to other countries; defend the Constitution and laws of the U.S.; obey the laws; serve in the military or do important work for the nation if needed; be loyal to the United States. Any one is accepted.",
+      "quizAnswer": "Give up loyalty to other countries and defend the Constitution and laws.",
+      "distractors": [
+        "Vote in every federal election held.",
+        "Pay an annual citizenship membership fee.",
+        "Live in the United States permanently forever.",
+        "Learn to speak a second language.",
+        "Join a major political party."
+      ]
+    },
+    {
+      "front": "How old do citizens have to be to vote for President?",
+      "back": "Eighteen (18) and older. The 26th Amendment set the national voting age at 18.",
+      "quizAnswer": "Eighteen (18) and older.",
+      "distractors": [
+        "Sixteen (16) and older.",
+        "Twenty-one (21) and older.",
+        "Twenty-five (25) and older.",
+        "Nineteen (19) and older.",
+        "Thirty (30) and older."
+      ]
+    },
+    {
+      "front": "What are two ways that Americans can participate in their democracy?",
+      "back": "Examples: vote; join a political party; help with a campaign; join a civic or community group; give an opinion to an official; call or write to officials; publicly support or oppose an issue; run for office; write to a newspaper. Any two are accepted.",
+      "quizAnswer": "Vote, join a party, contact officials, run for office, or join a civic group.",
+      "distractors": [
+        "Serve on a jury and pay taxes.",
+        "Obey the laws and register to drive.",
+        "Carry a passport and salute the flag.",
+        "Attend public school and find work.",
+        "Defend the Constitution and the flag."
+      ]
+    },
+    {
+      "front": "When is the last day you can send in federal income tax forms?",
+      "back": "April 15. Federal income tax returns are generally due by April 15 each year.",
+      "quizAnswer": "April 15.",
+      "distractors": [
+        "January 1.",
+        "July 4.",
+        "December 31.",
+        "March 15.",
+        "October 15."
+      ]
+    },
+    {
+      "front": "When must all men register for the Selective Service?",
+      "back": "At age eighteen (18); men must register between ages 18 and 26. Registration keeps a list in case a military draft is ever needed.",
+      "quizAnswer": "At age 18 (between ages 18 and 26).",
+      "distractors": [
+        "At age 16, in high school.",
+        "At age 21, when fully adult.",
+        "Only when a war begins.",
+        "At age 25, before turning 26.",
+        "Only if they join the military."
+      ]
+    },
+    {
+      "front": "What did the 13th Amendment do?",
+      "back": "It freed the enslaved people and ended (abolished) slavery in the United States. It was ratified in 1865 after the Civil War.",
+      "quizAnswer": "Ended slavery; freed the enslaved people.",
+      "distractors": [
+        "Gave Black men the right to vote.",
+        "Gave women the right to vote.",
+        "Granted citizenship and equal protection.",
+        "Ended the poll tax in elections.",
+        "Lowered the voting age to eighteen."
+      ]
+    },
+    {
+      "front": "What did the 14th Amendment do?",
+      "back": "It granted citizenship to all persons born or naturalized in the U.S. and guaranteed equal protection of the laws and due process. Ratified in 1868.",
+      "quizAnswer": "Granted citizenship to all born here and guaranteed equal protection.",
+      "distractors": [
+        "Ended slavery throughout the entire nation.",
+        "Gave women the right to vote.",
+        "Lowered the national voting age to eighteen.",
+        "Removed the poll tax from federal elections.",
+        "Gave Congress the power to tax income."
+      ]
+    },
+    {
+      "front": "What did the 15th Amendment do?",
+      "back": "It gave (male) citizens the right to vote regardless of race or color. Ratified in 1870, it barred denying the vote based on race.",
+      "quizAnswer": "Gave citizens the right to vote regardless of race or color.",
+      "distractors": [
+        "Gave women the right to vote.",
+        "Lowered the voting age to eighteen.",
+        "Ended slavery across the United States.",
+        "Removed the poll tax in elections.",
+        "Granted citizenship to former slaves."
+      ]
+    },
+    {
+      "front": "What did the 19th Amendment do?",
+      "back": "It gave women the right to vote. Ratified in 1920, it barred denying the vote based on sex.",
+      "quizAnswer": "Gave women the right to vote.",
+      "distractors": [
+        "Gave Black men the right to vote.",
+        "Lowered the voting age to eighteen.",
+        "Ended the poll tax in elections.",
+        "Ended slavery throughout the nation.",
+        "Granted citizenship to all persons born here."
+      ]
+    },
+    {
+      "front": "What did the 24th Amendment do?",
+      "back": "It ended (banned) the poll tax in federal elections. Ratified in 1964, it stopped states from charging a fee to vote.",
+      "quizAnswer": "Ended the poll tax in federal elections.",
+      "distractors": [
+        "Gave women the right to vote.",
+        "Lowered the voting age to eighteen.",
+        "Gave Black men the right to vote.",
+        "Ended slavery in the United States.",
+        "Set presidential term limits at two."
+      ]
+    },
+    {
+      "front": "What did the 26th Amendment do?",
+      "back": "It lowered the voting age to eighteen (18). Ratified in 1971, it set the national minimum voting age at 18.",
+      "quizAnswer": "Lowered the voting age to eighteen (18).",
+      "distractors": [
+        "Ended the poll tax in elections.",
+        "Gave women the right to vote.",
+        "Gave citizens of any race the vote.",
+        "Set the presidential term at four years.",
+        "Granted citizenship to all born here."
+      ]
+    },
+    {
+      "front": "What does the 2nd Amendment protect?",
+      "back": "The right to bear arms — the right to keep and carry weapons. It is part of the Bill of Rights.",
+      "quizAnswer": "The right to keep and bear arms (to have a gun).",
+      "distractors": [
+        "The right to free speech and press.",
+        "The right against unreasonable searches.",
+        "The right to a fast and fair trial.",
+        "The right to practice any religion.",
+        "The right to peaceably assemble."
+      ]
+    },
+    {
+      "front": "What does the 5th Amendment protect?",
+      "back": "It protects against self-incrimination (you don't have to testify against yourself) and guarantees due process of law; a person cannot be tried twice for the same crime or have property taken without fair payment.",
+      "quizAnswer": "The right against self-incrimination and to due process of law.",
+      "distractors": [
+        "The right to keep and bear arms.",
+        "The right to free speech and religion.",
+        "The right to a speedy, public trial.",
+        "Protection from unreasonable searches.",
+        "The right of citizens to vote."
+      ]
+    }
+  ]
+}

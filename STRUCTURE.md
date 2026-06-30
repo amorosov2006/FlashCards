@@ -2,7 +2,7 @@
 
 ## Overview
 
-React 18 + Vite 5 PWA. Two study modes (Practice, Quiz), three bundled deck groups (NCA-GENL Prep, NCP-GENL Prep, Interview Prep), plus user-importable JSON decks. Hosted on GitHub Pages; installable as a PWA on iPhone and desktop.
+React 18 + Vite 5 PWA. Two study modes (Practice, Quiz), four bundled deck groups (NCA-GENL Prep, NCP-GENL Prep, Interview Prep, U.S. Citizenship), plus user-importable JSON decks. Hosted on GitHub Pages; installable as a PWA on iPhone and desktop.
 
 ---
 
@@ -49,7 +49,14 @@ FlashCards/
 │       ├── leetprep-08-java-spring-backend.json
 │       ├── leetprep-09-sql-and-databases.json
 │       ├── leetprep-10-behavioral-star.json
-│       └── leetprep-11-tricky-leveling-and-weak-claims.json
+│       ├── leetprep-11-tricky-leveling-and-weak-claims.json
+│       ├── citizenship-01-principles-democracy.json
+│       ├── citizenship-02-congress-and-president.json
+│       ├── citizenship-03-courts-federalism-elections.json
+│       ├── citizenship-04-rights-responsibilities.json
+│       ├── citizenship-05-colonial-and-independence.json
+│       ├── citizenship-06-1800s-and-recent-history.json
+│       └── citizenship-07-geography-symbols-holidays.json
 ├── scripts/
 │   └── gen-icons.mjs           # Dependency-free PNG icon generator (run once)
 └── .github/workflows/

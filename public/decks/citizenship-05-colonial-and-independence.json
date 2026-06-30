@@ -1,0 +1,198 @@
+{
+  "title": "Citizenship · Colonial Period & Independence",
+  "description": "Early colonists, the road to independence, the Declaration, the Constitutional Convention, the Federalist Papers, and the Founding Fathers.",
+  "cards": [
+    {
+      "front": "Why did the colonists come to America?",
+      "back": "For freedom, political liberty, religious freedom, economic opportunity, to practice their religion, or to escape persecution. Any one is accepted.",
+      "quizAnswer": "For freedom, religious liberty, and economic opportunity.",
+      "distractors": [
+        "To pay lower taxes to the king.",
+        "To serve in the British royal army.",
+        "To trade goods back to Great Britain.",
+        "To spread the rule of Parliament.",
+        "To find gold for the British crown."
+      ]
+    },
+    {
+      "front": "Who lived in America before the Europeans arrived?",
+      "back": "American Indians, also called Native Americans. They lived across the continent long before European settlers came.",
+      "quizAnswer": "American Indians (Native Americans).",
+      "distractors": [
+        "Enslaved people from Africa.",
+        "Spanish and French settlers.",
+        "The Pilgrims and Puritans.",
+        "British colonial soldiers.",
+        "Viking explorers from Europe."
+      ]
+    },
+    {
+      "front": "What group of people was taken to America and sold as slaves?",
+      "back": "Africans — people from Africa. They were brought against their will and forced into slavery, mostly in the southern colonies.",
+      "quizAnswer": "Africans (people from Africa).",
+      "distractors": [
+        "American Indians from the West.",
+        "Poor settlers from Great Britain.",
+        "Prisoners from European countries.",
+        "Indentured servants from Ireland.",
+        "Workers from Asia and the Pacific."
+      ]
+    },
+    {
+      "front": "Why did the colonists fight the British?",
+      "back": "Because of high taxes (taxation without representation), because the British army stayed in their houses (boarding/quartering), and because they had no self-government. Any one is accepted.",
+      "quizAnswer": "High taxes without representation, quartered soldiers, and no self-government.",
+      "distractors": [
+        "Because Britain abolished slavery there.",
+        "Because the king lowered their wages.",
+        "Because Britain closed all the churches.",
+        "Because France invaded the colonies.",
+        "Because Britain banned westward travel only."
+      ]
+    },
+    {
+      "front": "Who wrote the Declaration of Independence?",
+      "back": "Thomas Jefferson. He was the principal author of the Declaration, adopted in 1776.",
+      "quizAnswer": "Thomas Jefferson.",
+      "distractors": [
+        "George Washington.",
+        "Benjamin Franklin.",
+        "James Madison.",
+        "John Adams.",
+        "Alexander Hamilton."
+      ]
+    },
+    {
+      "front": "When was the Declaration of Independence adopted?",
+      "back": "July 4, 1776. This date is celebrated each year as Independence Day.",
+      "quizAnswer": "July 4, 1776.",
+      "distractors": [
+        "July 4, 1787.",
+        "July 4, 1789.",
+        "September 17, 1787.",
+        "December 7, 1776.",
+        "January 1, 1776."
+      ]
+    },
+    {
+      "front": "Name one of the thirteen original states.",
+      "back": "Any one of: New Hampshire, Massachusetts, Rhode Island, Connecticut, New York, New Jersey, Pennsylvania, Delaware, Maryland, Virginia, North Carolina, South Carolina, or Georgia.",
+      "quizAnswer": "Virginia (or any of the original thirteen states).",
+      "distractors": [
+        "Ohio.",
+        "Florida.",
+        "Vermont.",
+        "Texas.",
+        "Tennessee."
+      ]
+    },
+    {
+      "front": "What happened at the Constitutional Convention?",
+      "back": "The Constitution was written. The Founding Fathers met in Philadelphia in 1787 and drafted the Constitution.",
+      "quizAnswer": "The Constitution was written by the Founding Fathers.",
+      "distractors": [
+        "The Declaration of Independence was signed.",
+        "The Bill of Rights was first proposed.",
+        "The colonies declared war on Britain.",
+        "George Washington was elected President.",
+        "The thirteen colonies became free states."
+      ]
+    },
+    {
+      "front": "When was the Constitution written?",
+      "back": "1787. It was drafted at the Constitutional Convention in Philadelphia and ratified in the following years.",
+      "quizAnswer": "1787.",
+      "distractors": [
+        "1776.",
+        "1789.",
+        "1791.",
+        "1781.",
+        "1800."
+      ]
+    },
+    {
+      "front": "The Federalist Papers supported passage of the U.S. Constitution. Name one of the writers.",
+      "back": "James Madison, Alexander Hamilton, or John Jay (they wrote under the pen name \"Publius\"). Any one is accepted.",
+      "quizAnswer": "James Madison, Alexander Hamilton, or John Jay.",
+      "distractors": [
+        "Thomas Jefferson.",
+        "George Washington.",
+        "Benjamin Franklin.",
+        "John Adams.",
+        "Patrick Henry."
+      ]
+    },
+    {
+      "front": "What is one thing Benjamin Franklin is famous for?",
+      "back": "U.S. diplomat; oldest member of the Constitutional Convention; first Postmaster General; writer of \"Poor Richard's Almanac\"; started the first free libraries. Any one is accepted.",
+      "quizAnswer": "He was a diplomat, the first Postmaster General, and a famous writer.",
+      "distractors": [
+        "He was the first President of the U.S.",
+        "He wrote the Declaration of Independence.",
+        "He led the Continental Army in war.",
+        "He served as the first Chief Justice.",
+        "He was the Father of the Constitution."
+      ]
+    },
+    {
+      "front": "Who is the \"Father of Our Country\"?",
+      "back": "George Washington. He led the Continental Army to victory and became the first President.",
+      "quizAnswer": "George Washington.",
+      "distractors": [
+        "Thomas Jefferson.",
+        "Benjamin Franklin.",
+        "John Adams.",
+        "James Madison.",
+        "Abraham Lincoln."
+      ]
+    },
+    {
+      "front": "Who was the first President?",
+      "back": "George Washington. He took office in 1789 as the first President of the United States.",
+      "quizAnswer": "George Washington.",
+      "distractors": [
+        "John Adams.",
+        "Thomas Jefferson.",
+        "Benjamin Franklin.",
+        "James Madison.",
+        "Alexander Hamilton."
+      ]
+    },
+    {
+      "front": "What is one idea from the Declaration of Independence?",
+      "back": "That all people are created equal, and that people have basic rights (life, liberty, and the pursuit of happiness) that the government must protect. The Declaration also says government gets its power from the people.",
+      "quizAnswer": "All people are created equal and have rights the government must protect.",
+      "distractors": [
+        "The federal government has three branches.",
+        "Congress alone can declare a war.",
+        "Powers not listed belong to the states.",
+        "The President is the Commander in Chief.",
+        "A change to the Constitution is an amendment."
+      ]
+    },
+    {
+      "front": "Why is the Declaration of Independence important?",
+      "back": "It announced the colonies' freedom from Britain and stated that all people are created equal with unalienable rights. It established the founding principles of the United States.",
+      "quizAnswer": "It declared independence from Britain and that all people are equal with rights.",
+      "distractors": [
+        "It set up the three branches of government.",
+        "It created the Bill of Rights for citizens.",
+        "It ended slavery in the new nation.",
+        "It made George Washington the first President.",
+        "It gave Congress the power to tax."
+      ]
+    },
+    {
+      "front": "Name one Founding Father.",
+      "back": "Examples: George Washington, Thomas Jefferson, Benjamin Franklin, John Adams, Alexander Hamilton, James Madison, John Jay. Any one is accepted.",
+      "quizAnswer": "George Washington, Thomas Jefferson, or Benjamin Franklin (among others).",
+      "distractors": [
+        "Abraham Lincoln.",
+        "Theodore Roosevelt.",
+        "Ulysses S. Grant.",
+        "Martin Luther King, Jr.",
+        "Franklin D. Roosevelt."
+      ]
+    }
+  ]
+}

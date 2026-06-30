@@ -1,0 +1,294 @@
+{
+  "title": "Citizenship · Congress & the President",
+  "description": "The legislative and executive branches: Congress, Senators, Representatives, the President, the Cabinet, and how a bill becomes law.",
+  "cards": [
+    {
+      "front": "Name one branch or part of the government.",
+      "back": "Congress (legislative), the President (executive), or the courts (judicial). The Constitution divides federal power among these three branches.",
+      "quizAnswer": "Congress, the President, or the courts.",
+      "distractors": [
+        "The Cabinet, the states, and the military.",
+        "The Senate, the House, and the Supreme Court.",
+        "The federal, state, and local governments.",
+        "The police, the army, and the courts.",
+        "The President, the Vice President, and Congress."
+      ]
+    },
+    {
+      "front": "What stops one branch of government from becoming too powerful?",
+      "back": "Checks and balances, also called the separation of powers. Each branch can limit the actions of the others, so no single branch dominates.",
+      "quizAnswer": "Checks and balances (separation of powers).",
+      "distractors": [
+        "The right of the people to vote.",
+        "The power of the Supreme Court alone.",
+        "The President's veto over all laws.",
+        "The federal system of fifty states.",
+        "The two major political parties."
+      ]
+    },
+    {
+      "front": "Who is in charge of the executive branch?",
+      "back": "The President. The executive branch enforces and carries out the laws that Congress makes.",
+      "quizAnswer": "The President.",
+      "distractors": [
+        "The Vice President.",
+        "The Speaker of the House.",
+        "The Chief Justice.",
+        "The Congress.",
+        "The Secretary of State."
+      ]
+    },
+    {
+      "front": "Who makes federal laws?",
+      "back": "Congress, made up of the Senate and the House of Representatives. The President signs bills into law, but Congress writes and passes them.",
+      "quizAnswer": "Congress (the Senate and the House of Representatives).",
+      "distractors": [
+        "The President and the Cabinet.",
+        "The Supreme Court justices.",
+        "The fifty state legislatures.",
+        "The President alone by executive order.",
+        "The Senate without the House."
+      ]
+    },
+    {
+      "front": "What are the two parts of the U.S. Congress?",
+      "back": "The Senate and the House of Representatives. This two-house structure is called a bicameral legislature.",
+      "quizAnswer": "The Senate and the House of Representatives.",
+      "distractors": [
+        "The House and the Cabinet.",
+        "The Senate and the Supreme Court.",
+        "The upper court and the lower court.",
+        "The federal and the state houses.",
+        "The Congress and the Electoral College."
+      ]
+    },
+    {
+      "front": "How many U.S. Senators are there?",
+      "back": "One hundred (100). Each state elects two Senators, regardless of the state's population.",
+      "quizAnswer": "One hundred (100).",
+      "distractors": [
+        "Fifty (50).",
+        "Two hundred (200).",
+        "Four hundred thirty-five (435).",
+        "Five hundred thirty-eight (538).",
+        "Twenty-seven (27)."
+      ]
+    },
+    {
+      "front": "We elect a U.S. Senator for how many years?",
+      "back": "Six (6) years. Senate terms are staggered, so about one-third of the Senate is up for election every two years.",
+      "quizAnswer": "Six (6) years.",
+      "distractors": [
+        "Two (2) years.",
+        "Four (4) years.",
+        "Eight (8) years.",
+        "Ten (10) years.",
+        "Life, with good behavior."
+      ]
+    },
+    {
+      "front": "Who is one of your state's U.S. Senators now?",
+      "back": "Answers vary by state. Look up your state's two U.S. Senators before your interview — you must name one of them, not your governor or representative. (Residents of D.C. and territories may answer that they have no U.S. Senators.)",
+      "quizAnswer": "One of the two U.S. Senators elected from your state.",
+      "distractors": [
+        "The governor who leads your state.",
+        "Your member of the U.S. House.",
+        "One of your two state senators.",
+        "The mayor of your largest city.",
+        "Either of your state's two electors."
+      ]
+    },
+    {
+      "front": "The House of Representatives has how many voting members?",
+      "back": "Four hundred thirty-five (435). The number of Representatives from each state is based on the state's population.",
+      "quizAnswer": "Four hundred thirty-five (435).",
+      "distractors": [
+        "One hundred (100).",
+        "Two hundred eighteen (218).",
+        "Five hundred thirty-eight (538).",
+        "Fifty (50).",
+        "Three hundred (300)."
+      ]
+    },
+    {
+      "front": "We elect a U.S. Representative for how many years?",
+      "back": "Two (2) years. The entire House is up for election every two years.",
+      "quizAnswer": "Two (2) years.",
+      "distractors": [
+        "Four (4) years.",
+        "Six (6) years.",
+        "One (1) year.",
+        "Eight (8) years.",
+        "Ten (10) years."
+      ]
+    },
+    {
+      "front": "Name your U.S. Representative.",
+      "back": "Answers vary by district. Look up the member of the U.S. House for your district before your interview. (People in some territories may name a non-voting Delegate or Resident Commissioner.)",
+      "quizAnswer": "The member of the U.S. House elected from your district.",
+      "distractors": [
+        "One of your two U.S. Senators.",
+        "The governor of your home state.",
+        "A member of your state legislature.",
+        "The President's appointed Cabinet member.",
+        "An elector chosen for your state."
+      ]
+    },
+    {
+      "front": "Who does a U.S. Senator represent?",
+      "back": "All people of the state. Unlike a Representative, who serves one district, a Senator represents the entire state.",
+      "quizAnswer": "All the people of the Senator's state.",
+      "distractors": [
+        "Only the people of one district.",
+        "Only the members of the Senator's party.",
+        "Only the citizens who voted for them.",
+        "The President and the Cabinet.",
+        "The voters in the state capital."
+      ]
+    },
+    {
+      "front": "Why do some states have more Representatives than other states?",
+      "back": "Because of the state's population. States with more people get more seats in the House; every state's Senate count stays at two.",
+      "quizAnswer": "Because of the state's population (more people, more Representatives).",
+      "distractors": [
+        "Because of the state's land area.",
+        "Because of the state's age and wealth.",
+        "Because larger states pay more taxes.",
+        "Because of the number of registered voters.",
+        "Because the Constitution lists them that way."
+      ]
+    },
+    {
+      "front": "We elect a President for how many years?",
+      "back": "Four (4) years. A President may be elected to no more than two terms under the 22nd Amendment.",
+      "quizAnswer": "Four (4) years.",
+      "distractors": [
+        "Two (2) years.",
+        "Six (6) years.",
+        "Eight (8) years.",
+        "Five (5) years.",
+        "As long as reelected."
+      ]
+    },
+    {
+      "front": "In what month do we vote for President?",
+      "back": "November. Presidential elections are held on the Tuesday after the first Monday in November every four years.",
+      "quizAnswer": "November.",
+      "distractors": [
+        "January.",
+        "July.",
+        "October.",
+        "December.",
+        "September."
+      ]
+    },
+    {
+      "front": "What is the name of the President of the United States now?",
+      "back": "As of 2026, Donald J. Trump. This answer changes with each new President — confirm who is serving at the time of your interview.",
+      "quizAnswer": "Donald J. Trump (as of 2026 — verify before your interview).",
+      "distractors": [
+        "Joseph R. Biden.",
+        "J.D. Vance.",
+        "Barack Obama.",
+        "Kamala Harris.",
+        "Mike Johnson."
+      ]
+    },
+    {
+      "front": "What is the name of the Vice President of the United States now?",
+      "back": "As of 2026, J.D. Vance. This answer changes with each administration — confirm who is serving at the time of your interview.",
+      "quizAnswer": "J.D. Vance (as of 2026 — verify before your interview).",
+      "distractors": [
+        "Kamala Harris.",
+        "Donald J. Trump.",
+        "Mike Johnson.",
+        "Joseph R. Biden.",
+        "Mike Pence."
+      ]
+    },
+    {
+      "front": "If the President can no longer serve, who becomes President?",
+      "back": "The Vice President. The Vice President is first in the line of presidential succession.",
+      "quizAnswer": "The Vice President.",
+      "distractors": [
+        "The Speaker of the House.",
+        "The Secretary of State.",
+        "The Chief Justice.",
+        "The President pro tempore.",
+        "The Senate Majority Leader."
+      ]
+    },
+    {
+      "front": "If both the President and the Vice President can no longer serve, who becomes President?",
+      "back": "The Speaker of the House. The Speaker is next in line after the Vice President under the presidential succession law.",
+      "quizAnswer": "The Speaker of the House.",
+      "distractors": [
+        "The Secretary of State.",
+        "The Chief Justice of the Supreme Court.",
+        "The Senate Majority Leader.",
+        "The Secretary of Defense.",
+        "The President pro tempore of the Senate."
+      ]
+    },
+    {
+      "front": "Who is the Commander in Chief of the military?",
+      "back": "The President. The Constitution makes the civilian President the head of the armed forces.",
+      "quizAnswer": "The President.",
+      "distractors": [
+        "The Secretary of Defense.",
+        "The most senior general.",
+        "The Joint Chiefs of Staff.",
+        "The Vice President.",
+        "The Congress."
+      ]
+    },
+    {
+      "front": "Who signs bills to become laws?",
+      "back": "The President. After both houses of Congress pass a bill, the President can sign it into law (or veto it).",
+      "quizAnswer": "The President.",
+      "distractors": [
+        "The Speaker of the House.",
+        "The Chief Justice.",
+        "The Vice President.",
+        "The Senate Majority Leader.",
+        "The Secretary of State."
+      ]
+    },
+    {
+      "front": "Who vetoes bills?",
+      "back": "The President. A veto rejects a bill; Congress can override a veto with a two-thirds vote in both houses.",
+      "quizAnswer": "The President.",
+      "distractors": [
+        "The Supreme Court.",
+        "The Speaker of the House.",
+        "The Vice President.",
+        "The Senate alone.",
+        "The Chief Justice."
+      ]
+    },
+    {
+      "front": "What does the President's Cabinet do?",
+      "back": "Advises the President. The Cabinet is made up of the heads of the executive departments, who give the President advice on their areas.",
+      "quizAnswer": "Advises the President.",
+      "distractors": [
+        "Makes the federal laws.",
+        "Decides if laws are constitutional.",
+        "Vetoes bills passed by Congress.",
+        "Commands the armed forces.",
+        "Elects the next President."
+      ]
+    },
+    {
+      "front": "What are two Cabinet-level positions?",
+      "back": "Examples include Secretary of State, Secretary of Defense, Secretary of the Treasury, Attorney General, Secretary of Education, and others. Any two are accepted.",
+      "quizAnswer": "Secretary of State and Secretary of Defense (among others).",
+      "distractors": [
+        "Speaker of the House and Senate Majority Leader.",
+        "Chief Justice and Associate Justice.",
+        "Governor and Lieutenant Governor.",
+        "Vice President and Chief of Staff.",
+        "Ambassador and Senator."
+      ]
+    }
+  ]
+}

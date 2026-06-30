@@ -1,0 +1,174 @@
+{
+  "title": "Citizenship · Geography, Symbols & Holidays",
+  "description": "Integrated civics: U.S. rivers, oceans, borders, territories, the capital and the Statue of Liberty, the flag, the national anthem, and federal holidays.",
+  "cards": [
+    {
+      "front": "Name one of the two longest rivers in the United States.",
+      "back": "The Missouri River or the Mississippi River. These are the two longest rivers in the U.S.",
+      "quizAnswer": "The Missouri River or the Mississippi River.",
+      "distractors": [
+        "The Colorado River.",
+        "The Rio Grande.",
+        "The Ohio River.",
+        "The Hudson River.",
+        "The Columbia River."
+      ]
+    },
+    {
+      "front": "What ocean is on the West Coast of the United States?",
+      "back": "The Pacific Ocean. It borders states such as California, Oregon, and Washington.",
+      "quizAnswer": "The Pacific Ocean.",
+      "distractors": [
+        "The Atlantic Ocean.",
+        "The Arctic Ocean.",
+        "The Indian Ocean.",
+        "The Gulf of Mexico.",
+        "The Caribbean Sea."
+      ]
+    },
+    {
+      "front": "What ocean is on the East Coast of the United States?",
+      "back": "The Atlantic Ocean. It borders states such as New York, Florida, and Maine.",
+      "quizAnswer": "The Atlantic Ocean.",
+      "distractors": [
+        "The Pacific Ocean.",
+        "The Arctic Ocean.",
+        "The Indian Ocean.",
+        "The Gulf of Mexico.",
+        "The Caribbean Sea."
+      ]
+    },
+    {
+      "front": "Name one U.S. territory.",
+      "back": "Puerto Rico, the U.S. Virgin Islands, Guam, American Samoa, or the Northern Mariana Islands. Any one is accepted.",
+      "quizAnswer": "Puerto Rico, Guam, or the U.S. Virgin Islands (among others).",
+      "distractors": [
+        "Hawaii.",
+        "Alaska.",
+        "Cuba.",
+        "The Bahamas.",
+        "The Philippines."
+      ]
+    },
+    {
+      "front": "Name one state that borders Canada.",
+      "back": "Examples: Maine, New Hampshire, Vermont, New York, Michigan, Minnesota, North Dakota, Montana, Idaho, Washington, and Alaska. Any one is accepted.",
+      "quizAnswer": "Maine, New York, Michigan, Montana, or Washington (among others).",
+      "distractors": [
+        "California.",
+        "Texas.",
+        "Florida.",
+        "Arizona.",
+        "Nevada."
+      ]
+    },
+    {
+      "front": "Name one state that borders Mexico.",
+      "back": "California, Arizona, New Mexico, or Texas. These four states share a border with Mexico.",
+      "quizAnswer": "California, Arizona, New Mexico, or Texas.",
+      "distractors": [
+        "Florida.",
+        "Nevada.",
+        "Louisiana.",
+        "Colorado.",
+        "Washington."
+      ]
+    },
+    {
+      "front": "What is the capital of the United States?",
+      "back": "Washington, D.C. It is a federal district, not part of any state.",
+      "quizAnswer": "Washington, D.C.",
+      "distractors": [
+        "New York City.",
+        "Philadelphia.",
+        "Boston.",
+        "Los Angeles.",
+        "Chicago."
+      ]
+    },
+    {
+      "front": "Where is the Statue of Liberty?",
+      "back": "In New York (Harbor), on Liberty Island. Acceptable answers also include New Jersey, near New York City, or on the Hudson River.",
+      "quizAnswer": "In New York Harbor, on Liberty Island.",
+      "distractors": [
+        "In Washington, D.C.",
+        "In Boston Harbor.",
+        "On the National Mall.",
+        "In Philadelphia, Pennsylvania.",
+        "In San Francisco Bay."
+      ]
+    },
+    {
+      "front": "How many states are in the United States?",
+      "back": "Fifty (50). The 50th state, Hawaii, joined in 1959.",
+      "quizAnswer": "Fifty (50).",
+      "distractors": [
+        "Thirteen (13).",
+        "Forty-eight (48).",
+        "Fifty-two (52).",
+        "Fifty-one (51).",
+        "One hundred (100)."
+      ]
+    },
+    {
+      "front": "Why does the flag have 13 stripes?",
+      "back": "Because there were 13 original colonies, and the stripes represent them. The flag has 7 red and 6 white stripes.",
+      "quizAnswer": "Because there were 13 original colonies; the stripes represent them.",
+      "distractors": [
+        "Because there are 13 amendments of rights.",
+        "Because 13 Founding Fathers signed it.",
+        "Because the nation fought 13 early wars.",
+        "Because there were 13 original Presidents.",
+        "Because Congress first had 13 members."
+      ]
+    },
+    {
+      "front": "Why does the flag have 50 stars?",
+      "back": "Because there is one star for each state, and there are 50 states. A star is added when a new state joins.",
+      "quizAnswer": "Because there is one star for each of the 50 states.",
+      "distractors": [
+        "Because there are 50 amendments of rights.",
+        "Because 50 colonies first joined together.",
+        "Because the nation has had 50 Presidents.",
+        "Because there are 50 U.S. Senators.",
+        "Because the flag honors 50 Founding Fathers."
+      ]
+    },
+    {
+      "front": "What is the name of the national anthem?",
+      "back": "The Star-Spangled Banner. Its words were written by Francis Scott Key in 1814.",
+      "quizAnswer": "The Star-Spangled Banner.",
+      "distractors": [
+        "America the Beautiful.",
+        "My Country, 'Tis of Thee.",
+        "God Bless America.",
+        "Yankee Doodle.",
+        "This Land Is Your Land."
+      ]
+    },
+    {
+      "front": "When do we celebrate Independence Day?",
+      "back": "July 4. It marks the adoption of the Declaration of Independence in 1776.",
+      "quizAnswer": "July 4.",
+      "distractors": [
+        "July 1.",
+        "June 14.",
+        "September 17.",
+        "November 11.",
+        "May 30."
+      ]
+    },
+    {
+      "front": "Name two national U.S. holidays.",
+      "back": "Examples: New Year's Day, Martin Luther King Jr. Day, Presidents' Day, Memorial Day, Juneteenth, Independence Day, Labor Day, Columbus Day, Veterans Day, Thanksgiving, and Christmas. Any two are accepted.",
+      "quizAnswer": "Independence Day and Thanksgiving (among many federal holidays).",
+      "distractors": [
+        "Halloween and Valentine's Day.",
+        "Easter and Mother's Day.",
+        "Election Day and Tax Day.",
+        "Groundhog Day and April Fools' Day.",
+        "St. Patrick's Day and Cinco de Mayo."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,150 @@
+{
+  "title": "Citizenship · Principles of American Democracy",
+  "description": "The Constitution, Declaration of Independence, the Bill of Rights, and the rule of law (2026 civics test, 128-question version).",
+  "cards": [
+    {
+      "front": "What is the supreme law of the land?",
+      "back": "The Constitution. It is the highest law in the United States; every other law and government action must agree with it. No statute, executive order, or court ruling can override it.",
+      "quizAnswer": "The Constitution.",
+      "distractors": [
+        "The Declaration of Independence.",
+        "The Bill of Rights.",
+        "The Federalist Papers.",
+        "Acts passed by Congress.",
+        "Rulings of the Supreme Court."
+      ]
+    },
+    {
+      "front": "What does the Constitution do?",
+      "back": "It sets up the government, defines the government, and protects the basic rights of Americans. Any one of these three is an acceptable answer on the test.",
+      "quizAnswer": "Sets up and defines the government, and protects Americans' basic rights.",
+      "distractors": [
+        "Declares the colonies' independence from Great Britain and Britain's king.",
+        "Lists the grievances of the colonists against King George III.",
+        "Frees the enslaved people and abolishes slavery across the nation.",
+        "Establishes the federal income tax and the national banking system.",
+        "Grants women and citizens of every race the right to vote."
+      ]
+    },
+    {
+      "front": "The idea of self-government is in the first three words of the Constitution. What are these words?",
+      "back": "\"We the People.\" These opening words of the Preamble mean the government's power comes from the people, not from a king.",
+      "quizAnswer": "We the People.",
+      "distractors": [
+        "Life, liberty, happiness.",
+        "We hold these truths.",
+        "One nation, indivisible.",
+        "Of the people, by.",
+        "All men created equal."
+      ]
+    },
+    {
+      "front": "What is an amendment?",
+      "back": "A change, or an addition, to the Constitution. Amendments let the Constitution be updated over time without rewriting it.",
+      "quizAnswer": "A change or addition to the Constitution.",
+      "distractors": [
+        "A law passed by both houses of Congress.",
+        "A ruling by the U.S. Supreme Court.",
+        "An order signed by the President.",
+        "A treaty made with a foreign nation.",
+        "A right listed in the Declaration of Independence."
+      ]
+    },
+    {
+      "front": "What do we call the first ten amendments to the Constitution?",
+      "back": "The Bill of Rights. Ratified in 1791, these first ten amendments protect basic individual freedoms such as speech, religion, and the right to a fair trial.",
+      "quizAnswer": "The Bill of Rights.",
+      "distractors": [
+        "The Articles of Confederation.",
+        "The Declaration of Independence.",
+        "The Federalist Papers.",
+        "The Reconstruction Amendments.",
+        "The Preamble to the Constitution."
+      ]
+    },
+    {
+      "front": "What is one right or freedom from the First Amendment?",
+      "back": "Speech, religion, assembly, press, or petition the government. The First Amendment protects all five; naming any one is correct.",
+      "quizAnswer": "Freedom of speech (also religion, assembly, press, or petition).",
+      "distractors": [
+        "The right to keep and bear arms.",
+        "The right to a fast and fair trial.",
+        "Protection against unreasonable searches.",
+        "The right to vote in elections.",
+        "The right against self-incrimination."
+      ]
+    },
+    {
+      "front": "How many amendments does the Constitution have?",
+      "back": "Twenty-seven (27). The first ten are the Bill of Rights; the most recent, the 27th, was ratified in 1992.",
+      "quizAnswer": "Twenty-seven (27).",
+      "distractors": [
+        "Ten (10).",
+        "Thirteen (13).",
+        "Twenty-five (25).",
+        "Twenty-six (26).",
+        "Fifty (50)."
+      ]
+    },
+    {
+      "front": "What did the Declaration of Independence do?",
+      "back": "It announced and declared the United States' independence from Great Britain. Adopted July 4, 1776, it said the colonies were free states no longer ruled by the British king.",
+      "quizAnswer": "Announced and declared independence from Great Britain.",
+      "distractors": [
+        "Set up the structure of the federal government.",
+        "Listed the basic rights protected for all citizens.",
+        "Created the three branches of the government.",
+        "Ended slavery throughout the original colonies.",
+        "Established the United States Supreme Court."
+      ]
+    },
+    {
+      "front": "What are two rights in the Declaration of Independence?",
+      "back": "Life, liberty, and the pursuit of happiness. The Declaration says all people are created equal and have these unalienable rights.",
+      "quizAnswer": "Life, liberty, and the pursuit of happiness.",
+      "distractors": [
+        "Speech, religion, and the right to assemble.",
+        "Voting, jury service, and running for office.",
+        "Freedom of the press and the right to petition.",
+        "The right to bear arms and a fair trial.",
+        "Equal protection and due process of law."
+      ]
+    },
+    {
+      "front": "What is freedom of religion?",
+      "back": "You can practice any religion, or not practice a religion. The government cannot make you follow a particular faith, and it cannot stop you from worshiping as you choose.",
+      "quizAnswer": "You can practice any religion, or practice no religion at all.",
+      "distractors": [
+        "The government chooses one official national religion.",
+        "Every citizen must belong to a recognized church.",
+        "Only the religions named in the Constitution are allowed.",
+        "Religion may be practiced only inside private homes.",
+        "Citizens may criticize the government without any punishment."
+      ]
+    },
+    {
+      "front": "What is the economic system of the United States?",
+      "back": "A capitalist economy, also called a market economy. Prices and production are largely set by private businesses and consumers rather than by the government.",
+      "quizAnswer": "A capitalist economy (a market economy).",
+      "distractors": [
+        "A socialist, state-planned economy.",
+        "A communist, collective economy.",
+        "A purely agricultural barter economy.",
+        "A feudal, land-based economy.",
+        "A government-owned command economy."
+      ]
+    },
+    {
+      "front": "What is the \"rule of law\"?",
+      "back": "Everyone must follow the law; leaders and the government must obey the law; no one is above the law. The law applies equally to all people, including those in power.",
+      "quizAnswer": "Everyone, including leaders and government, must follow the law; no one is above it.",
+      "distractors": [
+        "The President has the final word on every law.",
+        "Only judges and police are required to obey laws.",
+        "Laws apply to ordinary citizens but not officials.",
+        "The majority can set aside the law when needed.",
+        "Each state writes laws that ignore the Constitution."
+      ]
+    }
+  ]
+}

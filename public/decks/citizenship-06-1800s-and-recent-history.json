@@ -1,0 +1,270 @@
+{
+  "title": "Citizenship · 1800s & Recent History",
+  "description": "The Louisiana Purchase, the Civil War and Lincoln, the World Wars, the Cold War, the civil rights movement, 9/11, and other important events.",
+  "cards": [
+    {
+      "front": "What territory did the United States buy from France in 1803?",
+      "back": "The Louisiana Territory (the Louisiana Purchase). It roughly doubled the size of the United States.",
+      "quizAnswer": "The Louisiana Territory (the Louisiana Purchase).",
+      "distractors": [
+        "The Florida Territory.",
+        "The Alaska Territory.",
+        "The Texas Territory.",
+        "The Oregon Territory.",
+        "The California Territory."
+      ]
+    },
+    {
+      "front": "Name one war fought by the United States in the 1800s.",
+      "back": "The War of 1812, the Mexican-American War, the Civil War, or the Spanish-American War. Any one is accepted.",
+      "quizAnswer": "The Civil War (also the War of 1812, Mexican-American, or Spanish-American War).",
+      "distractors": [
+        "World War I.",
+        "The Revolutionary War.",
+        "The Korean War.",
+        "World War II.",
+        "The Vietnam War."
+      ]
+    },
+    {
+      "front": "Name the U.S. war between the North and the South.",
+      "back": "The Civil War (1861–1865). It was fought between the northern states (the Union) and the southern states (the Confederacy).",
+      "quizAnswer": "The Civil War.",
+      "distractors": [
+        "The Revolutionary War.",
+        "The War of 1812.",
+        "The Spanish-American War.",
+        "The Mexican-American War.",
+        "The French and Indian War."
+      ]
+    },
+    {
+      "front": "Name one problem that led to the Civil War.",
+      "back": "Slavery, economic reasons, or states' rights. Disagreement over slavery was the central cause.",
+      "quizAnswer": "Slavery, economic differences, and states' rights.",
+      "distractors": [
+        "High taxes imposed by Great Britain.",
+        "The terrorist attacks of September 11.",
+        "The spread of communism abroad.",
+        "The purchase of the Louisiana Territory.",
+        "Women being denied the right to vote."
+      ]
+    },
+    {
+      "front": "What was one important thing that Abraham Lincoln did?",
+      "back": "He freed the enslaved people (Emancipation Proclamation), saved (or preserved) the Union, and led the nation during the Civil War. Any one is accepted.",
+      "quizAnswer": "He freed the enslaved people and preserved the Union during the Civil War.",
+      "distractors": [
+        "He wrote the Declaration of Independence.",
+        "He led the army in the Revolutionary War.",
+        "He bought the Louisiana Territory from France.",
+        "He was the first President of the U.S.",
+        "He served as a general in World War II."
+      ]
+    },
+    {
+      "front": "What did the Emancipation Proclamation do?",
+      "back": "It freed the enslaved people — specifically those in the Confederate states. Issued by Lincoln in 1863, it made ending slavery a goal of the Civil War.",
+      "quizAnswer": "Freed the enslaved people in the Confederate states.",
+      "distractors": [
+        "Gave women the right to vote.",
+        "Gave Black men the right to vote.",
+        "Ended the Civil War between the states.",
+        "Granted citizenship to all former slaves.",
+        "Removed the poll tax from elections."
+      ]
+    },
+    {
+      "front": "What did Susan B. Anthony do?",
+      "back": "She fought for women's rights and for civil rights. She was a leader of the movement for women's right to vote.",
+      "quizAnswer": "She fought for women's rights and civil rights.",
+      "distractors": [
+        "She led the civil rights march on Washington.",
+        "She freed the enslaved people in the South.",
+        "She was the first woman in Congress.",
+        "She wrote the 19th Amendment herself.",
+        "She served as the first female justice."
+      ]
+    },
+    {
+      "front": "Name one war fought by the United States in the 1900s.",
+      "back": "World War I, World War II, the Korean War, the Vietnam War, or the (Persian) Gulf War. Any one is accepted.",
+      "quizAnswer": "World War I, World War II, the Korean War, or the Vietnam War.",
+      "distractors": [
+        "The Civil War.",
+        "The Revolutionary War.",
+        "The War of 1812.",
+        "The Spanish-American War.",
+        "The Mexican-American War."
+      ]
+    },
+    {
+      "front": "Who was President during World War I?",
+      "back": "Woodrow Wilson. He led the United States during World War I (1914–1918; the U.S. entered in 1917).",
+      "quizAnswer": "Woodrow Wilson.",
+      "distractors": [
+        "Franklin Roosevelt.",
+        "Theodore Roosevelt.",
+        "Harry Truman.",
+        "Dwight Eisenhower.",
+        "Abraham Lincoln."
+      ]
+    },
+    {
+      "front": "Who was President during the Great Depression and World War II?",
+      "back": "Franklin Roosevelt (FDR). He led the nation through the Great Depression and most of World War II.",
+      "quizAnswer": "Franklin Roosevelt.",
+      "distractors": [
+        "Woodrow Wilson.",
+        "Harry Truman.",
+        "Theodore Roosevelt.",
+        "Dwight Eisenhower.",
+        "Herbert Hoover."
+      ]
+    },
+    {
+      "front": "Who did the United States fight in World War II?",
+      "back": "Japan, Germany, and Italy — the Axis Powers. The United States and its allies defeated them.",
+      "quizAnswer": "Japan, Germany, and Italy (the Axis Powers).",
+      "distractors": [
+        "The Soviet Union and China.",
+        "Great Britain and France.",
+        "Spain, Mexico, and Cuba.",
+        "North Korea and Vietnam.",
+        "Russia, Austria, and Turkey."
+      ]
+    },
+    {
+      "front": "Before he was President, Eisenhower was a general. What war was he in?",
+      "back": "World War II. Dwight D. Eisenhower was the Supreme Allied Commander in Europe before becoming President.",
+      "quizAnswer": "World War II.",
+      "distractors": [
+        "World War I.",
+        "The Korean War.",
+        "The Civil War.",
+        "The Vietnam War.",
+        "The Spanish-American War."
+      ]
+    },
+    {
+      "front": "During the Cold War, what was the main concern of the United States?",
+      "back": "Communism. The United States worked to contain the spread of communism, led by the Soviet Union.",
+      "quizAnswer": "Communism.",
+      "distractors": [
+        "Terrorism.",
+        "Fascism.",
+        "Slavery.",
+        "Climate change.",
+        "Economic depression."
+      ]
+    },
+    {
+      "front": "What movement tried to end racial discrimination?",
+      "back": "The civil rights movement. It worked to end segregation and secure equal rights for Black Americans, especially in the 1950s and 1960s.",
+      "quizAnswer": "The civil rights movement.",
+      "distractors": [
+        "The women's suffrage movement.",
+        "The labor union movement.",
+        "The abolitionist movement.",
+        "The temperance movement.",
+        "The progressive reform movement."
+      ]
+    },
+    {
+      "front": "What did Martin Luther King, Jr. do?",
+      "back": "He fought for civil rights and worked for equality for all Americans. He was a leader of the civil rights movement.",
+      "quizAnswer": "He fought for civil rights and worked for equality for all Americans.",
+      "distractors": [
+        "He fought for women's right to vote.",
+        "He freed the enslaved people in the South.",
+        "He served as the first Black President.",
+        "He led the army in World War II.",
+        "He wrote the Declaration of Independence."
+      ]
+    },
+    {
+      "front": "What major event happened on September 11, 2001, in the United States?",
+      "back": "Terrorists attacked the United States. Hijacked planes struck the World Trade Center in New York and the Pentagon.",
+      "quizAnswer": "Terrorists attacked the United States.",
+      "distractors": [
+        "The United States entered World War II.",
+        "The Cold War came to an end.",
+        "The civil rights march reached Washington.",
+        "The stock market crashed, starting a depression.",
+        "The Persian Gulf War began overseas."
+      ]
+    },
+    {
+      "front": "Name one American Indian tribe.",
+      "back": "Examples: Cherokee, Navajo, Sioux, Apache, Iroquois, Creek, Hopi, Choctaw, Pueblo, Seminole, Mohegan, Lakota, and many others.",
+      "quizAnswer": "Cherokee, Navajo, or Sioux (among many others).",
+      "distractors": [
+        "Aztec.",
+        "Maya.",
+        "Inca.",
+        "Zulu.",
+        "Maori."
+      ]
+    },
+    {
+      "front": "Why did the United States enter World War I?",
+      "back": "Because of German submarine attacks on U.S. ships, the Zimmermann Telegram, and to support its allies. The U.S. declared war on Germany in 1917.",
+      "quizAnswer": "German submarine attacks and the Zimmermann Telegram, to support its allies.",
+      "distractors": [
+        "Because of the bombing of Pearl Harbor.",
+        "To stop the spread of communism abroad.",
+        "Because terrorists attacked New York City.",
+        "To free the enslaved people in Europe.",
+        "Because Britain taxed the colonies heavily."
+      ]
+    },
+    {
+      "front": "Why did the United States enter World War II?",
+      "back": "Because of the Japanese attack on Pearl Harbor on December 7, 1941. The U.S. declared war the next day.",
+      "quizAnswer": "Because Japan attacked Pearl Harbor in 1941.",
+      "distractors": [
+        "Because of German submarine attacks.",
+        "To stop the spread of communism abroad.",
+        "Because of the September 11 attacks.",
+        "To support the colonists against Britain.",
+        "Because of the Zimmermann Telegram."
+      ]
+    },
+    {
+      "front": "Name one leader of the civil rights movement.",
+      "back": "Examples: Martin Luther King, Jr., Rosa Parks, John Lewis, Thurgood Marshall, Malcolm X, and others.",
+      "quizAnswer": "Martin Luther King, Jr., Rosa Parks, or John Lewis (among others).",
+      "distractors": [
+        "Susan B. Anthony.",
+        "Abraham Lincoln.",
+        "Franklin Roosevelt.",
+        "George Washington.",
+        "Frederick Douglass."
+      ]
+    },
+    {
+      "front": "Who were the Presidents during the Korean War?",
+      "back": "Harry Truman (under whom the war began in 1950) and Dwight Eisenhower (under whom it ended in 1953). Either is accepted.",
+      "quizAnswer": "Harry Truman and Dwight Eisenhower.",
+      "distractors": [
+        "Franklin Roosevelt and Harry Truman.",
+        "Woodrow Wilson and Franklin Roosevelt.",
+        "Dwight Eisenhower and John Kennedy.",
+        "Lyndon Johnson and Richard Nixon.",
+        "John Kennedy and Lyndon Johnson."
+      ]
+    },
+    {
+      "front": "Why is the United Nations important?",
+      "back": "It gives countries a place to discuss and try to resolve world problems and to provide humanitarian aid. It was founded after World War II to promote peace.",
+      "quizAnswer": "It lets countries discuss and resolve world problems and provide aid.",
+      "distractors": [
+        "It writes the laws of the United States.",
+        "It commands the United States military forces.",
+        "It elects the President of the United States.",
+        "It sets the tax rates for member nations.",
+        "It decides court cases between U.S. states."
+      ]
+    }
+  ]
+}

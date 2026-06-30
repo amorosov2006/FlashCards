@@ -1,0 +1,210 @@
+{
+  "title": "Citizenship · Courts, Federalism & Elections",
+  "description": "The judicial branch and Supreme Court, federal vs. state powers, your state government, political parties, the Electoral College, and the limits of each branch.",
+  "cards": [
+    {
+      "front": "What does the judicial branch do?",
+      "back": "It reviews and explains laws, resolves disputes (disagreements), and decides if a law goes against the Constitution. The courts interpret the law rather than make it.",
+      "quizAnswer": "Reviews and explains laws, resolves disputes, and decides if laws are constitutional.",
+      "distractors": [
+        "Writes and passes the nation's federal laws.",
+        "Enforces the laws and commands the military.",
+        "Advises the President on national policy.",
+        "Signs or vetoes the bills sent by Congress.",
+        "Collects taxes and sets the federal budget."
+      ]
+    },
+    {
+      "front": "What is the highest court in the United States?",
+      "back": "The Supreme Court. Its decisions are final and bind all lower courts across the country.",
+      "quizAnswer": "The Supreme Court.",
+      "distractors": [
+        "The U.S. Court of Appeals.",
+        "The federal district court.",
+        "The Court of International Trade.",
+        "Each state's highest court.",
+        "The U.S. Constitutional Court."
+      ]
+    },
+    {
+      "front": "How many justices are on the Supreme Court?",
+      "back": "Nine (9): one Chief Justice and eight Associate Justices. The number is set by Congress, not the Constitution.",
+      "quizAnswer": "Nine (9).",
+      "distractors": [
+        "Seven (7).",
+        "Twelve (12).",
+        "Six (6).",
+        "Fifteen (15).",
+        "Eleven (11)."
+      ]
+    },
+    {
+      "front": "Who is the Chief Justice of the United States now?",
+      "back": "As of 2026, John Roberts (John G. Roberts, Jr.). The Chief Justice serves for life, so this answer changes rarely — but verify before your interview.",
+      "quizAnswer": "John Roberts (as of 2026 — verify before your interview).",
+      "distractors": [
+        "Clarence Thomas.",
+        "Samuel Alito.",
+        "Brett Kavanaugh.",
+        "Sonia Sotomayor.",
+        "Merrick Garland."
+      ]
+    },
+    {
+      "front": "Under the Constitution, what is one power of the federal government?",
+      "back": "To print money, declare war, create an army, or make treaties. These are powers given to the national government.",
+      "quizAnswer": "To print money, declare war, create an army, or make treaties.",
+      "distractors": [
+        "To issue driver's licenses to residents.",
+        "To run the public schools and police.",
+        "To set local zoning and building rules.",
+        "To approve marriages and divorces.",
+        "To organize city fire departments."
+      ]
+    },
+    {
+      "front": "Under the Constitution, what is one power of the states?",
+      "back": "Provide schooling and education, provide protection (police), provide safety (fire departments), issue driver's licenses, or approve zoning and land use. These are typical state powers.",
+      "quizAnswer": "Provide schooling, police, fire safety, driver's licenses, or zoning.",
+      "distractors": [
+        "Print money and coin currency.",
+        "Declare war on a foreign nation.",
+        "Create and maintain the army.",
+        "Make treaties with other countries.",
+        "Set national immigration policy."
+      ]
+    },
+    {
+      "front": "Who is the Governor of your state now?",
+      "back": "Answers vary by state. Look up your state's current governor before your interview. (Residents of D.C. answer that they have no governor; the answer there is the mayor or 'we don't have a governor.')",
+      "quizAnswer": "The current governor of your home state.",
+      "distractors": [
+        "One of your two U.S. Senators.",
+        "Your member of the U.S. House.",
+        "The President of the United States.",
+        "The mayor of your largest city.",
+        "The chief justice of your state."
+      ]
+    },
+    {
+      "front": "What is the capital of your state?",
+      "back": "Answers vary by state. Know your own state's capital city before your interview. (D.C. residents answer that D.C. is not a state and has no capital; territory residents name their territory's capital.)",
+      "quizAnswer": "The capital city of your home state.",
+      "distractors": [
+        "Washington, D.C., the national capital.",
+        "The largest city in your state.",
+        "The city where you currently live.",
+        "The city with your state's main airport.",
+        "The oldest city in your state."
+      ]
+    },
+    {
+      "front": "What are the two major political parties in the United States?",
+      "back": "The Democratic Party and the Republican Party. These are the two largest parties in U.S. politics.",
+      "quizAnswer": "The Democratic Party and the Republican Party.",
+      "distractors": [
+        "The Federalist and Whig parties.",
+        "The Liberal and Conservative parties.",
+        "The Labor and Tory parties.",
+        "The Green and Libertarian parties.",
+        "The Union and Confederate parties."
+      ]
+    },
+    {
+      "front": "What is the political party of the President now?",
+      "back": "As of 2026, the Republican Party. This answer changes with each administration — confirm before your interview.",
+      "quizAnswer": "The Republican Party (as of 2026 — verify before your interview).",
+      "distractors": [
+        "The Democratic Party.",
+        "The Independent Party.",
+        "The Libertarian Party.",
+        "The Federalist Party.",
+        "The Green Party."
+      ]
+    },
+    {
+      "front": "What is the name of the Speaker of the House of Representatives now?",
+      "back": "As of 2026, Mike Johnson. The Speaker leads the House and changes when the House majority chooses a new one — verify before your interview.",
+      "quizAnswer": "Mike Johnson (as of 2026 — verify before your interview).",
+      "distractors": [
+        "Nancy Pelosi.",
+        "Kevin McCarthy.",
+        "Hakeem Jeffries.",
+        "J.D. Vance.",
+        "Chuck Schumer."
+      ]
+    },
+    {
+      "front": "There are three branches of government. Why?",
+      "back": "So that no one branch becomes too powerful. The Constitution separates powers and uses checks and balances to keep each branch in check.",
+      "quizAnswer": "So no one branch becomes too powerful (separation of powers).",
+      "distractors": [
+        "So the work of government goes faster.",
+        "So each state can control one branch.",
+        "So the people do not have to vote.",
+        "So the President can run all three.",
+        "So the two parties can share power."
+      ]
+    },
+    {
+      "front": "What does the 10th Amendment say about powers not given to the federal government?",
+      "back": "Powers not given to the federal government, and not denied to the states, are reserved to the states or to the people. It limits the national government to its listed powers.",
+      "quizAnswer": "Powers not given to the federal government are reserved to the states or the people.",
+      "distractors": [
+        "All remaining powers belong to the President.",
+        "Congress may claim any power it wishes.",
+        "The Supreme Court divides the leftover powers.",
+        "Unlisted powers simply do not exist.",
+        "The states must surrender unlisted powers."
+      ]
+    },
+    {
+      "front": "What is the purpose of the Electoral College?",
+      "back": "To choose, or elect, the President of the United States. Voters in each state choose electors, who then formally elect the President.",
+      "quizAnswer": "To choose (elect) the President of the United States.",
+      "distractors": [
+        "To choose the members of the Cabinet.",
+        "To select the justices of the Supreme Court.",
+        "To elect the Speaker of the House.",
+        "To count the population every ten years.",
+        "To approve treaties with other nations."
+      ]
+    },
+    {
+      "front": "Name one power of the President under the Constitution.",
+      "back": "Sign bills into law, veto bills, enforce the laws, serve as Commander in Chief, or make treaties (with the Senate). Any one is accepted.",
+      "quizAnswer": "Sign or veto bills, enforce laws, or command the military.",
+      "distractors": [
+        "Declare war on another country.",
+        "Write and pass the federal laws.",
+        "Decide if a law is constitutional.",
+        "Set the national budget alone.",
+        "Remove a justice from the court."
+      ]
+    },
+    {
+      "front": "Name one power of the U.S. Congress under the Constitution.",
+      "back": "Make (pass) federal laws, declare war, set the federal budget, or collect taxes. Any one is accepted.",
+      "quizAnswer": "Make federal laws, declare war, or set the budget.",
+      "distractors": [
+        "Sign or veto bills into law.",
+        "Command the nation's armed forces.",
+        "Decide if a law is constitutional.",
+        "Appoint the Supreme Court justices.",
+        "Enforce the laws of the nation."
+      ]
+    },
+    {
+      "front": "Name one thing the President cannot do under the Constitution.",
+      "back": "The President cannot declare war (only Congress can), cannot make laws alone, and cannot set the federal budget alone. These powers belong to Congress.",
+      "quizAnswer": "Declare war, make laws alone, or set the budget alone.",
+      "distractors": [
+        "Sign or veto a bill from Congress.",
+        "Command the United States armed forces.",
+        "Make treaties with foreign nations.",
+        "Appoint judges and ambassadors.",
+        "Enforce the laws Congress passes."
+      ]
+    }
+  ]
+}
