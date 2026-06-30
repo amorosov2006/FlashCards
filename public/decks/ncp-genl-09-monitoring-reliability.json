@@ -1,0 +1,123 @@
+{
+  "title": "NCP-GENL · Monitoring & Reliability",
+  "description": "Latency SLOs, drift detection, quality regression, logging, cost, reliability patterns (exam domain, 7%).",
+  "cards": [
+    {
+      "front": "Which two latency metrics are standard for measuring streaming LLM responses?",
+      "back": "Time-to-First-Token (TTFT), dominated by the prefill phase, and Inter-Token-Latency (ITL), dominated by decode. TTFT controls perceived responsiveness; ITL controls steady-state speed once tokens start flowing. Track p50/p95/p99 of each, segmented by prompt length and concurrency, and set SLOs against them — they have different optimization targets.",
+      "quizAnswer": "Time-to-First-Token (prefill-dominated) and Inter-Token-Latency (decode-dominated); track p50/p95/p99 by prompt length and concurrency.",
+      "distractors": [
+        "Total throughput and disk I/O, since end-to-end tokens per second and storage bandwidth together bound response speed.",
+        "TTL and DNS-resolution time, which together determine how quickly a streaming connection reaches the inference server.",
+        "Time-to-First-Token and total request duration, since the gap between them captures everything about decode speed.",
+        "p50 latency only, measured end-to-end, because tail percentiles are too noisy to set meaningful streaming SLOs.",
+        "Queue-wait time and GPU temperature, since rising temperature is the leading indicator of degraded streaming latency.",
+        "Prefill FLOPs and decode FLOPs, which directly determine the two phases' latencies independent of the hardware."
+      ]
+    },
+    {
+      "front": "Which signals detect LLM quality regression in production without ground-truth labels?",
+      "back": "User-satisfaction proxies (thumbs, edit distance to user revisions, retry rate, abandonment), prediction-distribution drift, refusal rate, and judge-LLM scores on sampled traffic. Labels arrive late or never, so these leading indicators catch regressions early. Pair them with a held-out canonical eval suite that runs on every release.",
+      "quizAnswer": "Satisfaction proxies (thumbs, edit distance, retry, abandonment), output drift, refusal rate, and judge-LLM scores on sampled traffic.",
+      "distractors": [
+        "GPU temperature trends only, since thermal throttling is the earliest sign that answer quality has started to degrade.",
+        "Disk free space on the inference nodes, because a full disk silently truncates responses and lowers their quality.",
+        "The cluster's hostname and node labels, which reveal whether requests landed on an older, lower-quality model replica.",
+        "Satisfaction proxies and refusal rate, but never judge-LLM scores, since an automated judge cannot run without labels.",
+        "Raw request volume per hour, since a sudden traffic drop is the strongest indicator that users find answers worse.",
+        "Average response length over time, since regressions always manifest as the model producing noticeably shorter answers."
+      ]
+    },
+    {
+      "front": "What is the recommended approach to detect data drift in an LLM application's input distribution?",
+      "back": "Compare token-distribution and length statistics, embedding-cluster shifts, topic distribution, and language ID over rolling windows against a baseline, using distributional distances like KS test or PSI. Drift in user prompts is normal but matters: log embeddings/feature stats, compute the distances, alert on threshold breaches, and trigger investigation or retraining.",
+      "quizAnswer": "Compare token/length stats, embedding shifts, topic, and language over rolling windows to a baseline via KS test or PSI.",
+      "distractors": [
+        "Ignore input drift entirely, since modern LLMs generalize across distributions and only output drift affects quality.",
+        "Restart the model nightly regardless of any measurements, since a fresh process resets any accumulated input skew.",
+        "Wait for user complaints before investigating, then compare the recent inputs against the original training distribution.",
+        "Compare embedding shifts over rolling windows, but trigger retraining automatically on every shift without any threshold.",
+        "Track only the average prompt length, since length is the single feature that fully characterizes input distribution drift.",
+        "Compare the model's output distribution against its inputs, since input drift is always mirrored by a shift in outputs."
+      ]
+    },
+    {
+      "front": "Which logging policy best supports incident debugging while respecting privacy?",
+      "back": "Log full prompts and responses with PII redaction, plus model/version IDs, retrieved chunk IDs, latency, and hashed user/session IDs; retain per policy and access via least privilege. The goal is enough metadata to reproduce an incident, redacted enough to comply. Retention and access controls (SOC 2 / GDPR) are non-negotiable in regulated industries.",
+      "quizAnswer": "Log PII-redacted prompts/responses with model version, chunk IDs, latency, and hashed user IDs; retain per policy, least-privilege access.",
+      "distractors": [
+        "Log nothing about request contents, since any stored prompt or response is a privacy liability that prevents compliance.",
+        "Log full prompts and responses in clear text indefinitely, since complete unredacted history is essential for debugging.",
+        "Log only random samples of requests with no metadata, so storage stays small and no single user can be re-identified.",
+        "Log PII-redacted prompts but discard all model and version IDs, since those reveal proprietary deployment details.",
+        "Log everything in clear text but encrypt the disk, since at-rest encryption satisfies GDPR without needing redaction.",
+        "Log only the latency and status code per request, omitting contents entirely, since reproductions can be reconstructed from timing."
+      ]
+    },
+    {
+      "front": "Which metric is most appropriate for tracking the cost efficiency of an LLM service?",
+      "back": "Cost per 1k tokens (input and output, separately) and cost per resolved task, broken down by model, request class, and user segment. Token-level pricing is the right unit, and per-task ROI captures whether the service actually solves user problems. Cost dashboards by model and route reveal where cascading, caching, distillation, or routing changes pay off.",
+      "quizAnswer": "Cost per 1k tokens (input/output separately) and cost per resolved task, broken down by model, request class, and segment.",
+      "distractors": [
+        "CPU temperature of the inference nodes, since thermal headroom determines how many requests a server can process per dollar.",
+        "The rendered HTML page size of the chat UI, since smaller payloads reduce the bandwidth cost of serving each response.",
+        "The number of GitHub stars on the serving framework, since more popular runtimes are better optimized and cheaper to run.",
+        "Cost per request regardless of length, since flat per-call pricing is simpler than tracking input and output tokens separately.",
+        "Total monthly GPU spend alone, since a single aggregate figure is sufficient to compare the efficiency of different models.",
+        "Cost per 1k tokens combined into one input-plus-output figure, since separating the two adds complexity without insight."
+      ]
+    },
+    {
+      "front": "What do Triton's queue-duration and compute-infer-duration metrics each tell you, and how are they used together?",
+      "back": "nv_inference_queue_duration_us is time a request spends waiting in the scheduling queue; nv_inference_compute_infer_duration_us is the actual model compute time. A high queue-to-compute ratio means requests are backing up faster than the GPU can serve them — the signal to scale out, raise instance count, or enable in-flight batching. Low queue with high compute means the model itself is the bottleneck.",
+      "quizAnswer": "Queue duration is scheduling wait; compute-infer duration is model compute. A high ratio means back-pressure — scale out or batch.",
+      "distractors": [
+        "Queue duration is the model compute time and compute-infer duration is the scheduling wait; a high ratio means the GPU is idle.",
+        "Both measure end-to-end latency from different ports, so subtracting them gives the network round-trip time per request.",
+        "Queue duration counts failed requests and compute-infer counts successful ones; their ratio is the service's error rate.",
+        "Queue duration is the KV-cache eviction time and compute-infer is the prefill time; together they decompose TTFT.",
+        "Queue duration is wait time and compute-infer is compute, but a high ratio means the model is too large and must be quantized.",
+        "Both measure the same compute phase at p50 and p99; comparing them reveals the tail latency of the model's forward pass."
+      ]
+    },
+    {
+      "front": "How do readiness and liveness probes differ for a Triton deployment on Kubernetes?",
+      "back": "The readiness probe (/v2/health/ready) gates traffic — Kubernetes only routes requests to a pod once it reports ready, e.g., after the model has loaded. The liveness probe (/v2/health/live) detects a hung process and restarts the pod when it stops responding. Readiness controls whether to send traffic; liveness controls whether to restart.",
+      "quizAnswer": "Readiness (/v2/health/ready) gates traffic until the model loads; liveness (/v2/health/live) restarts a hung pod.",
+      "distractors": [
+        "Readiness restarts a hung pod once the model stops responding, while liveness gates traffic until the model finishes loading.",
+        "Both probes gate traffic; readiness checks the HTTP port and liveness checks the gRPC port, so both must pass to serve.",
+        "Readiness measures GPU memory headroom and liveness measures GPU temperature, throttling traffic when either is exceeded.",
+        "Readiness gates traffic until the model loads, while liveness loads the next model version for zero-downtime rollouts.",
+        "Liveness gates traffic and readiness restarts the pod, which is why a failing readiness probe triggers an immediate reboot.",
+        "Both probes restart the pod on failure; they differ only in how frequently Kubernetes polls each health endpoint."
+      ]
+    },
+    {
+      "front": "What does graceful degradation provide as a reliability pattern for LLM serving?",
+      "back": "When the primary model is overloaded or failing, the system falls back to a cheaper smaller model, a cached response, or a simpler template instead of erroring out — preserving availability at reduced quality. It is paired with circuit breakers (stop sending to a failing backend and retry with backoff) so transient failures don't cascade into a full outage.",
+      "quizAnswer": "Under overload or failure, fall back to a smaller model, cached response, or template — preserving availability at reduced quality.",
+      "distractors": [
+        "Under overload, queue all requests indefinitely until the primary model frees up, so no request is ever served degraded output.",
+        "Under failure, immediately return an error to the client, since serving a lower-quality answer is worse than no answer.",
+        "Under overload, upgrade requests to a larger model with more capacity, trading higher cost for guaranteed availability.",
+        "Under failure, fall back to a smaller model, but only for requests that have already exceeded their latency SLA budget.",
+        "Under overload, shed load by dropping a random fraction of requests, so the remaining ones always get full-quality answers.",
+        "Under failure, replay the failed requests against every backend simultaneously and return whichever responds first."
+      ]
+    },
+    {
+      "front": "What does the Triton Model Analyzer automate?",
+      "back": "It sweeps serving configurations — batch size, model instance count, and concurrency — and benchmarks them to recommend the setup that best meets your throughput and latency targets. Instead of hand-tuning config.pbtxt by trial and error, you let the analyzer search the space and surface the Pareto-optimal configurations for your SLA.",
+      "quizAnswer": "It sweeps batch size, instance count, and concurrency, benchmarking each to recommend configs that meet throughput/latency targets.",
+      "distractors": [
+        "It analyzes the model's weights to recommend the optimal quantization precision for the target GPU's Tensor Cores.",
+        "It traces production traffic and automatically rewrites the model ensemble to remove redundant preprocessing stages.",
+        "It sweeps learning rate and batch size during fine-tuning to recommend the configuration with the lowest validation loss.",
+        "It monitors the queue-to-compute ratio at runtime and dynamically adjusts the Horizontal Pod Autoscaler thresholds.",
+        "It sweeps batch size and instance count, but optimizes only for maximum throughput, ignoring any latency constraints.",
+        "It profiles individual GPU kernels and recommends which layers to fuse to reduce the model's memory bandwidth usage."
+      ]
+    }
+  ]
+}

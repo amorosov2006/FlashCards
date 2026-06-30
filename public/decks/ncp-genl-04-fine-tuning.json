@@ -1,0 +1,149 @@
+{
+  "title": "NCP-GENL · Fine-Tuning",
+  "description": "SFT, LoRA/QLoRA, PEFT, RLHF, DPO, reward models, catastrophic forgetting (exam domain, 13%).",
+  "cards": [
+    {
+      "front": "What is LoRA and why is it so widely used?",
+      "back": "Low-Rank Adaptation trains small low-rank matrices A and B such that ΔW = BA, while freezing the base weights; trainable params are <1% of the base with quality near full fine-tuning for most tasks. It slashes VRAM, storage, and time, and lets you swap adapters per task or tenant. Drawbacks: low rank may be insufficient for radical capability changes.",
+      "quizAnswer": "Train tiny low-rank matrices ΔW=BA with the base frozen; <1% of params, near full-FT quality, swappable adapters.",
+      "distractors": [
+        "A new optimizer that adapts the learning rate per layer, converging faster than AdamW on large language models.",
+        "Train a small low-rank adapter while also updating the base weights, reaching full fine-tuning quality with less memory.",
+        "Quantize the base model to 4-bit and train every weight at low precision, cutting VRAM without freezing anything.",
+        "A web framework for serving chatbots that hot-swaps prompts per tenant without retraining the underlying model.",
+        "Train full-rank update matrices but store only their top singular values, compressing the checkpoint after training.",
+        "A new tokenizer that maps domain terms to single tokens, reducing the data needed to adapt a base model."
+      ]
+    },
+    {
+      "front": "What does QLoRA add over LoRA?",
+      "back": "QLoRA quantizes the frozen base weights to 4-bit (NF4) with double quantization and uses paged optimizers, enabling fine-tuning of 65–70B models on a single GPU. NF4 + double quant + paged optimizer lets a 65B fine-tune fit in ~48 GB. Quality matches LoRA on a full-precision base; the savings are in memory and cost, not in rank or expressiveness.",
+      "quizAnswer": "Quantizes the frozen base to 4-bit NF4 with double quantization and paged optimizers, fitting 65B fine-tunes on one GPU.",
+      "distractors": [
+        "Adds distributed multi-node training to LoRA, sharding the adapters across GPUs to fine-tune 65B models faster.",
+        "Introduces a new attention mechanism alongside LoRA, reducing the KV cache so larger batches fit during fine-tuning.",
+        "Quantizes the LoRA adapters to 4-bit while keeping the base in BF16, shrinking the checkpoint stored per task.",
+        "Pretrains the base model from scratch in 4-bit precision, after which standard LoRA adapters are trained on top.",
+        "Quantizes the base to 8-bit with single quantization and CPU offload, fitting 13B models on a single consumer GPU.",
+        "Replaces the optimizer with a paged variant only, leaving the base weights in full precision to preserve quality."
+      ]
+    },
+    {
+      "front": "In supervised fine-tuning on instruction–response pairs, what should the loss be computed over?",
+      "back": "Only the response tokens; the prompt tokens are masked from the loss. Loss masking on the response prevents the model from being forced to 'predict' the prompt and focuses gradient on the desired output. Frameworks like NeMo, TRL, and Axolotl support this out of the box.",
+      "quizAnswer": "Only the response tokens — the prompt tokens are masked from the loss to focus gradient on the desired output.",
+      "distractors": [
+        "The entire prompt and response together, so the model learns to reconstruct the full instruction context as well.",
+        "Only the system prompt tokens, since aligning the model's behavior to its role is the goal of fine-tuning.",
+        "Only the prompt tokens, masking the response, so the model learns to predict what question a user will ask.",
+        "None of the tokens directly; instead the loss is computed on a separate reward model's scalar output.",
+        "The response tokens plus the final prompt token, so the model learns where the instruction ends and output begins.",
+        "Every token equally, but with the prompt tokens down-weighted by half rather than fully masked out."
+      ]
+    },
+    {
+      "front": "Why does RLHF include a KL-divergence penalty against the SFT reference policy?",
+      "back": "To prevent the policy from drifting into reward-hacking behaviors that score high on the imperfect reward model but produce degenerate text. The objective is r(x) − β·KL(π‖π_ref); higher β keeps the policy near the well-behaved reference. The KL term is the practical safeguard against the policy exploiting flaws in the learned reward.",
+      "quizAnswer": "To stop reward hacking — the KL term keeps the policy near the reference so it can't exploit the imperfect reward model.",
+      "distractors": [
+        "To accelerate convergence, since penalizing divergence from the reference lets PPO use a much larger learning rate.",
+        "To increase the entropy of the weights, which improves the policy's exploration of the reward landscape during training.",
+        "Because PPO requires a KL term purely for numerical stability, unrelated to the quality of the generated text.",
+        "To stop reward hacking by keeping the reward model near the policy, so the reward updates as the policy improves.",
+        "To regularize the value critic toward the reference policy, preventing the advantage estimates from exploding.",
+        "To force the policy to match the reference exactly, guaranteeing the fine-tuned model never changes its outputs."
+      ]
+    },
+    {
+      "front": "Which statement about Direct Preference Optimization (DPO) is most accurate?",
+      "back": "DPO optimizes directly on preference pairs (chosen vs. rejected) using a logistic loss on the log-ratio of policy-vs-reference probabilities, with no separate reward model. It derives from the closed-form optimal policy of KL-regularized RL and runs as a standard supervised pass — simpler and more stable than PPO. Variants (IPO, KTO, ORPO) address overconfidence or use looser labels.",
+      "quizAnswer": "It trains directly on chosen-vs-rejected pairs via a logistic loss on policy/reference log-ratios — no separate reward model.",
+      "distractors": [
+        "It trains a reward model on preference pairs and then runs PPO against it, just with a simpler logistic loss.",
+        "It optimizes preference pairs but requires sampling from the policy each step, like PPO, making it equally expensive.",
+        "It works only on encoder models, mapping chosen and rejected responses to embeddings it pushes apart and together.",
+        "It is mathematically identical to supervised fine-tuning on the chosen responses, ignoring the rejected ones entirely.",
+        "It trains directly on preference pairs but needs a separate value critic to estimate the advantage of each token.",
+        "It optimizes a margin loss between chosen and rejected response embeddings, without any reference policy involved."
+      ]
+    },
+    {
+      "front": "Which fine-tuning approach risks the most catastrophic forgetting of the base model's general capabilities?",
+      "back": "Full-parameter fine-tuning at a high learning rate without replay or general-data mixing. Adapter methods (LoRA, prompt tuning) localize the change, while full FT updates everything and can overwrite pretrained knowledge if poorly tuned. Mitigations: lower LR, fewer epochs, mix in 5–10% pretraining-style data, and evaluate on general benchmarks.",
+      "quizAnswer": "Full-parameter fine-tuning at high learning rate without replay or general-data mixing overwrites the most pretrained knowledge.",
+      "distractors": [
+        "LoRA with rank 16, because the low-rank update spreads across every layer and disturbs the base representations.",
+        "QLoRA on a frozen 4-bit base, since aggressive quantization of the base permanently corrupts its stored knowledge.",
+        "Prompt tuning, because prepending learned virtual tokens shifts the model's behavior across every downstream task.",
+        "Full-parameter fine-tuning at a very low learning rate, since slow updates accumulate the most drift over many epochs.",
+        "Any adapter method, because freezing the base prevents it from rehearsing the general data it learned in pretraining.",
+        "IA3 rescaling, since multiplying activations by learned vectors overwrites the base model's attention patterns."
+      ]
+    },
+    {
+      "front": "Which NVIDIA framework is purpose-built for SFT, PEFT, and RLHF/DPO of LLMs at scale?",
+      "back": "NeMo plus NeMo-Aligner. NeMo handles training and customization; NeMo-Aligner provides SFT, RLHF (PPO), DPO, RPO, and KTO recipes with multi-node parallelism. The resulting models export to TensorRT-LLM for optimized deployment. cuBLAS, OptiX, and Nsight Compute serve unrelated linear-algebra, ray-tracing, and profiling roles.",
+      "quizAnswer": "NeMo + NeMo-Aligner — SFT, PEFT, PPO, DPO, RPO, KTO recipes at multi-node scale, exportable to TensorRT-LLM.",
+      "distractors": [
+        "cuBLAS, NVIDIA's GPU linear-algebra library, which provides the optimized GEMM kernels that alignment recipes call.",
+        "OptiX, the ray-tracing engine, repurposed for the high-throughput preference-data sampling that RLHF requires.",
+        "Nsight Compute, the kernel profiler, which orchestrates the multi-node PPO rollouts across the GPU cluster.",
+        "NeMo plus TensorRT-LLM, where TensorRT-LLM runs the PPO optimization loop and NeMo serves the reward model.",
+        "Triton Inference Server, which hosts the reward, reference, and policy models so RLHF can query them at scale.",
+        "NeMo Curator, which provides the SFT and DPO recipes in addition to its data deduplication capabilities."
+      ]
+    },
+    {
+      "front": "When training a reward model for RLHF, what is the standard loss?",
+      "back": "A pairwise Bradley–Terry loss: −log σ(r(x,y_w) − r(x,y_l)) for chosen response y_w and rejected y_l. The Bradley–Terry model parameterizes the probability that y_w is preferred as a sigmoid of the reward difference. A scalar reward head is attached to a copy of the SFT model and trained on the preference dataset.",
+      "quizAnswer": "Pairwise Bradley–Terry loss: −log σ(r(x,y_w) − r(x,y_l)) over a scalar reward head on chosen-vs-rejected pairs.",
+      "distractors": [
+        "Mean squared error between the reward model's scalar output and a human-assigned numeric score for the chosen response.",
+        "Cross-entropy over the full vocabulary, since the reward model predicts the next token of the preferred response.",
+        "Cosine similarity between the chosen and rejected response embeddings, trained to push the two representations apart.",
+        "A pairwise hinge loss that enforces a fixed margin between the chosen and rejected response reward scores.",
+        "Binary cross-entropy on a label that marks each response individually as either acceptable or unacceptable.",
+        "KL divergence between the reward model's output distribution and the reference policy's token probabilities."
+      ]
+    },
+    {
+      "front": "For domain adaptation with extremely limited labeled data (<1k pairs), what is generally the safest approach?",
+      "back": "LoRA or prompt tuning with strong early stopping, plus retrieval (RAG) to compensate for missing knowledge. Tiny datasets cause overfitting and forgetting under full fine-tuning; adapter methods plus RAG combine parameter efficiency with retrieval-grounded knowledge — usually the best ROI for small-domain projects.",
+      "quizAnswer": "LoRA or prompt tuning with strong early stopping, plus RAG to supply knowledge the tiny dataset can't teach.",
+      "distractors": [
+        "Full-parameter fine-tuning at a high learning rate, since small datasets train quickly and benefit from large updates.",
+        "Pretrain a new model from scratch on the domain corpus, then fine-tune it on the <1k labeled pairs available.",
+        "LoRA at a very high rank with no early stopping, so the adapter has enough capacity to fully memorize the data.",
+        "Disable the validation split entirely and train for many epochs, since every labeled pair is too precious to hold out.",
+        "Continued pretraining on the 1k pairs repeated thousands of times, baking the domain knowledge into the weights.",
+        "Full fine-tuning combined with RAG, using retrieval to regularize the aggressive weight updates on scarce data."
+      ]
+    },
+    {
+      "front": "How do LoRA rank r and scaling factor alpha (α) affect the adapter?",
+      "back": "Rank r sets the adapter's expressiveness and memory: higher r captures more complex updates at more cost (typical 8–64). Alpha scales the update — the effective change is (α/r)·BA, so α controls the magnitude of the adapter's contribution relative to the frozen base. A common heuristic is α = 2r. LoRA is usually applied to the attention projections (and sometimes FFN).",
+      "quizAnswer": "Rank r sets expressiveness/memory (8–64 typical); alpha scales the update as (α/r)·BA, often set to α = 2r.",
+      "distractors": [
+        "Rank r sets the number of layers the adapter touches, while alpha sets the learning rate used to train it.",
+        "Rank r controls the update magnitude as (r/α)·BA, while alpha sets how many attention heads the adapter modifies.",
+        "Rank r sets the quantization bits of the adapter, while alpha sets the dropout applied to the low-rank matrices.",
+        "Rank r sets expressiveness, while alpha sets the context length the adapter is trained on, typically α = 2r.",
+        "Both r and alpha set the adapter's memory footprint; only their product matters, so 8×8 equals 16×4 exactly.",
+        "Rank r controls how many tokens the adapter attends to, while alpha scales the frozen base weights downward."
+      ]
+    },
+    {
+      "front": "How does multi-LoRA serving (e.g., in TensorRT-LLM) let one base model serve many domains?",
+      "back": "One copy of the base model stays resident in GPU memory, and lightweight LoRA adapters are applied on-the-fly per request, hot-swapped without reloading the base. This lets a single deployment serve dozens of domain-specific adapters cheaply. For a single-adapter deployment, merging the adapter into the base weights instead removes the per-request overhead entirely.",
+      "quizAnswer": "Keep one base model resident and apply lightweight LoRA adapters per request, hot-swapping them without reloading the base.",
+      "distractors": [
+        "Load a separate full copy of the base model for each adapter, then route each request to its matching dedicated model.",
+        "Merge all adapters into the base at startup, producing one blended model that averages every domain's behavior.",
+        "Keep all adapters resident but reload the base model per request, swapping in whichever base each domain was tuned from.",
+        "Stream the base weights from CPU per request while keeping every LoRA adapter permanently in GPU memory.",
+        "Quantize each adapter to share the base model's KV cache, so domains take turns using the same cached attention.",
+        "Train one large adapter spanning all domains, then mask out the rows belonging to the domains not requested."
+      ]
+    }
+  ]
+}

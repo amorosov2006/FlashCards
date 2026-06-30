@@ -1,0 +1,162 @@
+{
+  "title": "NCP-GENL · Prompt Engineering",
+  "description": "CoT, ReAct, constrained decoding, sampling control, injection defense, hallucination mitigation (exam domain, 13%).",
+  "cards": [
+    {
+      "front": "Which prompt strategy most reliably improves multi-step arithmetic and logical reasoning on a large LLM?",
+      "back": "Chain-of-thought (CoT): few-shot examples with explicit step-by-step reasoning. The model imitates the demonstrated intermediate steps and reaches correct answers more often (Wei et al., 2022). Self-consistency — sampling N chains at T>0 and taking the majority answer — raises accuracy further at extra inference cost.",
+      "quizAnswer": "Chain-of-thought: demonstrate explicit step-by-step reasoning so the model imitates the structure and answers correctly more often.",
+      "distractors": [
+        "Lowering the temperature toward zero so the model commits to its single most probable reasoning path each step.",
+        "Raising the maximum output token limit so the model has room to write out a complete final answer.",
+        "Removing the system prompt so the model is not distracted by role instructions during multi-step reasoning.",
+        "Repeating the question several times in the prompt so the model attends more strongly to the key constraints.",
+        "Few-shot examples that show only the final answers, so the model learns the output format without the steps.",
+        "Switching the model to greedy decoding and disabling sampling so intermediate steps stay fully deterministic."
+      ]
+    },
+    {
+      "front": "Which technique best guarantees an LLM emits JSON conforming to a specific schema?",
+      "back": "Constrained / guided decoding (Outlines, llama.cpp grammars, vLLM guided_json) masks invalid next-token candidates against the grammar or JSON schema, so only schema-valid tokens are sampleable — guaranteeing structural validity at near-zero cost. Plain JSON-mode guarantees parseable JSON but not schema conformance; combine both for production.",
+      "quizAnswer": "Constrained decoding masks invalid tokens against the schema, so only schema-valid tokens are sampleable — guaranteeing conformance.",
+      "distractors": [
+        "Raising the temperature so the model explores more token candidates and is likelier to find a valid structure.",
+        "Adding polite phrasing and a clear example of the schema, then retrying until the parser accepts the output.",
+        "Switching the engine to FP8 inference, which sharpens the logits enough to keep the output well-formed.",
+        "Plain JSON mode alone, which constrains tokens to valid JSON and therefore also enforces the field schema.",
+        "Lowering top-p to a small value so the model only samples its most confident, well-structured continuations.",
+        "Post-processing with a regular expression that deletes any characters not allowed by the target schema."
+      ]
+    },
+    {
+      "front": "How is the loop best described in ReAct-style agents?",
+      "back": "Reason → Act (call a tool) → Observe (read the tool result) → repeat until done. ReAct interleaves reasoning traces with tool calls and observations, grounding intermediate reasoning in real-world feedback rather than the model's priors. Plan-and-Execute and Reflexion are common variants that add upfront planning or self-critique.",
+      "quizAnswer": "Reason → Act (call a tool) → Observe (tool result) → repeat, grounding reasoning in real feedback until done.",
+      "distractors": [
+        "Reason → Output, producing a full answer in one pass without ever calling an external tool or observing results.",
+        "Retrieve → Rank → Generate, fetching documents and reranking them before the model writes a grounded answer.",
+        "Plan → Quantize → Deploy, optimizing the model first and only then letting it reason over the user's request.",
+        "Sample → Vote → Output, generating several candidate answers and returning the one the model judges best.",
+        "Act → Reason → Output, calling tools first and reasoning only afterward to explain the actions it took.",
+        "Reason → Reflect → Reason, critiquing its own thoughts repeatedly without any access to external tools."
+      ]
+    },
+    {
+      "front": "What is the 'lost in the middle' pitfall with long-context prompts?",
+      "back": "LLMs attend more strongly to the start and end of a long context, so information placed in the middle is effectively de-weighted (Liu et al., 2023 showed a U-shaped accuracy curve). Mitigations: shorten the context, place key info at the start or end, use a reranker so the most relevant chunk leads, or split into multiple shorter calls.",
+      "quizAnswer": "LLMs attend most to the start and end of long contexts, so middle content is effectively de-weighted.",
+      "distractors": [
+        "Content placed in the middle of a long prompt is silently truncated by the tokenizer before reaching the model.",
+        "Middle-of-context tokens double inference latency because the attention kernel reprocesses them on every step.",
+        "Examples in the middle of a prompt corrupt the positional encoding, shifting every later token's index by one.",
+        "The model attends most strongly to the middle of the context, so the first and last chunks are de-weighted.",
+        "Middle content is fully ignored by the model, so only the very first and very last tokens influence the output.",
+        "Long contexts overflow the KV cache from the middle outward, dropping the central tokens during decode."
+      ]
+    },
+    {
+      "front": "What is the strongest defense against prompt injection from untrusted retrieved documents?",
+      "back": "Defense-in-depth at the architecture level: separate trusted instructions from untrusted data, validate outputs with classifiers, grant tools least privilege, and never trust model output for high-stakes side effects without confirmation. No prompt-level instruction is reliable, because any string the model sees can in principle steer it (OWASP LLM Top 10, LLM01).",
+      "quizAnswer": "Architectural defense-in-depth: separate trusted instructions from untrusted data, validate outputs, and grant tools least privilege.",
+      "distractors": [
+        "A clear instruction telling the model to ignore any commands embedded in the retrieved documents it reads.",
+        "Setting top-p to a moderate value so the model stays close to its safe, high-probability continuations.",
+        "Disabling response streaming so injected instructions cannot take effect before the output is fully formed.",
+        "Placing the system prompt at the very end of the context so it overrides anything in the retrieved text.",
+        "Lowering the temperature to zero so the model deterministically follows only the developer's original intent.",
+        "Encrypting the retrieved documents so any injected instructions are unreadable until after generation finishes."
+      ]
+    },
+    {
+      "front": "What does self-consistency decoding do, and what does it cost?",
+      "back": "It samples N chain-of-thought answers at temperature > 0 and returns the majority answer, marginalizing over reasoning paths to reduce variance and boost accuracy on reasoning benchmarks (Wang et al., 2022). The cost is roughly N× the inference of a single chain, since each path is generated independently.",
+      "quizAnswer": "Sample N chain-of-thought answers at T>0 and return the majority — higher accuracy at roughly N× inference cost.",
+      "distractors": [
+        "Sample one greedy answer and verify it against a second model, doubling cost but guaranteeing the answer is correct.",
+        "Generate N answers and return the longest one, since more detailed chains are usually the most accurate.",
+        "Run the same prompt at several temperatures and average the logits, smoothing out unstable reasoning steps.",
+        "Sample N answers and return the first that parses successfully, trading accuracy for guaranteed valid output.",
+        "Quantize the model to INT4 so N chains can be sampled in parallel within the same memory the original used.",
+        "Generate N short drafts, concatenate them, and let the model summarize the consensus into one final answer."
+      ]
+    },
+    {
+      "front": "When few-shot prompting, which exemplar property tends to matter most?",
+      "back": "Diversity, format, and label correctness of the examples dominate; style and similarity to the target query also help. Empirically, content quality and consistent format matter far more than trivia like ordering or capitalization — though exact ordering can shift accuracy by several points, so evaluate a few orderings and pick the most stable.",
+      "quizAnswer": "Diversity, format, and label correctness of examples dominate; similarity and style to the target query also help.",
+      "distractors": [
+        "The alphabetical ordering of the examples, since the model anchors on whichever exemplar it reads first.",
+        "The exact number of newlines separating examples, which determines how cleanly the model parses the format.",
+        "Random capitalization across the examples, which forces the model to generalize beyond surface token patterns.",
+        "The total token length of the examples, because longer exemplars always teach the task more thoroughly.",
+        "Using identical labels for every example, so the model learns a single consistent target before generalizing.",
+        "Placing the hardest example last, since the model weights the final exemplar most heavily during generation."
+      ]
+    },
+    {
+      "front": "Which approach reliably reduces hallucinations in a question-answering LLM?",
+      "back": "Ground the answer with retrieval (RAG), require explicit citations, lower the temperature, and add a faithfulness verifier (NLI or LLM-as-judge). Hallucinations arise when generation is untethered from a knowledge source; grounding plus citations plus post-hoc verification is the standard production stack for factual QA.",
+      "quizAnswer": "Ground answers with retrieval, require citations, lower temperature, and add a faithfulness verifier on the output.",
+      "distractors": [
+        "Raise the temperature toward 1.5 so the model explores more candidates and is likelier to recall the true fact.",
+        "Remove the EOS token so the model keeps reasoning until it converges on a confident, well-supported answer.",
+        "Run the model on CPU at full precision, since quantization on GPU is the main cause of factual drift.",
+        "Increase the maximum output length so the model has room to qualify and hedge its uncertain statements.",
+        "Fine-tune the model nightly on its own outputs so it reinforces only the answers it is most confident about.",
+        "Disable the system prompt so the model relies purely on its pretraining knowledge without conflicting instructions."
+      ]
+    },
+    {
+      "front": "How does a system prompt differ from a user prompt, beyond position in the message list?",
+      "back": "Models are post-trained to prioritize system messages, which establish role, policies, and output format with higher implicit priority. Architecturally the system prompt should arrive through a privileged API channel, not be concatenated by the user — if a user can edit it, your trust boundary is broken. This separation is also a key prompt-injection defense.",
+      "quizAnswer": "Models are trained to prioritize system messages; they should arrive on a privileged channel, not user-editable concatenation.",
+      "distractors": [
+        "System and user prompts are identical to the model; the labels only help developers organize their own code.",
+        "The system prompt is never sent to the model and exists only as documentation for the application developers.",
+        "System prompts disable sampling and force greedy decoding, which is why they override the user's instructions.",
+        "The system prompt is always concatenated after the user message so it can correct anything the user requested.",
+        "System prompts are tokenized with a separate vocabulary, giving their instructions stronger gradient signal.",
+        "The model treats whichever prompt is longer as the system prompt, regardless of how the message is labeled."
+      ]
+    },
+    {
+      "front": "What is most accurate about chain-of-thought for small models (under ~7B parameters)?",
+      "back": "Benefits are weaker or absent below a scale threshold; smaller models often produce plausible but incorrect intermediate steps. The CoT payoff grows with scale. For small models, distilling CoT traces from a larger teacher or using process-supervised fine-tuning helps recover some of the benefit.",
+      "quizAnswer": "CoT benefits are weak or absent below a scale threshold; small models often produce plausible but wrong steps.",
+      "distractors": [
+        "CoT always helps regardless of scale, because writing out steps gives any model more tokens to reason over.",
+        "CoT increases the tokenizer vocabulary on small models, which is why it slows inference more than on large ones.",
+        "CoT reduces latency on small models, since explicit steps let the decoder skip the expensive sampling stage.",
+        "CoT works only on small models; large models already reason internally and gain nothing from explicit steps.",
+        "CoT hurts small models by overflowing their context window, but distillation removes the need for any steps.",
+        "CoT helps small models most because their limited capacity benefits more from external reasoning scaffolds."
+      ]
+    },
+    {
+      "front": "How do temperature, top-k, and top-p (nucleus) sampling each control LLM output?",
+      "back": "Temperature rescales the logits before softmax — lower is more deterministic, higher more diverse. Top-k restricts sampling to the k highest-probability tokens. Top-p (nucleus) restricts sampling to the smallest set of tokens whose cumulative probability exceeds p. For factual tasks, use low temperature (often 0); for creative tasks, raise temperature and widen top-p.",
+      "quizAnswer": "Temperature rescales logit sharpness; top-k keeps the k likeliest tokens; top-p keeps the smallest set summing past p.",
+      "distractors": [
+        "Temperature caps the output length, top-k sets the beam width, and top-p controls how many tokens are cached.",
+        "Temperature picks the number of samples, top-k reranks them, and top-p averages their probabilities together.",
+        "Temperature filters tokens by frequency, top-k by recency, and top-p by their position in the vocabulary table.",
+        "Temperature rescales the logits, top-p keeps the p likeliest tokens, and top-k keeps tokens summing past k.",
+        "Temperature controls repetition, top-k controls the stop sequence, and top-p controls the presence penalty weight.",
+        "All three set diversity identically; they are interchangeable knobs that scale the softmax denominator the same way."
+      ]
+    },
+    {
+      "front": "What is Tree-of-Thought prompting, and when does it help over plain chain-of-thought?",
+      "back": "Tree-of-Thought explores multiple reasoning branches, evaluates partial states, and backtracks from dead ends rather than committing to one linear chain. It helps on problems needing search or lookahead (puzzles, planning, constraint satisfaction) where a single greedy chain often takes a wrong early step it cannot recover from. The cost is many more model calls.",
+      "quizAnswer": "It explores and evaluates multiple reasoning branches with backtracking, helping on search-like problems a single chain fails.",
+      "distractors": [
+        "It builds one long reasoning chain but prunes its weakest steps afterward, helping when the final answer is verbose.",
+        "It runs several chains in parallel and concatenates them, helping whenever the problem exceeds the context window.",
+        "It organizes the retrieved documents into a tree before reasoning, helping mainly on retrieval-augmented questions.",
+        "It samples branches at higher temperature and averages them, helping on factual recall where variance is high.",
+        "It splits the prompt into a tree of sub-prompts sent to different models, helping when no single model suffices.",
+        "It caches every intermediate thought as a KV prefix, helping reduce latency rather than improve reasoning quality."
+      ]
+    }
+  ]
+}

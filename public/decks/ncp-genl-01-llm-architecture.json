@@ -1,0 +1,136 @@
+{
+  "title": "NCP-GENL · LLM Architecture",
+  "description": "Transformer internals, attention variants, positional encodings, MoE, norms (exam domain, 6%).",
+  "cards": [
+    {
+      "front": "Which positional encoding do modern LLMs (LLaMA, Mistral, Qwen) use to generalize to longer contexts?",
+      "back": "Rotary Position Embedding (RoPE), applied to Q and K. RoPE rotates the query and key vectors in 2D subspaces by an angle proportional to position, so the dot product depends only on the relative offset between tokens. This enables long-context extrapolation tricks like NTK-aware scaling and YaRN. ALiBi (linear attention bias) is a related alternative.",
+      "quizAnswer": "Rotary Position Embedding (RoPE) applied to Q and K, making attention depend on relative offset and extrapolate.",
+      "distractors": [
+        "Sinusoidal absolute embeddings added to the input vectors, fixed at training time and unable to extrapolate beyond the trained length.",
+        "Learned absolute position embeddings added at the input, which generalize poorly to sequences longer than those seen in training.",
+        "Rotary embeddings applied to the Value vectors only, so the attention scores stay fixed while the payload encodes position.",
+        "Relative position biases added directly to the Value projection, letting each head learn its own preferred attention distance.",
+        "No positional signal at all, since causal masking alone is sufficient for the model to infer token ordering.",
+        "Sinusoidal embeddings concatenated to keys and queries, doubling the head dimension so position survives the dot product."
+      ]
+    },
+    {
+      "front": "What is the primary motivation for Grouped-Query Attention (GQA) over standard Multi-Head Attention?",
+      "back": "GQA shares K and V across groups of query heads to shrink the KV cache and reduce HBM bandwidth at inference, with negligible quality loss. LLM decode is HBM-bandwidth-bound; GQA (e.g., 8 KV heads for 64 query heads in LLaMA-2/3 70B) cuts KV cache 8× and raises tokens/sec at high concurrency. MQA is the extreme case with a single KV head at slightly higher quality cost.",
+      "quizAnswer": "Share K and V across groups of query heads to shrink KV cache and HBM bandwidth, with negligible quality loss.",
+      "distractors": [
+        "Increase training accuracy on small datasets by giving each query head its own dedicated key and value projection.",
+        "Replace the softmax with a sigmoid gate so attention weights no longer need to sum to one across positions.",
+        "Share Q across groups of key heads to shrink the embedding table and reduce the model's total parameter count.",
+        "Eliminate residual connections in attention blocks so gradients flow through fewer paths during backpropagation.",
+        "Add more key and value heads than query heads to widen the receptive field of each attention layer.",
+        "Cache the attention scores instead of K and V, trading extra compute for a much smaller memory footprint."
+      ]
+    },
+    {
+      "front": "For a decoder-only transformer, how does per-request KV cache size scale, and why does it matter?",
+      "back": "It scales as 2 (K and V) × L layers × H·d per token × T tokens × bytes-per-element. For a 70B model with 80 layers, 64 heads, d=128 at 4k context in FP16 this is ~2 GB per request — directly capping batch size and concurrency. This is why GQA/MQA, KV-cache quantization, and PagedAttention matter so much for serving.",
+      "quizAnswer": "It grows linearly with sequence length and layers (2·L·H·d·T·bytes), directly capping batch size and concurrency.",
+      "distractors": [
+        "It grows quadratically with sequence length because every token must store a full score against all other tokens.",
+        "It is independent of sequence length once the model weights are loaded, depending only on the hidden dimension.",
+        "It grows linearly with batch size only, since all requests in a batch share one cache across the layers.",
+        "It scales with the vocabulary size and embedding dimension, because the cache stores output logits per token.",
+        "It depends only on the number of attention heads and head dimension, not on how many layers the model has.",
+        "It shrinks as context grows because older tokens are evicted and recomputed lazily during each decode step."
+      ]
+    },
+    {
+      "front": "In a Mixture-of-Experts (MoE) layer, what most commonly causes 'expert collapse' and how is it mitigated?",
+      "back": "The router learns to send most tokens to a few popular experts, so the rest never train. The standard mitigation is an auxiliary load-balancing loss (as in Switch Transformer / Mixtral) that encourages even token distribution across experts. Modern MoE training pairs this with a router-z loss for numerical stability.",
+      "quizAnswer": "The router sends most tokens to a few experts; an auxiliary load-balancing loss spreads tokens evenly.",
+      "distractors": [
+        "The activation function saturates at large inputs; switching from GELU to ReLU restores gradient flow to the experts.",
+        "The KV cache overflows during long generations; quantizing it to FP8 frees memory and revives idle experts.",
+        "The optimizer diverges at high learning rates; lowering the rate and adding warmup re-balances the expert routing.",
+        "The router sends every token to all experts at once; top-k gating limits each token to a single chosen expert.",
+        "Gradient noise scrambles the gate weights; freezing the router after warmup keeps the token distribution stable.",
+        "Experts share weights by accident; tying their parameters together forces the router to balance the load evenly."
+      ]
+    },
+    {
+      "front": "What is FlashAttention's core idea, and is it exact?",
+      "back": "FlashAttention is mathematically exact (equal to standard attention) but IO-aware: it tiles the computation and uses an online softmax to fuse the entire softmax(QKᵀ)V into a single kernel, never materializing the N×N score matrix in HBM. This cuts memory from O(N²) to O(N) and is much faster. FA-2 improved warp parallelism; FA-3 (Hopper) adds async memory ops and FP8.",
+      "quizAnswer": "Exact attention computed with IO-aware tiling and an online softmax, avoiding materializing the N×N matrix in HBM.",
+      "distractors": [
+        "An approximate attention that factorizes the score matrix into low-rank components, trading a little accuracy for speed.",
+        "A sparse attention that restricts each token to a fixed local window, reducing memory from quadratic to linear.",
+        "An exact attention that precomputes the full score matrix once and caches it in HBM for reuse across layers.",
+        "A replacement of softmax attention with a depthwise convolution, fusing the kernel to avoid HBM round trips.",
+        "An approximate scheme that skips layer normalization inside attention, saving one pass over the activations.",
+        "An exact method that moves the entire attention matrix to CPU memory and streams tiles back as needed."
+      ]
+    },
+    {
+      "front": "What does Sliding Window Attention (e.g., in Mistral) change about attention cost?",
+      "back": "Each token attends only to the last w tokens instead of the entire history, giving O(w·n) cost instead of O(n²) and bounding the KV cache. Stacked layers still propagate information beyond the window (an effective receptive field of layers × w), so long-range dependencies are preserved indirectly while memory and compute stay manageable at long context.",
+      "quizAnswer": "Each token attends only to the last w tokens, giving O(w·n) cost while stacked layers still propagate far.",
+      "distractors": [
+        "Each token attends to a random subset of w earlier tokens, giving O(w·n) cost but losing local context entirely.",
+        "Every token attends to the full history but only every w-th layer, halving compute while keeping the quadratic cost.",
+        "Each token attends to the first w tokens of the prompt, so the system prompt dominates every attention computation.",
+        "The window slides over the Value vectors only, so attention scores stay global while the payload becomes local.",
+        "Each token attends to w future tokens as well as w past ones, doubling the receptive field at long context.",
+        "It caps attention at w heads per token rather than w tokens, reducing head count to control memory growth."
+      ]
+    },
+    {
+      "front": "Why does LLaMA use RMSNorm instead of LayerNorm?",
+      "back": "RMSNorm normalizes by the root-mean-square of activations without subtracting the mean or learning a bias, making it cheaper than LayerNorm while giving comparable training stability. Dropping the mean-centering and recentering step removes two operations per normalization and is empirically sufficient for deep transformers, which is why modern LLMs favor it.",
+      "quizAnswer": "RMSNorm skips mean subtraction and bias, scaling only by root-mean-square — cheaper than LayerNorm with similar stability.",
+      "distractors": [
+        "RMSNorm normalizes across the batch dimension instead of the feature dimension, which is faster on long sequences.",
+        "RMSNorm adds a learned mean and variance per layer, improving stability at the cost of extra parameters.",
+        "RMSNorm replaces normalization with a fixed scaling constant, removing all learned parameters from the norm layer.",
+        "RMSNorm subtracts the mean but skips the variance term, halving the cost while keeping the recentering step.",
+        "RMSNorm normalizes the attention scores rather than the activations, stabilizing the softmax at long context.",
+        "RMSNorm applies normalization only during inference, leaving the training-time activations completely unnormalized."
+      ]
+    },
+    {
+      "front": "What distinguishes decoder-only, encoder-only, and encoder-decoder transformer families?",
+      "back": "Decoder-only (GPT, LLaMA, Mistral) use causal masked self-attention for autoregressive generation. Encoder-only (BERT, RoBERTa) use bidirectional attention for classification and embeddings. Encoder-decoder (T5, BART) use a bidirectional encoder plus a causal decoder with cross-attention for seq2seq tasks like translation and summarization.",
+      "quizAnswer": "Decoder-only models generate autoregressively with causal attention; encoder-only models classify bidirectionally; encoder-decoder models do cross-attention seq2seq.",
+      "distractors": [
+        "Decoder-only models classify text, encoder-only models generate text, and encoder-decoder models only produce embeddings.",
+        "All three use bidirectional attention; they differ only in how many layers and attention heads each one stacks.",
+        "Decoder-only models use cross-attention, encoder-only models use causal masking, and encoder-decoder models are bidirectional.",
+        "Decoder-only models are for translation, encoder-only models for generation, and encoder-decoder models for embeddings.",
+        "Encoder-only models generate autoregressively, while decoder-only and encoder-decoder models both classify fixed inputs.",
+        "Decoder-only models need an external encoder, encoder-only models need a decoder, and encoder-decoder models stand alone."
+      ]
+    },
+    {
+      "front": "Why is a causal (lower-triangular) mask applied in decoder-only self-attention?",
+      "back": "It prevents each position from attending to future tokens, so position t can only see positions ≤ t. This is what makes left-to-right autoregressive generation valid and consistent between training (teacher forcing) and inference: the model never 'peeks' at tokens it is supposed to predict, so training-time and generation-time behavior match.",
+      "quizAnswer": "It blocks attention to future tokens so position t sees only positions ≤ t, making autoregressive generation valid.",
+      "distractors": [
+        "It blocks attention to past tokens so each position sees only future context, enabling bidirectional understanding.",
+        "It masks the padding tokens in a batch so variable-length sequences can be processed together efficiently.",
+        "It zeroes out the lowest attention scores at each step to enforce sparsity and reduce the compute per layer.",
+        "It hides the diagonal of the score matrix so no token attends to itself, forcing reliance on neighbors.",
+        "It restricts attention to a fixed window of recent tokens, bounding the KV cache during long generations.",
+        "It applies only during inference to stop the decoder from regenerating tokens it has already emitted once."
+      ]
+    },
+    {
+      "front": "How does the feed-forward (FFN) sub-layer differ between a dense transformer and an MoE transformer?",
+      "back": "In a dense transformer the FFN is a per-position MLP, typically d→4d→d with a GELU/SwiGLU nonlinearity, applied to every token. In an MoE transformer the single FFN is replaced by many expert MLPs; a router sends each token to only the top-k experts, so the layer has a large parameter count but activates only a sparse subset per token.",
+      "quizAnswer": "Dense FFN is one d→4d→d MLP per token; MoE replaces it with many experts, routing each token to top-k.",
+      "distractors": [
+        "Dense FFN routes each token to one of many experts, while MoE applies the same single MLP to every token.",
+        "Dense FFN uses attention internally, while MoE uses a plain MLP with no nonlinearity between its two layers.",
+        "Dense FFN shrinks the hidden dimension d→d/4→d, while MoE expands it across experts to 4d→16d→4d.",
+        "Both apply identical MLPs, but MoE runs them in lower precision to offset the extra parameters per layer.",
+        "Dense FFN activates all experts per token, while MoE activates a single shared expert across the whole batch.",
+        "Dense FFN is applied only in the encoder, while MoE experts appear exclusively in the decoder's cross-attention."
+      ]
+    }
+  ]
+}

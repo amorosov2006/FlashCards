@@ -1,0 +1,188 @@
+{
+  "title": "NCP-GENL · Model Optimization",
+  "description": "Quantization (AWQ/GPTQ/SmoothQuant/FP8), speculative decoding, distillation, pruning, TensorRT-LLM (exam domain, 17%).",
+  "cards": [
+    {
+      "front": "What is the dominant inference-time bottleneck for autoregressive LLM decode on modern GPUs?",
+      "back": "HBM memory bandwidth — loading the model weights (and KV cache) for each generated token. Decode is one forward pass per token over a tiny effective batch within a request, so it is bandwidth-bound rather than compute-bound. This is exactly why weight quantization, GQA/MQA, and batching across requests help so much.",
+      "quizAnswer": "HBM memory bandwidth — loading weights and KV cache for each token, since decode is bandwidth-bound, not compute-bound.",
+      "distractors": [
+        "Raw compute (FLOPs), since each decode step must recompute attention over the entire generated sequence so far.",
+        "Disk I/O, because the KV cache is paged to NVMe storage once the sequence exceeds the GPU's memory budget.",
+        "Network bandwidth between GPUs, since every decoded token triggers an all-reduce across the tensor-parallel group.",
+        "HBM capacity rather than bandwidth, because the model weights must all be re-uploaded from CPU memory per token.",
+        "CPU-to-GPU PCIe transfer, since each token's logits are copied back to the host for sampling before the next step.",
+        "Tensor Core throughput, because the per-token GEMMs saturate the compute units long before memory becomes a limit."
+      ]
+    },
+    {
+      "front": "Which weights-only quantization recipe scales weight magnitudes per-channel based on activation outliers?",
+      "back": "AWQ (Activation-aware Weight Quantization). It identifies the small fraction of channels activated by large inputs and protects them via per-channel scaling, preserving quality at INT4 better than naive round-to-nearest. GPTQ is the Hessian-based alternative; together they are the de-facto standard for 4-bit LLM serving.",
+      "quizAnswer": "AWQ — identifies salient channels with large activations and protects them via per-channel scaling, beating naive INT4.",
+      "distractors": [
+        "GPTQ, which uses second-order Hessian information to scale each weight channel by its observed activation outliers.",
+        "SmoothQuant, which scales weights per-channel by activation statistics so both weights and activations reach INT4.",
+        "Round-to-nearest INT8, which rescales each channel by its peak activation before clamping the weights symmetrically.",
+        "AWQ, which protects the channels with the smallest activations, since those carry the most quantization-sensitive signal.",
+        "QAT, which learns per-channel activation scales during training and bakes them into the weights for INT4 inference.",
+        "GPTQ, which protects salient channels by rounding their weights last after freezing the well-behaved channels first."
+      ]
+    },
+    {
+      "front": "Which post-training quantization method uses second-order (Hessian) information to round weights with minimal layer-wise error?",
+      "back": "GPTQ (Frantar et al., 2022). It approximates the inverse Hessian per layer and orders weight updates to greedily minimize the layer-wise reconstruction error introduced by quantization. Together with AWQ it is a standard for 4-bit LLM serving; the difference is GPTQ's reliance on curvature information rather than activation-outlier scaling.",
+      "quizAnswer": "GPTQ — approximates the per-layer inverse Hessian and orders weight rounding to minimize layer-wise reconstruction error.",
+      "distractors": [
+        "AWQ, which computes the per-layer Hessian and greedily reorders the salient channels to minimize reconstruction error.",
+        "LoRA, which uses curvature information to round the low-rank adapter weights with minimal loss during fine-tuning.",
+        "Speculative decoding, which leverages second-order signals from the draft model to verify the target's rounded weights.",
+        "GPTQ, which uses first-order gradient information per layer to choose which weights to prune before quantizing the rest.",
+        "SmoothQuant, which applies Hessian-weighted per-channel scaling to migrate quantization difficulty onto the weights.",
+        "QAT, which differentiates through the quantizer using the Hessian to learn optimal rounding thresholds during training."
+      ]
+    },
+    {
+      "front": "What does SmoothQuant do?",
+      "back": "It migrates quantization difficulty from outlier-prone activations to the weights via per-channel scaling, enabling W8A8 (INT8 weights and INT8 activations) without large quality loss. Activations have outliers that wreck naive INT8 activation quantization; SmoothQuant balances the scales between activations and weights so both can be quantized to INT8 cleanly.",
+      "quizAnswer": "Migrates difficulty from outlier activations to weights via per-channel scaling, enabling clean INT8 weights and activations (W8A8).",
+      "distractors": [
+        "Quantizes only the weights to INT8 while leaving activations in FP16, since activation outliers cannot be tamed by scaling.",
+        "Migrates difficulty from weights to activations via per-channel scaling, enabling INT4 weights with FP16 activations.",
+        "Replaces FP8 activations with FP4 by smoothing the dynamic range, doubling throughput on Blackwell Tensor Cores.",
+        "Smooths the loss landscape during quantization-aware training so INT8 weights converge without accuracy degradation.",
+        "Averages activation outliers across the batch dimension, clipping extreme values so naive INT8 quantization succeeds.",
+        "Scales the KV cache per channel to INT8, migrating difficulty from the attention activations onto the cached keys."
+      ]
+    },
+    {
+      "front": "What is the practical effect of FP8 (E4M3 / E5M2) on Hopper, Ada, and Blackwell GPUs?",
+      "back": "Roughly 2× throughput versus FP16/BF16 with similar quality when calibrated, supported natively by Tensor Cores. FP8 has dedicated Tensor Core paths and is standard for both training (some LLaMA-3 kernels) and inference (TensorRT-LLM FP8). E4M3 (more mantissa) is typical for the forward pass; E5M2 (more range) for the backward pass.",
+      "quizAnswer": "About 2× throughput over BF16 with similar quality when calibrated, via native Tensor Core support (E4M3 forward, E5M2 backward).",
+      "distractors": [
+        "Roughly 4× throughput over BF16 but with a large quality drop, requiring quantization-aware retraining to recover.",
+        "About 2× throughput, but only for training; FP8 inference falls back to CPU because Tensor Cores lack FP8 decode paths.",
+        "Doubled memory consumption in exchange for higher numerical precision, used mainly to stabilize the backward pass.",
+        "About 2× throughput over BF16, with E5M2 used for the forward pass for precision and E4M3 for the backward for range.",
+        "Slower training than BF16 because FP8 needs frequent rescaling, but 2× faster inference once weights are calibrated.",
+        "Identical throughput to BF16 but half the memory, since FP8 is emulated in software on current Tensor Cores."
+      ]
+    },
+    {
+      "front": "Which technique is lossless (preserves the target distribution) yet typically yields 2–3× faster decode?",
+      "back": "Speculative decoding: a small draft model proposes several tokens, and the large target model verifies them in parallel in one forward pass. Its accept/reject rule guarantees the same output distribution as the target alone, so it is lossless. Speedup hinges on the draft acceptance rate; Medusa, EAGLE, and self-speculative are popular variants.",
+      "quizAnswer": "Speculative decoding — a draft model proposes tokens the target verifies in parallel; the accept rule keeps it lossless.",
+      "distractors": [
+        "INT4 weight quantization, which preserves the output distribution exactly while cutting memory traffic per decode step.",
+        "Pruning 50% of the weights, since structured sparsity removes only redundant parameters and leaves outputs unchanged.",
+        "Reducing the vocabulary size, which shrinks the output projection without altering the probabilities of remaining tokens.",
+        "Speculative decoding, where the target proposes tokens and a small draft model verifies them, accepting most in parallel.",
+        "FP8 KV-cache quantization, which halves cache bandwidth and provably leaves the sampled token distribution untouched.",
+        "Knowledge distillation, which trains a faster student to exactly reproduce the teacher's full output distribution."
+      ]
+    },
+    {
+      "front": "Knowledge distillation in LLMs is best described as which of the following?",
+      "back": "Training a smaller student model to match the teacher's outputs (and/or hidden states), often using a KL loss on the teacher's soft logits, optionally combined with hard-label cross-entropy. It transfers the teacher's behavior into a cheaper model. For LLMs, on-policy distillation (re-scoring student-generated text with the teacher) often outperforms off-policy distillation.",
+      "quizAnswer": "Train a smaller student to match the teacher's outputs and hidden states, often via KL loss on the teacher's soft logits.",
+      "distractors": [
+        "Pretraining a fresh model from scratch on the same corpus the teacher saw, so the student rediscovers its behavior.",
+        "Quantizing the teacher's weights to INT2 and fine-tuning briefly to recover the accuracy lost during compression.",
+        "Replacing the student's optimizer with the teacher's, so the smaller model converges along the same training trajectory.",
+        "Training a larger student to match a smaller teacher's outputs, transferring efficiency rather than capability downward.",
+        "Averaging the weights of several teacher checkpoints into one student model, an ensemble compressed into a single network.",
+        "Training the student on hard labels only, ignoring the teacher's logits since soft targets add no useful signal."
+      ]
+    },
+    {
+      "front": "What is a typical workflow to convert a Hugging Face checkpoint into a deployable TensorRT-LLM engine?",
+      "back": "Export the model with TensorRT-LLM's builder, choose precision (FP16/BF16/FP8/INT4 AWQ or GPTQ), set max input/output/batch sizes, build the shape-specialized engine, then serve it with Triton (TRT-LLM backend) using continuous batching. The engine is specialized to the model and shapes you set at build time, which is why those limits are fixed during the build.",
+      "quizAnswer": "Build a shape-specialized engine with TensorRT-LLM (precision + max input/output/batch), then serve via Triton's TRT-LLM backend.",
+      "distractors": [
+        "Compile the model with javac into a portable bytecode engine, then load it into Triton's Java inference backend.",
+        "Convert the weights into a PostgreSQL table, index them, and let Triton query the database during each forward pass.",
+        "Build the engine without fixing any shapes, since TensorRT-LLM recompiles dynamically for whatever batch size arrives.",
+        "Export with the builder, then serve directly from the HF checkpoint, using TensorRT-LLM only to quantize the weights.",
+        "Tune the precision and batch sizes in a spreadsheet, export to ONNX, and serve the ONNX graph from the Triton runtime.",
+        "Build separate engines per request at inference time, choosing precision on the fly based on the prompt's length."
+      ]
+    },
+    {
+      "front": "Why is INT4 weight quantization typically combined with FP16/BF16 (or FP8) activations rather than INT4 activations?",
+      "back": "Activations have outliers and a wide dynamic range that make naive INT4 activation quantization quality-destroying, whereas weights are well-behaved and compress cleanly. This is why W4A16 (or W4A8 with SmoothQuant) is the serving sweet spot. Going lower on activations needs careful calibration and per-tensor dynamic methods.",
+      "quizAnswer": "Activation outliers and wide dynamic range wreck naive INT4 activations, while weights compress cleanly — hence W4A16.",
+      "distractors": [
+        "INT4 activations require special hardware not present on common GPUs, so activations are kept at FP16 for compatibility.",
+        "Activations are not actually used during inference, so quantizing them to INT4 would save no memory or bandwidth anyway.",
+        "It is computationally faster to quantize activations to INT4 than to INT8, but INT4 weights happen to need FP16 activations.",
+        "Weights have the outliers and activations are well-behaved, so the weights stay at INT4 while activations reach FP16.",
+        "INT4 activations overflow the KV cache, whereas INT4 weights fit, so only the weights are quantized to four bits.",
+        "Activation quantization is handled separately by the tokenizer, which already maps inputs to a fixed INT4 range."
+      ]
+    },
+    {
+      "front": "How do PTQ and QAT differ as quantization approaches?",
+      "back": "PTQ (post-training quantization) quantizes an already-trained model using a small calibration dataset — fast and cheap, but it may lose accuracy on sensitive layers. QAT (quantization-aware training) simulates quantization during training so the model adapts to the rounding, giving better accuracy at the cost of a full retraining run. PTQ is the common default for LLMs; QAT is reserved for when PTQ accuracy is insufficient.",
+      "quizAnswer": "PTQ quantizes a trained model with calibration data (fast, some accuracy loss); QAT simulates quantization during training (accurate, costly).",
+      "distractors": [
+        "PTQ simulates quantization during training while QAT quantizes afterward with calibration data, so QAT is the faster option.",
+        "PTQ quantizes only the weights and QAT only the activations, so the two are combined to reach full INT8 inference.",
+        "PTQ uses the Hessian to round weights while QAT uses activation outliers, making QAT strictly more accurate at INT4.",
+        "PTQ retrains the whole model in low precision while QAT only calibrates, so PTQ is the more expensive of the two.",
+        "PTQ applies to inference and QAT to training, but both require a full retraining pass over the original dataset.",
+        "PTQ quantizes per-tensor and QAT per-channel, which is the only difference between the two approaches in practice."
+      ]
+    },
+    {
+      "front": "How do structured and unstructured pruning differ in their hardware payoff?",
+      "back": "Structured pruning removes entire units — attention heads, FFN neurons, or whole layers — so the remaining dense computation is smaller and runs faster on standard hardware. Unstructured pruning zeroes individual weights, producing a sparse matrix that needs specialized sparse-hardware support (e.g., 2:4 sparsity) to actually speed up; otherwise the dense kernels still process the zeros.",
+      "quizAnswer": "Structured pruning removes whole heads/neurons/layers for real speedups; unstructured zeroes individual weights, needing sparse-hardware support.",
+      "distractors": [
+        "Structured pruning zeroes individual weights for fine-grained compression; unstructured removes whole layers for speed.",
+        "Both remove entire attention heads, but structured pruning does so during training and unstructured during inference.",
+        "Structured pruning needs sparse-hardware support to speed up, while unstructured pruning accelerates on any dense GPU.",
+        "Structured pruning removes whole heads but never speeds up inference, while unstructured pruning always does on any GPU.",
+        "Structured pruning compresses the KV cache while unstructured pruning compresses the weights, and both need calibration.",
+        "Both produce identical speedups; the labels only describe whether a human or an algorithm chose which weights to drop."
+      ]
+    },
+    {
+      "front": "What is KV-cache quantization and why is it useful for long-context serving?",
+      "back": "Storing the cached keys and values in lower precision (e.g., FP8 or INT8) instead of FP16, roughly halving the cache's memory footprint and bandwidth. Since the KV cache often dominates memory at long context and high concurrency, quantizing it lets more sequences fit and raises throughput, with careful calibration keeping quality loss small.",
+      "quizAnswer": "Store cached K/V in FP8/INT8 instead of FP16, halving cache memory and bandwidth so more long-context sequences fit.",
+      "distractors": [
+        "Compress the KV cache by pruning the oldest tokens, so memory stays bounded as the generated sequence grows longer.",
+        "Store the keys at full precision and the values at INT8, since values tolerate quantization but keys do not.",
+        "Quantize the attention scores rather than the cache itself, halving the bandwidth needed to read back each step.",
+        "Recompute the KV cache from scratch each step in low precision, trading extra compute for a smaller memory footprint.",
+        "Move the KV cache to lower-precision CPU memory and page it back per token, freeing GPU memory for more requests.",
+        "Store cached K/V in FP4 only on Blackwell, since earlier GPUs lack any path to quantize the attention cache."
+      ]
+    },
+    {
+      "front": "What does prefix caching optimize in LLM serving?",
+      "back": "It reuses the KV cache computed for a shared prefix — typically a long system prompt or common context — across many requests, so the prefill of that prefix is computed once instead of per request. This cuts time-to-first-token and prefill compute dramatically when many requests share the same leading tokens (a common pattern in chat applications and RAG with fixed instructions).",
+      "quizAnswer": "Reuse the KV cache of a shared prefix (e.g., system prompt) across requests, so its prefill is computed once, not repeatedly.",
+      "distractors": [
+        "Cache the final responses to common prefixes so identical requests skip generation and return the stored answer directly.",
+        "Precompute the KV cache for every possible prefix at startup, so no request ever pays the prefill cost at runtime.",
+        "Reuse the draft model's tokens across requests with a shared prefix, raising the acceptance rate of speculative decoding.",
+        "Cache the embeddings of the shared prefix so the embedding lookup is skipped, reducing the cost of the decode phase.",
+        "Reuse the KV cache of a shared suffix across requests, so the most recently generated tokens are computed only once.",
+        "Store the shared prefix in lower precision so its cache occupies less memory, freeing room for more concurrent requests."
+      ]
+    },
+    {
+      "front": "What does disaggregated serving separate, and why does it help LLM inference?",
+      "back": "It runs the prefill (context) phase and the decode (generation) phase on separate GPU pools. Prefill is compute-bound and bursty while decode is bandwidth-bound and steady, so they have conflicting hardware needs; splitting them lets each pool be sized and batched independently, improving GPU utilization and tail latency. NVIDIA Dynamo and TensorRT-LLM support this pattern.",
+      "quizAnswer": "Run prefill and decode on separate GPU pools — their compute-bound vs bandwidth-bound profiles let each be tuned independently.",
+      "distractors": [
+        "Run the model's weights and KV cache on separate GPU pools, so memory-heavy caches never crowd out the weight storage.",
+        "Split the attention and FFN sub-layers across separate GPUs, since the two have very different arithmetic intensities.",
+        "Run prefill and decode on the same GPU but in separate CUDA streams, overlapping the two phases to hide their latency.",
+        "Separate the draft and target models of speculative decoding onto different pools so verification never blocks drafting.",
+        "Split requests by length, routing long prompts to one pool and short prompts to another to balance the batch sizes.",
+        "Run the tokenizer and the model on separate GPU pools, so preprocessing never stalls the generation phase under load."
+      ]
+    }
+  ]
+}

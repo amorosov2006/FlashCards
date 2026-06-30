@@ -2,7 +2,7 @@
 
 ## Overview
 
-React 18 + Vite 5 PWA. Two study modes (Practice, Quiz), two bundled deck groups (NCA-GENL Prep, Interview Prep), plus user-importable JSON decks. Hosted on GitHub Pages; installable as a PWA on iPhone and desktop.
+React 18 + Vite 5 PWA. Two study modes (Practice, Quiz), three bundled deck groups (NCA-GENL Prep, NCP-GENL Prep, Interview Prep), plus user-importable JSON decks. Hosted on GitHub Pages; installable as a PWA on iPhone and desktop.
 
 ---
 

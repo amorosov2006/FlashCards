@@ -1,0 +1,149 @@
+{
+  "title": "NCP-GENL · Model Deployment & Serving",
+  "description": "Triton, NIM, continuous batching, PagedAttention, Kubernetes, rollout, Dynamo (exam domain, 9%).",
+  "cards": [
+    {
+      "front": "What is NVIDIA NIM (NVIDIA Inference Microservice)?",
+      "back": "A pre-packaged container that bundles an optimized model engine (often TensorRT-LLM, vLLM, or SGLang auto-selected) with a server, exposing an OpenAI-compatible API for turnkey deployment. You pull the container, run it, and get an OpenAI-style endpoint backed by an engine optimized for the target GPU — it encapsulates the NeMo → TensorRT-LLM → Triton flow without manual tuning.",
+      "quizAnswer": "A pre-packaged container bundling an optimized engine and OpenAI-compatible API, auto-selecting the backend for turnkey deployment.",
+      "distractors": [
+        "A new training framework that bundles NeMo recipes with a server so models can be fine-tuned and served from one container.",
+        "A Kubernetes scheduler that places inference pods on GPU nodes and exposes them through an OpenAI-compatible gateway.",
+        "A monitoring database that stores inference metrics from Triton and serves them through an OpenAI-compatible query API.",
+        "A pre-packaged container that ships raw model weights and requires the user to compile a TensorRT-LLM engine before serving.",
+        "A profiling microservice that benchmarks a model on the target GPU and recommends the optimal quantization and batch size.",
+        "A model registry that versions checkpoints and converts them to OpenAI format, but leaves serving to a separate runtime."
+      ]
+    },
+    {
+      "front": "In Triton, what does a 'model ensemble' provide?",
+      "back": "A way to chain multiple models and pre/post-processing steps into a single pipeline served as one logical model — for example tokenizer → LLM → detokenizer. Ensembles run multi-stage inference graphs with minimal overhead, avoiding the round-trip latency of separate calls. Business Logic Scripting (BLS) and Python backends enable more complex, conditional flows.",
+      "quizAnswer": "Chain multiple models and pre/post-processing into one logical pipeline (e.g., tokenizer → LLM → detokenizer), avoiding round trips.",
+      "distractors": [
+        "A pre-trained ensemble of several models whose outputs Triton averages to improve accuracy over any single model.",
+        "An automatic backup-and-restore mechanism that keeps redundant copies of a model loaded for instant failover.",
+        "A way to encrypt the model weights at rest and decrypt them on demand as requests flow through the pipeline.",
+        "A way to chain models, but each stage runs as a separate network call, so latency is the sum of the stages plus round trips.",
+        "A scheduler that load-balances requests across identical model replicas, choosing the least-busy instance per call.",
+        "A way to run multiple versions of one model concurrently and route traffic between them for A/B testing."
+      ]
+    },
+    {
+      "front": "Which feature is essential for serving many concurrent LLM requests at high GPU utilization?",
+      "back": "Continuous (in-flight) batching that admits and evicts requests at every decoding step, combined with PagedAttention KV-cache management. Continuous batching is the central reason vLLM, TGI, TensorRT-LLM, and SGLang reach high tokens/sec/GPU on real workloads, because static batching wastes the GPU when request lengths differ — finished sequences would otherwise hold up the whole batch.",
+      "quizAnswer": "Continuous (in-flight) batching that admits and evicts requests every decode step, paired with PagedAttention KV management.",
+      "distractors": [
+        "Static batching with a large fixed batch size, so the GPU always processes a full batch and never sits partly idle.",
+        "Single-request mode, which dedicates the whole GPU to one sequence at a time for the lowest possible per-request latency.",
+        "Continuous batching that admits requests only at fixed time windows, evicting the whole batch once the slowest finishes.",
+        "Disabling batching entirely and instead replicating the model across more GPUs to handle concurrent requests in parallel.",
+        "Dynamic batching that groups requests by prompt length, padding each group so all sequences in it finish together.",
+        "Speculative batching, where a draft model groups likely-similar requests so the target verifies them in one pass."
+      ]
+    },
+    {
+      "front": "Which Kubernetes component is typically used to expose NVIDIA GPUs to pods?",
+      "back": "The NVIDIA GPU Operator. It deploys and lifecycles the full NVIDIA stack on every GPU node — drivers, the NVIDIA Container Toolkit, the device plugin, DCGM exporter, and the MIG manager. Pods then request GPUs via resource limits. kubectl, etcd, and Helm are general Kubernetes tooling, not GPU enablement.",
+      "quizAnswer": "The NVIDIA GPU Operator — it installs and manages drivers, container toolkit, device plugin, DCGM, and MIG on GPU nodes.",
+      "distractors": [
+        "kubectl alone, which detects attached GPUs and schedules pods onto them once the device limits are declared.",
+        "etcd, the cluster key-value store, which tracks GPU inventory and assigns devices to pods at scheduling time.",
+        "Helm, the package manager, which installs the GPU drivers and device plugin as part of each application's chart.",
+        "The NVIDIA GPU Operator, which provisions the GPUs but requires drivers to be pre-installed manually on each node.",
+        "The Triton Operator, which installs the GPU drivers and device plugin specifically for inference workloads only.",
+        "The DCGM exporter on its own, which both exposes GPU metrics and registers the devices with the kubelet."
+      ]
+    },
+    {
+      "front": "What is a sound rollout strategy for a new fine-tuned LLM in production?",
+      "back": "Shadow mode (mirror traffic without serving the new model's output) → canary → gradual ramp → full rollout, with automatic rollback on guardrail metrics. Shadow lets you measure quality and stability without user impact; canaries cap the blast radius; guardrail metrics (latency, error rate, refusal rate, safety violations) trigger automatic rollback before harm spreads.",
+      "quizAnswer": "Shadow (mirror traffic) → canary → gradual ramp → full rollout, with automatic rollback on guardrail metric breaches.",
+      "distractors": [
+        "Push to 100% of users immediately, then monitor closely and roll back manually if support complaints start to rise.",
+        "Canary to a fixed 50% split indefinitely, comparing the two halves until one clearly wins on user satisfaction.",
+        "Shadow mode where the new model's outputs are served to users while the old model's are logged silently for comparison.",
+        "Blue-green swap with no shadow or canary stage, cutting all traffic over at once but keeping the old version warm.",
+        "Gradual ramp first, then shadow mode, so the new model handles real traffic before its quality is measured offline.",
+        "A/B test the prompts rather than the model, holding the model fixed and rolling out only the new system prompt gradually."
+      ]
+    },
+    {
+      "front": "What is the primary purpose of model versioning in Triton?",
+      "back": "It lets multiple versions of a model be loaded simultaneously, routes traffic between them, and enables zero-downtime updates and rollbacks via the model repository. Triton's repository structure (model/version/) supports version policies like latest, specific, and all, enabling A/B testing and instant rollback. The policy is set in config.pbtxt.",
+      "quizAnswer": "Load multiple versions at once, route traffic between them, and enable zero-downtime updates/rollbacks via the model repository.",
+      "distractors": [
+        "It is cosmetic metadata that labels checkpoints in the registry but has no effect on which model actually serves traffic.",
+        "It encrypts each version of the weights with a different key so older versions cannot be served after a rollback.",
+        "It restricts every client to a single pinned version, preventing accidental traffic to an untested model revision.",
+        "It loads multiple versions but serves only the newest, keeping older ones on disk purely as backups for manual restore.",
+        "It compresses each version with a different quantization so Triton can pick the smallest one that meets the latency SLA.",
+        "It versions the config.pbtxt rather than the weights, so serving settings can change without reloading the model."
+      ]
+    },
+    {
+      "front": "On which port does Triton expose Prometheus metrics, and which metric is commonly used to autoscale LLM serving?",
+      "back": "Triton exposes Prometheus metrics on port 8002 (HTTP is 8000, gRPC is 8001). For Kubernetes autoscaling, the queue-to-compute ratio (queue_compute:ratio) is a hardware- and model-independent signal that captures whether requests are waiting relative to time spent computing — a good HPA trigger. Queue duration spiking under load signals the need to scale out or enable in-flight batching.",
+      "quizAnswer": "Port 8002 for metrics; the queue-to-compute ratio is a model-independent signal commonly used to drive HPA autoscaling.",
+      "distractors": [
+        "Port 8000 for metrics; GPU temperature is the standard signal used to trigger the Horizontal Pod Autoscaler.",
+        "Port 8001 for metrics; the raw request count per second is the model-independent signal used to scale the deployment.",
+        "Port 8002 for metrics; end-to-end request latency alone is the recommended HPA trigger regardless of the model served.",
+        "Port 9090 for metrics, since Triton embeds a Prometheus server; GPU memory usage is the metric used for autoscaling.",
+        "Port 8002 for metrics; the inference success-to-failure ratio is the hardware-independent signal that drives autoscaling.",
+        "Port 8888 for metrics; queue depth in absolute requests is preferred over any ratio because it needs no model context."
+      ]
+    },
+    {
+      "front": "How does NIM choose which inference backend to run a model on?",
+      "back": "NIM auto-detects the model's format, architecture, and quantization, then automatically selects the optimal backend — vLLM, SGLang, or TensorRT-LLM — for that model on the target GPU, with no manual optimization. This is what lets a single docker run command deploy a model with an OpenAI-compatible endpoint while still getting an engine tuned to the hardware.",
+      "quizAnswer": "It auto-detects the model's format, architecture, and quantization, then picks the best backend (vLLM, SGLang, or TensorRT-LLM).",
+      "distractors": [
+        "It always uses TensorRT-LLM, since that is the only backend NIM containers ship with, and it recompiles per GPU at startup.",
+        "It lets the user specify the backend by environment variable, defaulting to vLLM if none is given at container launch.",
+        "It benchmarks all three backends on a sample request at startup and keeps whichever returns the first token fastest.",
+        "It selects the backend based on the requested batch size, using vLLM for small batches and TensorRT-LLM for large ones.",
+        "It detects the model's format and quantization, then routes to a cloud endpoint that runs the optimal backend remotely.",
+        "It picks the backend by the OpenAI API version requested, mapping each API revision to a specific serving engine."
+      ]
+    },
+    {
+      "front": "What problem does PagedAttention (vLLM) solve, and how?",
+      "back": "It eliminates KV-cache fragmentation by managing the cache in fixed-size pages like virtual memory, so variable-length, dynamically growing caches no longer waste memory on internal fragmentation. This enables efficient KV sharing across requests (e.g., common prefixes) and is what makes high-concurrency continuous batching practical, raising the number of sequences that fit in GPU memory.",
+      "quizAnswer": "It manages the KV cache in fixed-size pages like virtual memory, eliminating fragmentation and enabling sharing across requests.",
+      "distractors": [
+        "It encrypts the KV cache page by page so multiple tenants can share a GPU without exposing each other's context.",
+        "It pages the KV cache out to CPU memory when the GPU fills, swapping pages back on demand during the decode phase.",
+        "It speeds up training by paging activations to disk, freeing GPU memory for larger batches during the forward pass.",
+        "It replaces NCCL for KV-cache transfers between tensor-parallel GPUs, paging the cache across the NVLink fabric.",
+        "It manages the cache in fixed pages but requires all requests to share one page table, so caches cannot be isolated.",
+        "It compresses the KV cache into pages of quantized values, halving memory at the cost of a small accuracy loss."
+      ]
+    },
+    {
+      "front": "When launching TensorRT-LLM under Triton for a multi-GPU (tensor-parallel) model, what are leader and orchestrator modes?",
+      "back": "Both are MPI-based ways to run multi-GPU TRT-LLM under Triton. In leader mode, the rank-0 process receives client requests and coordinates the other ranks. In orchestrator mode, a single orchestrator process spawns and manages the worker processes. You launch with the world_size set to the number of GPUs and point Triton at the model repository.",
+      "quizAnswer": "MPI multi-GPU launch modes: leader mode has rank-0 handle requests; orchestrator mode spawns and manages worker processes.",
+      "distractors": [
+        "Leader mode runs the prefill phase and orchestrator mode runs the decode phase, splitting the model across the two pools.",
+        "Leader mode keeps the model on one GPU and orchestrator mode shards it, so you pick based on whether the model fits.",
+        "Leader mode batches requests statically and orchestrator mode batches them continuously, trading latency for throughput.",
+        "Leader mode loads the latest model version and orchestrator mode loads all versions, controlling the rollout strategy.",
+        "Leader mode runs on a single node and orchestrator mode spans nodes, so orchestrator mode is required for pipeline parallelism.",
+        "Leader mode uses NCCL for coordination and orchestrator mode uses gRPC, which is why orchestrator mode tolerates higher latency."
+      ]
+    },
+    {
+      "front": "What is NVIDIA Dynamo, and what does it add for large-scale LLM inference?",
+      "back": "Dynamo is a data-center-scale inference server built specifically for LLM workloads. It adds advanced features beyond a single-node server, including decoupled pre/post-processing workers and native support for disaggregated (prefill/decode) serving, which are especially beneficial under high concurrency. It orchestrates inference across many GPUs and nodes rather than serving from one box.",
+      "quizAnswer": "A data-center-scale LLM inference server with decoupled pre/post-processing workers and native disaggregated prefill/decode serving.",
+      "distractors": [
+        "A single-node inference container, like NIM, that bundles one optimized engine with an OpenAI-compatible endpoint.",
+        "A training orchestrator that schedules distributed fine-tuning jobs across a data center's GPU nodes via Slurm.",
+        "A profiling tool that traces inference across a cluster and recommends where to place prefill and decode workers.",
+        "A data-center inference server that requires all phases to run on one GPU pool, unlike Triton's disaggregated mode.",
+        "A Kubernetes operator that autoscales Triton deployments by monitoring the queue-to-compute ratio across the cluster.",
+        "A KV-cache database that stores shared prefixes across nodes so any inference server can reuse them at query time."
+      ]
+    }
+  ]
+}

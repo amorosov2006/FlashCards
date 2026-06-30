@@ -1,0 +1,110 @@
+{
+  "title": "NCP-GENL · Safety, Ethics & Compliance",
+  "description": "NeMo Guardrails, injection defense, output classifiers, GDPR, bias, red-teaming (exam domain, 5%).",
+  "cards": [
+    {
+      "front": "What is NeMo Guardrails and what does it do?",
+      "back": "A toolkit for adding programmable safety, topical, and dialog rails around LLM applications. Using the Colang DSL (or YAML), you define input, output, dialog, retrieval, and execution rails — integrating safety classifiers, topic control, fact-checking, and tool-use restrictions around any LLM backend. It enforces policy at the application boundary rather than relying on the model alone.",
+      "quizAnswer": "A toolkit for programmable input/output/dialog/topical rails (via Colang) that enforce safety and tool restrictions around any LLM.",
+      "distractors": [
+        "A new optimizer that penalizes unsafe gradient directions during fine-tuning, baking safety into the model's weights.",
+        "A GPU profiler that flags kernels processing harmful content so they can be blocked before the response is returned.",
+        "A Kubernetes CNI plugin that isolates LLM pods on a separate network so untrusted prompts cannot reach other services.",
+        "A toolkit for programmable rails, but it only filters inputs; output moderation requires a separate downstream classifier.",
+        "A red-teaming framework that automatically generates adversarial prompts to discover an LLM's safety failures before launch.",
+        "A content-moderation model, like a toxicity classifier, that NeMo embeds directly into the transformer's final layer."
+      ]
+    },
+    {
+      "front": "What is the strongest approach to mitigate prompt-injection risk in an LLM application that uses tools?",
+      "back": "Defense-in-depth at the architecture level: apply least-privilege to tools, separate trusted instructions from untrusted data, validate tool arguments and outputs, and require human confirmation for destructive actions. OWASP LLM01 (Prompt Injection) explicitly recommends authorization, input/output validation, and least privilege over prompt-only patches, because no instruction the model reads is tamper-proof.",
+      "quizAnswer": "Least-privilege tools, separate trusted instructions from untrusted data, validate tool args/outputs, and confirm destructive actions.",
+      "distractors": [
+        "Trust the model fully and grant it broad tool permissions, since a well-aligned model will refuse any malicious instruction.",
+        "Concatenate the system prompt at the end of the context, so its instructions override anything injected earlier in the prompt.",
+        "Set the sampling temperature to zero, so the model deterministically follows only the developer's original tool instructions.",
+        "Apply least-privilege to tools and validate their outputs, but allow destructive actions without confirmation to reduce latency.",
+        "Run every tool call through a second LLM that rewrites suspicious arguments, trusting the rewriter to strip any injection.",
+        "Encrypt the untrusted data before the model reads it, so any embedded instructions are unreadable during generation."
+      ]
+    },
+    {
+      "front": "How should a user's right-to-be-forgotten (GDPR Art. 17 / CCPA) request be handled in an LLM application?",
+      "back": "Delete the user's data from logs, vector indexes, and any memory stores; document the deletion; and ensure backups and replicas honor it within policy windows. Compliance requires verifiable, propagated deletion. Designing memory and personalization with per-user namespaces and TTLs makes this mechanically straightforward rather than a manual scavenger hunt across systems.",
+      "quizAnswer": "Delete the user's data from logs, vector indexes, and memory stores; document it; and propagate deletion to backups and replicas.",
+      "distractors": [
+        "Ignore the request unless the user can prove their data was used, since deletion would degrade the model for everyone.",
+        "Delete only the most recent record tied to the user, since older entries are anonymized and fall outside the regulation.",
+        "Encrypt the user's data more strongly instead of deleting it, since strong encryption satisfies the right to erasure.",
+        "Delete the data from the primary store only, since backups and replicas are exempt from right-to-be-forgotten requirements.",
+        "Retrain the base model from scratch without the user's data, since deleting logs alone leaves the knowledge in the weights.",
+        "Move the user's data to cold storage and restrict access, since archival with access controls is equivalent to deletion."
+      ]
+    },
+    {
+      "front": "Which runtime layer is recommended for catching unsafe model outputs before they reach the user?",
+      "back": "An output-side classifier (toxicity, PII, jailbreak indicators) plus policy rules (refusal templates, escalate-to-human), executed before the response is returned. Layered defense — safety-tuned base model + system prompt + output classifier + business rules — drives the undesirable-output rate far lower than any single layer, and the latency overhead is small.",
+      "quizAnswer": "An output-side classifier (toxicity, PII, jailbreak) plus policy rules (refusal templates, escalation) run before returning the response.",
+      "distractors": [
+        "No filtering at all, since a safety-tuned base model already refuses unsafe requests and additional layers only add latency.",
+        "An input-side classifier alone, since blocking unsafe prompts at entry guarantees the outputs will also be safe.",
+        "Letting the user flag unsafe outputs after the fact, since human review is more accurate than any automated classifier.",
+        "Response caching, which prevents unsafe outputs by serving only previously approved answers to repeated questions.",
+        "An output classifier that runs asynchronously after the response is returned, logging violations for later model retraining.",
+        "Lowering the temperature to zero at runtime, since deterministic decoding eliminates the randomness behind unsafe outputs."
+      ]
+    },
+    {
+      "front": "What is red-teaming in the context of LLM safety?",
+      "back": "Adversarial testing that deliberately probes a model for failure modes — jailbreaks, harmful content, prompt injection, data leakage — before deployment, so the gaps can be closed. It is a proactive discovery process (often combining human experts and automated attack generation), distinct from runtime filtering: red-teaming finds the weaknesses; guardrails and classifiers defend against them in production.",
+      "quizAnswer": "Adversarial testing that deliberately probes a model for failure modes (jailbreaks, harmful content, leakage) before deployment.",
+      "distractors": [
+        "A runtime defense layer that classifies incoming prompts as adversarial and blocks them before the model generates a response.",
+        "A training technique that fine-tunes the model on adversarial examples so it learns to refuse them during deployment.",
+        "Adversarial testing that probes the model after deployment only, using real user complaints to discover new failure modes.",
+        "A monitoring practice that tracks the model's refusal rate over time and alerts when adversarial traffic spikes in production.",
+        "A compliance audit that verifies the training data was free of harmful content before the model was released to users.",
+        "An ensemble method where a second model attacks the first's outputs at inference and regenerates any unsafe responses."
+      ]
+    },
+    {
+      "front": "How is model bias across demographic groups typically detected and quantified?",
+      "back": "Evaluate model outputs across demographic groups using fairness metrics: demographic parity (equal positive rates across groups), equalized odds (equal error rates across groups), and counterfactual fairness (output unchanged when a sensitive attribute is swapped). These quantify disparate treatment, complementing qualitative red-teaming with measurable, group-stratified signals.",
+      "quizAnswer": "Evaluate outputs across demographic groups with fairness metrics: demographic parity, equalized odds, and counterfactual fairness.",
+      "distractors": [
+        "Measure the model's overall accuracy and assume it is unbiased if the aggregate score exceeds the deployment threshold.",
+        "Evaluate outputs across groups using perplexity, since lower perplexity for one group reveals the model favors its language.",
+        "Compare the model's refusal rate against a single global baseline, flagging bias whenever refusals exceed that threshold.",
+        "Evaluate across demographic groups with demographic parity and equalized odds, but counterfactual fairness applies only to images.",
+        "Audit the training data's demographic composition only, since a balanced corpus guarantees unbiased model outputs.",
+        "Measure latency differences across groups, since slower responses for some queries indicate the model treats them unequally."
+      ]
+    },
+    {
+      "front": "What is text watermarking used for in generative AI, and how does it broadly work?",
+      "back": "It embeds a statistical signal in generated text for provenance tracking — letting you later detect, with reasonable confidence, that text came from a given model. It works by subtly biasing the token-sampling distribution (e.g., favoring a pseudo-random 'green list' of tokens keyed by a secret) so a detector can spot the pattern, while the text stays natural to a human reader.",
+      "quizAnswer": "Embed a statistical signal for provenance by subtly biasing token sampling, so a detector can later identify model-generated text.",
+      "distractors": [
+        "Append a visible disclaimer to every response, so readers always know the text was produced by a language model.",
+        "Encrypt the generated text with a model-specific key, so only the provider can decrypt and verify its origin later.",
+        "Embed metadata in the response headers identifying the model and version, which downstream systems read for provenance.",
+        "Embed a statistical signal by biasing sampling, but the signal can only be detected if the original prompt is also known.",
+        "Hash each generated response and store it in a registry, so any text can be checked against the model's output log.",
+        "Insert invisible Unicode characters between words, encoding the model ID directly into the spacing of the output text."
+      ]
+    },
+    {
+      "front": "What is Constitutional AI as an alignment technique, and how does it differ from RLHF?",
+      "back": "Constitutional AI aligns a model using a written set of principles (a 'constitution'): the model critiques and revises its own responses against those principles, generating preference data with far less human labeling. Where RLHF relies on humans ranking outputs to train a reward model, Constitutional AI substitutes AI-generated self-critique guided by the constitution, scaling supervision more cheaply.",
+      "quizAnswer": "Align via a written set of principles the model uses to self-critique and revise, replacing much human labeling RLHF needs.",
+      "distractors": [
+        "Align by hard-coding refusal rules into the system prompt, so the model checks each response against the listed constraints.",
+        "Align by training a reward model on human rankings, identical to RLHF but with the rankings drawn from a legal constitution.",
+        "Align via a written set of principles, but the principles are enforced at inference by a guardrail rather than during training.",
+        "Align by fine-tuning on a curated dataset of constitutional-law texts, so the model internalizes formal ethical reasoning.",
+        "Align by having human reviewers rewrite every response against principles, which is more labor-intensive than standard RLHF.",
+        "Align by averaging the outputs of several models, using a constitution to weight each model's contribution to the consensus."
+      ]
+    }
+  ]
+}

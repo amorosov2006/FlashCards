@@ -14,6 +14,23 @@
       ]
     },
     {
+      "id": "ncp-genl",
+      "title": "NCP-GENL Prep",
+      "description": "NVIDIA Certified Professional: Generative AI LLMs — production-focused decks by exam domain.",
+      "decks": [
+        "ncp-genl-01-llm-architecture.json",
+        "ncp-genl-02-prompt-engineering.json",
+        "ncp-genl-03-data-preparation.json",
+        "ncp-genl-04-fine-tuning.json",
+        "ncp-genl-05-model-optimization.json",
+        "ncp-genl-06-gpu-acceleration.json",
+        "ncp-genl-07-deployment-serving.json",
+        "ncp-genl-08-evaluation.json",
+        "ncp-genl-09-monitoring-reliability.json",
+        "ncp-genl-10-safety-ethics-compliance.json"
+      ]
+    },
+    {
       "id": "interview",
       "title": "Interview Prep",
       "description": "GenAI / ML / backend lead interview topics.",

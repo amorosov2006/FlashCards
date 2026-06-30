@@ -1,0 +1,136 @@
+{
+  "title": "NCP-GENL · Data Preparation",
+  "description": "Curation, dedup, tokenization, vocab, PII, contamination, NeMo Curator / RAPIDS (exam domain, 9%).",
+  "cards": [
+    {
+      "front": "Which deduplication technique is standard for trillion-token web corpora?",
+      "back": "MinHash + Locality-Sensitive Hashing (LSH) for near-duplicate detection at scale, optionally combined with exact-match removal. Web corpora are 30–50% near-duplicates; MinHash/LSH (used by NeMo Curator and most modern pipelines) catches them efficiently. Deduplication materially improves downstream model quality and reduces memorization.",
+      "quizAnswer": "MinHash + LSH for scalable near-duplicate detection, often combined with exact-match removal of identical documents.",
+      "distractors": [
+        "Exact string equality on full documents only, since fuzzy matching is too slow to run at web scale.",
+        "Manual review of every document by annotators, which is the only way to reliably catch paraphrased duplicates.",
+        "Removing all documents shorter than 1000 tokens, since near-duplicates are concentrated among short web pages.",
+        "Cosine similarity between every pair of document embeddings, computed exhaustively across the entire corpus.",
+        "MinHash + LSH applied to document titles only, since matching titles reliably identifies duplicate bodies.",
+        "Hashing each document's first sentence, since near-duplicate pages almost always share an identical opening line."
+      ]
+    },
+    {
+      "front": "Why train a BPE/SentencePiece tokenizer from scratch on the target domain for a ground-up domain LLM?",
+      "back": "To reduce token count and improve efficiency on the domain's text — a generic tokenizer can need 2–4× more tokens for code, math, or non-English text. Tokenizer fit determines effective sequence length and inference cost in your domain. Note: changing the tokenizer of an already-pretrained model breaks its embedding table, so this applies to training from scratch.",
+      "quizAnswer": "To cut token count on domain text — a generic tokenizer can need 2–4× more tokens for code or non-English.",
+      "distractors": [
+        "To enforce a hard GPU memory limit, since a domain tokenizer caps the number of tokens a sequence may contain.",
+        "To increase the model's parameter count, because a larger domain vocabulary widens the embedding and output layers.",
+        "Because the cross-entropy loss function mathematically requires a tokenizer trained on the same target corpus.",
+        "To reduce token count, which is why you can safely swap the tokenizer of a pretrained model before fine-tuning.",
+        "To remove all out-of-vocabulary tokens, since a domain tokenizer guarantees every word maps to a single token.",
+        "To speed up training convergence, because domain tokens carry more gradient signal than generic subword pieces."
+      ]
+    },
+    {
+      "front": "Which NVIDIA tool is purpose-built for scalable, GPU-accelerated LLM data curation?",
+      "back": "NeMo Curator. It implements high-throughput dataset processing for pretraining and fine-tuning data: exact and fuzzy (MinHash/LSH) deduplication, quality classification, language identification, PII redaction, and task decontamination, scaling across multi-node GPU clusters (built on RAPIDS/Dask). TensorRT, Nsight Compute, and cuBLAS serve unrelated inference/profiling/GEMM roles.",
+      "quizAnswer": "NeMo Curator — GPU-accelerated dedup, quality filtering, language ID, PII redaction, and decontamination at multi-node scale.",
+      "distractors": [
+        "TensorRT, which compiles and optimizes trained models for low-latency inference rather than curating training data.",
+        "Nsight Compute, which profiles individual GPU kernels and is used to tune data-loading throughput during training.",
+        "cuBLAS, the GPU linear-algebra library that accelerates the deduplication matrix multiplications under the hood.",
+        "NeMo Curator, which mainly serves embeddings for retrieval and only incidentally performs dataset deduplication.",
+        "Triton Inference Server, which curates data by streaming documents through preprocessing model ensembles at scale.",
+        "DCGM, which exports cluster GPU metrics and schedules the multi-node deduplication jobs across the data pipeline."
+      ]
+    },
+    {
+      "front": "What is a robust strategy to detect and remove PII from a pretraining corpus?",
+      "back": "Combine regex patterns (emails, phone numbers, SSNs) with a learned NER classifier, then mask or redact at ingestion time. Layered detection catches both well-formatted and contextually identified PII. Document the policy and audit periodically — some emergent leakage in model outputs traces back to incomplete training-time redaction.",
+      "quizAnswer": "Layer regex patterns with a learned NER classifier and redact at ingestion, catching both formatted and contextual PII.",
+      "distractors": [
+        "Trust the upstream data source's privacy guarantees, since reputable corpora have already stripped personal information.",
+        "Manually review every document for personal data, which is the only method that catches contextually embedded PII.",
+        "Increase model size so the network learns to avoid emitting PII, removing the need for training-time redaction.",
+        "Apply regex patterns alone, since well-formed emails and phone numbers account for essentially all real-world PII.",
+        "Encrypt the corpus at rest so PII stays protected, which removes the need to detect or redact it before training.",
+        "Use an NER classifier alone without regex, since learned models reliably catch every formatted identifier too."
+      ]
+    },
+    {
+      "front": "What is the correct order of operations when preparing instruction-tuning data?",
+      "back": "Curate sources → deduplicate → filter for quality and safety → tokenize → create train/val splits with contamination checks. Each step exposes upstream issues that would silently corrupt the model, and contamination checks against your eval suite prevent test-set leakage — a frequent cause of inflated benchmark scores.",
+      "quizAnswer": "Curate → deduplicate → quality/safety filter → tokenize → split with contamination checks against the eval suite.",
+      "distractors": [
+        "Train the model first, then label the outputs, then split into train and validation sets for the next round.",
+        "Tokenize and split the raw data first, then deduplicate and filter only the documents the model got wrong.",
+        "Compile the corpus with TensorRT-LLM, then label and deduplicate the engine's outputs before fine-tuning.",
+        "Curate sources → tokenize → train/val split → deduplicate, deferring quality filtering until after evaluation.",
+        "Filter for quality first, then curate sources, skipping deduplication because quality filtering removes duplicates too.",
+        "Deduplicate → tokenize → train → filter, removing low-quality examples only after observing validation loss."
+      ]
+    },
+    {
+      "front": "For a multilingual LLM, which tokenization choice is generally most appropriate?",
+      "back": "Byte-level BPE or SentencePiece trained on the multilingual corpus, giving UNK-free coverage and reasonable token counts across scripts. Byte-level BPE handles any Unicode without UNK; SentencePiece is whitespace-agnostic and good for languages without word boundaries (Chinese, Japanese). Always check per-language token overhead to control cost and quality.",
+      "quizAnswer": "Byte-level BPE or SentencePiece on the multilingual corpus — UNK-free Unicode coverage with reasonable per-script token counts.",
+      "distractors": [
+        "An ASCII-only word tokenizer, since restricting to ASCII keeps the vocabulary small and the embedding table compact.",
+        "One-hot encoded characters per script, which guarantees full coverage without needing any learned merge operations.",
+        "No tokenization at all, feeding raw Unicode code points so the model learns word boundaries directly from data.",
+        "Byte-level BPE trained only on English, since subword pieces transfer cleanly to every other language anyway.",
+        "A separate word tokenizer per language, switched at inference based on a language-ID classifier's prediction.",
+        "WordPiece trained on the largest language only, since its merges generalize to lower-resource scripts automatically."
+      ]
+    },
+    {
+      "front": "What is the vocabulary-size trade-off when designing a tokenizer?",
+      "back": "A larger vocabulary yields shorter token sequences (faster inference, fewer steps) but a bigger embedding and output projection table (more memory and parameters). A smaller vocabulary saves embedding memory but lengthens sequences, raising compute. Typical LLM vocabularies land at 32k–128k tokens, balancing sequence length against table size.",
+      "quizAnswer": "Larger vocab shortens sequences but enlarges the embedding table; typical LLMs land around 32k–128k tokens.",
+      "distractors": [
+        "Larger vocab lengthens sequences but shrinks the embedding table, so production models keep the vocabulary small.",
+        "Vocabulary size only affects training speed, not inference, so it is chosen purely to fit the GPU memory budget.",
+        "Larger vocab improves accuracy without any memory cost, which is why modern LLMs use million-token vocabularies.",
+        "Smaller vocab shortens sequences and shrinks the table, making it strictly better for both compute and memory.",
+        "Vocabulary size sets the model's context window, so a 128k vocabulary is required for 128k-token contexts.",
+        "Larger vocab reduces both sequence length and table size, since each token then carries more semantic content."
+      ]
+    },
+    {
+      "front": "What is sequence packing in fine-tuning data preparation, and why use it?",
+      "back": "Packing concatenates multiple short examples into a single sequence that fills the context window, instead of padding each example separately. This avoids wasting compute and memory on padding tokens, raising training throughput. Care must be taken (e.g., attention masking or document separators) so tokens from one example don't attend across into another.",
+      "quizAnswer": "Concatenate short examples to fill the context window, avoiding wasted padding compute — with masking to prevent cross-attention.",
+      "distractors": [
+        "Compress each example with a learned encoder before training, so more samples fit within the same memory budget.",
+        "Split long examples into fixed-size chunks across batches, so every sequence reaches exactly the context length.",
+        "Pad every short example up to the context window, guaranteeing uniform shapes that the GPU processes most efficiently.",
+        "Concatenate short examples to fill the window, deliberately letting tokens attend across examples for broader context.",
+        "Group examples by topic into the same batch, so the model sees a coherent domain within each training step.",
+        "Duplicate short examples until they fill the context window, increasing their effective weight in the loss."
+      ]
+    },
+    {
+      "front": "How does quality filtering with a classifier typically work for pretraining data?",
+      "back": "Train a classifier to distinguish curated high-quality text (e.g., Wikipedia, books) from raw web-scraped text, then score and threshold documents — keeping high-scoring ones. This is often paired with heuristic filters (alphabetic-character ratio, code-block presence, length bounds) and perplexity filtering, which discards documents with very high perplexity under a reference model.",
+      "quizAnswer": "Train a classifier on curated-vs-web text, then score and keep high-quality documents, often with heuristic and perplexity filters.",
+      "distractors": [
+        "Train a classifier to detect duplicate documents, then keep only one copy of each near-duplicate cluster it finds.",
+        "Score documents by length and keep the longest ones, since longer text reliably contains higher-quality writing.",
+        "Run the target LLM on each document and keep those it answers correctly, filtering by the model's own confidence.",
+        "Train a classifier on curated-vs-web text, then keep the low-scoring documents to maximize stylistic diversity.",
+        "Cluster document embeddings and keep the largest cluster, since the dominant topic represents the cleanest data.",
+        "Score documents by their toxicity classifier output only, keeping everything that passes the safety threshold."
+      ]
+    },
+    {
+      "front": "What are the three standard data formats for fine-tuning, and what does each contain?",
+      "back": "SFT data: instruction/response pairs (JSONL with instruction and output fields). Preference data (DPO/RLHF): triples of (prompt, chosen_response, rejected_response). Chat data: multi-turn conversations with role tags (system/user/assistant). Matching your data format to the training objective is essential — preference methods need paired comparisons, not single responses.",
+      "quizAnswer": "SFT uses instruction/response pairs; preference data uses (prompt, chosen, rejected) triples; chat uses role-tagged multi-turn turns.",
+      "distractors": [
+        "SFT uses (chosen, rejected) pairs; preference data uses single responses; chat uses unlabeled conversation transcripts.",
+        "All three use the same instruction/response format; only the learning rate and number of epochs differ between them.",
+        "SFT uses raw text spans; preference data uses scalar reward labels; chat uses one prompt with many sampled answers.",
+        "SFT uses multi-turn conversations; preference data uses single-turn pairs; chat uses (prompt, chosen, rejected) triples.",
+        "SFT uses prompt-only examples; preference data uses response-only examples; chat concatenates both without any tags.",
+        "SFT uses ranked lists of responses; preference data uses instruction/output pairs; chat uses a single system prompt."
+      ]
+    }
+  ]
+}

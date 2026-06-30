@@ -1,0 +1,175 @@
+{
+  "title": "NCP-GENL · GPU Acceleration & Optimization",
+  "description": "Parallelism (TP/PP/FSDP/SP/EP), NCCL, precision, memory budgeting, profiling, interconnects (exam domain, 14%).",
+  "cards": [
+    {
+      "front": "Tensor parallelism (Megatron-style) splits which dimension across GPUs?",
+      "back": "It splits the individual layer weight matrices (attention Q/K/V projections and FFN matrices) along the hidden dimension, with an all-reduce on the partial outputs each layer. Every GPU holds a copy of every layer but only a slice of each matrix. The per-layer all-reduce is heavy, so TP is usually confined within a node where NVLink bandwidth is available.",
+      "quizAnswer": "It splits each layer's weight matrices along the hidden dimension, all-reducing partial outputs every layer — kept within NVLink.",
+      "distractors": [
+        "It splits the batch dimension across GPUs, all-reducing the gradients once per step, and scales across many nodes.",
+        "It splits the sequence dimension across GPUs, exchanging activations at the layer-norm boundaries via reduce-scatter.",
+        "It places different layers on different GPUs and pipelines microbatches of activations between the pipeline stages.",
+        "It splits each weight matrix along the hidden dimension but communicates only at the model's output, not per layer.",
+        "It replicates every weight matrix on every GPU and splits only the optimizer states to save memory during training.",
+        "It splits the attention heads across GPUs while replicating the FFN, all-reducing only the attention block's output."
+      ]
+    },
+    {
+      "front": "What does pipeline parallelism do, and what overhead does it introduce?",
+      "back": "It places different layer groups (stages) on different GPUs and feeds microbatches of activations through the pipeline. Communication is light (point-to-point activations between stages), but it introduces a 'bubble' of idle time at pipeline startup and teardown. 1F1B and interleaved schedules reduce the bubble by overlapping forward and backward passes across microbatches.",
+      "quizAnswer": "Place layer groups on different GPUs and pipeline microbatches through them; the cost is startup/teardown 'bubble' idle time.",
+      "distractors": [
+        "Split each weight matrix within a layer across GPUs, all-reducing partial outputs, with the bubble being the all-reduce wait.",
+        "Replicate the full model on every GPU and average gradients, with the overhead being the all-reduce of those gradients.",
+        "Place layer groups on different GPUs but process one full batch at a time, with the bubble caused by KV-cache eviction.",
+        "Shard the optimizer states across pipeline stages, gathering them per step, with the bubble being the gather latency.",
+        "Skip every other layer on alternating GPUs, halving compute, with the bubble being the cost of recomputing skipped layers.",
+        "Place layer groups on different GPUs and broadcast activations to all stages, the bubble being the broadcast overhead."
+      ]
+    },
+    {
+      "front": "What does FSDP (Fully Sharded Data Parallel, equivalent to ZeRO-3) shard across data-parallel workers?",
+      "back": "Optimizer state, gradients, and parameters all three. The full layer is gathered just-in-time for its forward and backward pass and freed afterward, so no single GPU ever holds the whole model. FSDP/ZeRO-3 is the memory-efficient backbone of large-model training and is often combined with TP and PP into '3D parallelism.' ZeRO-1/2/3 progressively shard optimizer state, then gradients, then parameters.",
+      "quizAnswer": "Optimizer state, gradients, and parameters — layers are gathered just-in-time for forward/backward and freed afterward.",
+      "distractors": [
+        "Only the optimizer state, gathering the FP32 momentum and variance per step while replicating weights and gradients.",
+        "Only the parameters, leaving gradients and optimizer state replicated on every worker as in standard data parallelism.",
+        "Only the dataset across workers, which is what distinguishes fully sharded data parallel from ordinary data parallel.",
+        "Optimizer state and gradients but not parameters, so each worker keeps a full copy of the weights for fast forward passes.",
+        "Only the activations, recomputing them during backward, which is why FSDP is interchangeable with gradient checkpointing.",
+        "Parameters and activations, gathering each layer's weights and recomputing its activations together during the backward pass."
+      ]
+    },
+    {
+      "front": "What is sequence parallelism most useful for?",
+      "back": "Sharding the activations of layer-norm and dropout operations — which tensor parallelism leaves replicated — along the sequence dimension, to cut activation memory at long context. TP shards along the hidden dim but leaves LN/dropout activations replicated; sequence parallelism shards those along the sequence axis with minimal extra communication, which is critical for long-context training.",
+      "quizAnswer": "Sharding the replicated LayerNorm/dropout activations along the sequence dimension, cutting activation memory at long context.",
+      "distractors": [
+        "Reducing optimizer-state memory by sharding the momentum and variance buffers along the sequence dimension per worker.",
+        "Doubling training throughput automatically by processing two halves of each sequence on two GPUs in parallel.",
+        "Replacing pipeline parallelism entirely by streaming sequence chunks through the layers instead of microbatching them.",
+        "Sharding the attention Q/K/V projections along the sequence axis, which tensor parallelism cannot do on its own.",
+        "Sharding the embedding table along the sequence dimension so very long vocabularies fit within a single GPU's memory.",
+        "Splitting the KV cache along the sequence dimension across GPUs so each holds only part of the generated context."
+      ]
+    },
+    {
+      "front": "What is the most important practical difference between BF16 and FP16 for LLM training?",
+      "back": "BF16 has the same exponent range as FP32, so it avoids the underflow/overflow that plagued early FP16 runs and needs no loss-scaling — but it has fewer mantissa bits (lower precision). FP16 has a narrower dynamic range and typically requires loss-scaling to train stably. BF16 is preferred for stability in LLM training; Hopper/Ada Tensor Cores support both at full speed.",
+      "quizAnswer": "BF16 matches FP32's exponent range (no loss-scaling) but has fewer mantissa bits; FP16's narrow range usually needs loss-scaling.",
+      "distractors": [
+        "They are numerically identical on Hopper; the names refer only to whether the values are stored row-major or column-major.",
+        "FP16 has the wider exponent range and needs no loss-scaling, while BF16 has more mantissa bits but can underflow.",
+        "BF16 cannot be used inside attention because its reduced mantissa destabilizes the softmax, so FP16 is used there instead.",
+        "FP16 is faster only on CPUs, while BF16 is the only 16-bit format the GPU Tensor Cores can actually accelerate.",
+        "BF16 uses 8 bits and FP16 uses 16, so BF16 halves memory again at the cost of needing aggressive loss-scaling.",
+        "BF16 has more mantissa precision but a narrower exponent range, which is why it requires loss-scaling and FP16 does not."
+      ]
+    },
+    {
+      "front": "What is NCCL's role in multi-GPU LLM training?",
+      "back": "It provides collective communication primitives — all-reduce, all-gather, reduce-scatter, broadcast — optimized for NVLink and InfiniBand topologies. Distributed training calls these collectives every step: gradient all-reduce in DDP, reduce-scatter plus all-gather in FSDP, all-reduces in TP. Topology-aware NCCL uses NVLink within a node and InfiniBand across nodes.",
+      "quizAnswer": "Topology-aware collective primitives (all-reduce, all-gather, reduce-scatter, broadcast) over NVLink and InfiniBand, called every step.",
+      "distractors": [
+        "Manages dataset shuffling and sharding across workers, ensuring each GPU sees a disjoint slice of the training data.",
+        "Compiles CUDA kernels at runtime and fuses the collective operations into the model's forward and backward passes.",
+        "Provides collective primitives but runs only over PCIe, so multi-node training must fall back to MPI across InfiniBand.",
+        "Replaces the Triton inference scheduler, routing tokens between experts in mixture-of-experts models during training.",
+        "Provides collectives optimized for Ethernet only, which is why large clusters require a separate InfiniBand library.",
+        "Schedules the pipeline-parallel microbatches, deciding which stage runs each forward and backward pass per step."
+      ]
+    },
+    {
+      "front": "Which tool is the right starting point to identify whether an LLM training job is compute-, memory-, or communication-bound?",
+      "back": "NVIDIA Nsight Systems for system-level timeline tracing, followed by Nsight Compute for kernel-level analysis. Nsight Systems shows kernel timelines, NCCL operations, and CPU/GPU concurrency — usually enough to spot pipeline bubbles, kernel gaps, and collective stalls. Nsight Compute is then used to drill into specific hot kernels' occupancy and memory throughput.",
+      "quizAnswer": "Nsight Systems for the system-level timeline (kernels, NCCL, concurrency), then Nsight Compute to drill into hot kernels.",
+      "distractors": [
+        "Nsight Compute first for the system timeline, then Nsight Systems to inspect individual kernels' occupancy and throughput.",
+        "DCGM for the per-kernel timeline, then the PyTorch profiler to identify which collective operations are stalling.",
+        "The Triton Model Analyzer, which traces the training timeline and recommends the optimal parallelism configuration.",
+        "Nsight Systems for kernel occupancy analysis, then DCGM to view the system-level timeline of NCCL operations.",
+        "ping and basic shell tools to measure inter-node latency, then Nsight Compute to confirm the network is the bottleneck.",
+        "cuBLAS logging for the GEMM timeline, then Nsight Systems to drill into the slowest matrix-multiply kernels."
+      ]
+    },
+    {
+      "front": "In a multi-node DGX/HGX cluster, which interconnect typically dominates inter-node bandwidth?",
+      "back": "InfiniBand (NDR/HDR) or NVLink-Switch where available, often via NVIDIA Quantum/Spectrum networking. High-bandwidth, low-latency links (200–400+ Gb/s per port) are required to keep GPUs fed during distributed training; the right collective topology over InfiniBand is what makes large-scale all-reduce efficient. NVLink dominates within a node; InfiniBand dominates across nodes.",
+      "quizAnswer": "InfiniBand (NDR/HDR) or NVLink-Switch — 200–400+ Gb/s low-latency links that keep GPUs fed for cross-node all-reduce.",
+      "distractors": [
+        "1 Gbps Ethernet, which is sufficient because gradient all-reduce is overlapped with compute and tolerates high latency.",
+        "PCIe 5.0 between the host CPUs of each node, since inter-node GPU traffic must route through system memory anyway.",
+        "USB-C bridges between adjacent nodes, providing the low-latency point-to-point links that pipeline parallelism needs.",
+        "Wi-Fi 6 backhaul, which provides enough aggregate bandwidth for the infrequent parameter syncs in data parallelism.",
+        "NVLink directly between nodes, since NVLink scales seamlessly across racks without needing an InfiniBand fabric.",
+        "10 Gbps Ethernet with RDMA, which matches InfiniBand bandwidth and is preferred for its lower hardware cost."
+      ]
+    },
+    {
+      "front": "Why do Tensor Cores deliver large speedups on transformer workloads?",
+      "back": "They execute matrix-multiply-accumulate (MMA) operations at low precision (FP16/BF16/FP8/INT8) at far higher throughput than FP32 SIMT cores, and most of a transformer's FLOPs are MMAs (the GEMMs in attention and FFN). FP8 on Hopper roughly doubles throughput over BF16. FlashAttention is engineered specifically to keep Tensor Cores fed.",
+      "quizAnswer": "They run low-precision matrix-multiply-accumulate far faster than FP32 SIMT, and most transformer FLOPs are MMA GEMMs.",
+      "distractors": [
+        "They are general-purpose cores that run the transformer's control logic faster than the CPU, freeing the SIMT units for math.",
+        "They store the KV cache on-chip, eliminating the HBM round trips that otherwise dominate the transformer's runtime.",
+        "They execute MMA operations at FP32 precision much faster than the SIMT cores, which only support lower precisions.",
+        "They replace HBM with a wider on-die memory, so the bandwidth-bound GEMMs in attention no longer stall on memory.",
+        "They run the softmax and layer-norm operations at low precision, which are the bulk of a transformer's compute cost.",
+        "They accelerate elementwise activation functions, which dominate the FLOP count once the GEMMs are offloaded to HBM."
+      ]
+    },
+    {
+      "front": "What is the most likely cause of low GPU utilization (e.g., 20%) during pretraining?",
+      "back": "A data-loading bottleneck (the CPU input pipeline starves the GPU) or pipeline bubbles / collective stalls. Identify it with Nsight Systems and fix with prefetching, parallel decode, larger microbatches, or more GPUs per pipeline stage. The input pipeline (WebDataset, NeMo data loader, NeMo Curator outputs) and PP bubbles are the canonical culprits.",
+      "quizAnswer": "A data-loading bottleneck starving the GPU, or pipeline bubbles/collective stalls — diagnose with Nsight Systems, then prefetch.",
+      "distractors": [
+        "The Tensor Cores are switched off in the framework config, so all GEMMs fall back to the slower FP32 SIMT path.",
+        "The model is too small to fill the GPU, so the only fix is to increase the hidden dimension or add more layers.",
+        "Power capping throttles the clocks under sustained load, which is resolved by lowering the batch size to reduce heat.",
+        "A data-loading bottleneck, fixed only by switching from BF16 to FP8 so each step finishes before the next batch loads.",
+        "Excessive HBM bandwidth usage, since pretraining is memory-bound and the fix is to quantize the weights to INT4.",
+        "The optimizer is using too much memory, so reducing the optimizer state with ZeRO raises the compute utilization."
+      ]
+    },
+    {
+      "front": "What does gradient checkpointing (activation recomputation) trade, and why is it used?",
+      "back": "It recomputes activations during the backward pass instead of storing them from the forward pass, trading roughly 30% extra compute for large activation-memory savings (often 60%+). This lets you train with larger batches or longer sequences within a fixed memory budget. It is a standard knob alongside FSDP/ZeRO and tensor parallelism for large-model training.",
+      "quizAnswer": "Recompute activations in the backward pass instead of storing them — ~30% more compute for large activation-memory savings.",
+      "distractors": [
+        "It checkpoints the model weights to disk each step, trading I/O time for the ability to resume after a node failure.",
+        "It stores activations in lower precision during the forward pass, trading a little accuracy for reduced memory usage.",
+        "It recomputes the gradients during the forward pass instead of the backward, trading compute for optimizer-state memory.",
+        "It offloads activations to CPU memory during forward and loads them back for backward, trading PCIe bandwidth for memory.",
+        "It recomputes activations in the backward pass, trading 30% more memory for roughly 60% less compute per step.",
+        "It skips storing gradients for frozen layers, trading a small accuracy loss for substantial optimizer-memory savings."
+      ]
+    },
+    {
+      "front": "Roughly how much GPU memory does training a model with P parameters in BF16 require, and why?",
+      "back": "About 12–16× P bytes plus activations. The breakdown: weights 2P, gradients 2P, and AdamW optimizer states 8P (FP32 momentum + variance), totaling ~12P, with activations on top. A 7B model therefore needs ~84–112 GB plus activations — more than one 80 GB GPU — which is why sharding (ZeRO/FSDP) or multi-GPU is required.",
+      "quizAnswer": "About 12–16× P bytes plus activations: weights 2P, gradients 2P, AdamW states 8P — so a 7B model needs two H100s.",
+      "distractors": [
+        "About 2× P bytes, since only the weights must be resident; gradients and optimizer states are recomputed each step.",
+        "About 4× P bytes: weights 2P and gradients 2P, with the AdamW optimizer states offloaded to CPU by default.",
+        "About 12–16× P bytes, dominated by the activations, which are far larger than the weights, gradients, and optimizer states combined.",
+        "Exactly the same as inference, around P bytes in INT8, because training reuses the inference memory layout for the weights.",
+        "About 8× P bytes from the optimizer states alone, since BF16 weights and gradients are negligible by comparison.",
+        "About 12–16× P bytes: weights 8P in FP32, gradients 2P, and optimizer states 2P, plus the activation memory."
+      ]
+    },
+    {
+      "front": "What does the ZeRO optimizer's progression from Stage 1 to Stage 3 shard?",
+      "back": "ZeRO Stage 1 shards the optimizer states across data-parallel ranks; Stage 2 additionally shards the gradients; Stage 3 additionally shards the parameters themselves (equivalent to FSDP). Each stage saves more memory at the cost of more communication, letting you train progressively larger models than fit on a single GPU.",
+      "quizAnswer": "Stage 1 shards optimizer states; Stage 2 adds gradients; Stage 3 adds parameters (equivalent to FSDP).",
+      "distractors": [
+        "Stage 1 shards the parameters, Stage 2 the gradients, and Stage 3 the optimizer states, in order of increasing memory savings.",
+        "Stage 1 shards the activations, Stage 2 the gradients, and Stage 3 the parameters, with optimizer states always replicated.",
+        "Stage 1 shards the dataset, Stage 2 the optimizer states, and Stage 3 the gradients across the data-parallel ranks.",
+        "Stage 1 shards optimizer states, Stage 2 adds parameters, and Stage 3 adds activations through recomputation.",
+        "All three stages shard the same optimizer states; the stages differ only in how aggressively they offload to CPU memory.",
+        "Stage 1 shards gradients, Stage 2 adds optimizer states, and Stage 3 adds the embedding table across the ranks."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "title": "NCP-GENL · Evaluation",
+  "description": "Metrics, LLM-as-judge, contamination, RAG faithfulness, benchmarks, error analysis (exam domain, 7%).",
+  "cards": [
+    {
+      "front": "Which metric is most appropriate to evaluate the faithfulness of a RAG-generated answer?",
+      "back": "An NLI-based or LLM-as-judge faithfulness score: each generated claim should be entailed by the retrieved context. Faithfulness is the property that the answer follows from the source. RAGAS, TruLens, and ARES operationalize this with natural-language-inference models or judge-LLM rubrics, often scored per individual claim.",
+      "quizAnswer": "An NLI-based or LLM-as-judge faithfulness score checking that each generated claim is entailed by the retrieved context.",
+      "distractors": [
+        "BLEU against a reference answer, since n-gram overlap with the gold response measures how grounded the output is.",
+        "Inference latency per token, because faithful answers are produced by models that decode slowly and deliberately.",
+        "Perplexity of the answer under the base model, since low perplexity indicates the claims follow from the context.",
+        "An LLM-as-judge fluency score, which rates how natural the answer reads and therefore how well it matches the source.",
+        "ROUGE-L recall against the retrieved chunks, since longest-common-subsequence overlap proves the claims are entailed.",
+        "Retrieval recall@k, because if the right documents were retrieved the generated answer is necessarily faithful to them."
+      ]
+    },
+    {
+      "front": "What are the known significant biases of LLM-as-judge evaluation?",
+      "back": "Position bias (favoring the first or last option in a pairwise comparison), length bias (favoring verbose answers), and self-preference (favoring answers from the same model family). Mitigations: randomize positions and require consistency under swap, length-normalize, ensemble judges across families, and calibrate against a human-labeled subset with chain-of-thought rubrics.",
+      "quizAnswer": "Position bias (favoring first/last), length bias (favoring verbose answers), and self-preference for same-family models.",
+      "distractors": [
+        "A strong bias toward shorter, less detailed answers, plus a tendency to penalize responses from the judge's own family.",
+        "No measurable biases, since a sufficiently capable judge model evaluates every response on its objective merits.",
+        "Uniformly random scoring, because judge models cannot distinguish quality differences between similar candidate answers.",
+        "Position bias and length bias, but never self-preference, since judges have no way to recognize their own family's style.",
+        "A bias toward answers that cite sources and a bias against answers written in the first person, regardless of order.",
+        "Topic bias only, where the judge favors domains it was trained on, with answer order and length having no effect."
+      ]
+    },
+    {
+      "front": "Why is benchmark contamination a serious concern?",
+      "back": "Pretraining or fine-tuning corpora may contain near-duplicates of public benchmark items, inflating reported scores while providing no real-world signal — the model has effectively memorized the test. Standard practice: run decontamination (n-gram or MinHash overlap with eval sets) on training data, and complement public benchmarks with private, domain-specific evals.",
+      "quizAnswer": "Training data may contain near-duplicates of benchmark items, inflating scores with no real signal — the model memorized the test.",
+      "distractors": [
+        "It only affects reproducibility across hardware, since contaminated runs produce slightly different scores on different GPUs.",
+        "It speeds up training by giving the model easy examples, so contaminated models converge faster but score no higher.",
+        "It is irrelevant for closed models, because their training data is private and therefore cannot overlap public benchmarks.",
+        "Training data may contain near-duplicates of benchmark items, which deflates scores by confusing the model at test time.",
+        "It causes the tokenizer to overfit to benchmark formatting, so scores drop whenever the eval phrasing changes slightly.",
+        "It mainly inflates latency benchmarks, since memorized prompts are cached and answered faster than novel ones."
+      ]
+    },
+    {
+      "front": "Which benchmark is commonly used for instruction-following evaluation?",
+      "back": "IFEval (Instruction-Following Eval). It measures whether a model precisely follows verifiable instructions — constraints on length, format, and content (e.g., 'respond in exactly three bullet points'). It is a common signal for chat-tuned models alongside MT-Bench, MMLU, GSM8K, and HumanEval. ImageNet, TPC-H, and COCO are vision/database benchmarks, not LLM instruction-following.",
+      "quizAnswer": "IFEval — measures whether a model precisely follows verifiable instructions about length, format, and content constraints.",
+      "distractors": [
+        "ImageNet, the large-scale image-classification benchmark, adapted to score how well an LLM follows text instructions.",
+        "TPC-H, the database query benchmark, which measures how precisely a model follows structured-output formatting rules.",
+        "COCO, the object-detection benchmark, repurposed to evaluate multi-constraint instruction following in chat models.",
+        "GSM8K, which measures instruction following by checking whether the model formats its grade-school math answers correctly.",
+        "MMLU, since its multiple-choice format directly tests whether a model follows the instruction to select one option.",
+        "HumanEval, because passing its unit tests requires the model to follow the docstring's instructions exactly."
+      ]
+    },
+    {
+      "front": "What is the most common cause of an offline-versus-online quality gap?",
+      "back": "The train/eval distribution doesn't match production traffic, or the eval set is contaminated or stale. The fix is to sample real production prompts (privacy-aware, PII-scrubbed, labeled) into a refreshed eval set, measure stratified by user segment, and instrument feedback channels (thumbs, edit-distance to user revisions) to keep the offline metric predictive of online behavior.",
+      "quizAnswer": "The eval distribution doesn't match production traffic (or the set is stale/contaminated); refresh it with sampled real prompts.",
+      "distractors": [
+        "The model file is corrupted during deployment, so the served weights differ slightly from those evaluated offline.",
+        "Triton overrides the model's quality settings at serving time, applying a different sampling config than the eval harness.",
+        "Quantization always degrades quality at serving time regardless of method, so the online score is necessarily lower.",
+        "The eval distribution doesn't match production, but the only fix is retraining, since refreshing the eval set changes nothing.",
+        "Network latency between the client and server lowers answer quality, since rushed decoding produces worse completions.",
+        "The offline harness uses greedy decoding while production samples, so the gap closes by setting temperature to zero online."
+      ]
+    },
+    {
+      "front": "Match these quantitative metrics to their primary use: perplexity, BLEU, ROUGE-L, pass@k.",
+      "back": "Perplexity (exp of cross-entropy) measures language-modeling quality — lower is better. BLEU scores translation by n-gram precision against references. ROUGE-L scores summarization by longest-common-subsequence recall. pass@k (HumanEval/MBPP) measures code-generation accuracy — the fraction of problems solved within k samples. Using the wrong metric (e.g., BLEU for faithfulness) is a common trap.",
+      "quizAnswer": "Perplexity: LM quality; BLEU: translation n-gram precision; ROUGE-L: summarization LCS recall; pass@k: code-generation accuracy.",
+      "distractors": [
+        "Perplexity: translation quality; BLEU: summarization recall; ROUGE-L: code accuracy; pass@k: language-modeling fit.",
+        "Perplexity: code accuracy; BLEU: language-modeling quality; ROUGE-L: translation precision; pass@k: summarization recall.",
+        "All four measure overlap with a reference answer; they differ only in whether they count unigrams, bigrams, or subsequences.",
+        "Perplexity: summarization recall; BLEU: code accuracy; ROUGE-L: language-modeling quality; pass@k: translation precision.",
+        "Perplexity: LM quality; BLEU: code accuracy via unit tests; ROUGE-L: translation precision; pass@k: summarization recall.",
+        "Perplexity and pass@k both measure factuality, while BLEU and ROUGE-L both measure latency under different decoding strategies."
+      ]
+    },
+    {
+      "front": "Which evaluation frameworks are standard for running LLM benchmarks, and what is each?",
+      "back": "NeMo Evaluator is NVIDIA's benchmarking harness (MMLU, HumanEval, and more). lm-evaluation-harness (EleutherAI) is the open-source multi-benchmark runner. LLM-as-judge uses a strong model to rate outputs against rubrics for open-ended quality. Human evaluation remains the gold standard for final validation but is expensive, so it is reserved for the last mile.",
+      "quizAnswer": "NeMo Evaluator (NVIDIA harness), lm-evaluation-harness (EleutherAI, open-source), LLM-as-judge for rubrics, human eval for final sign-off.",
+      "distractors": [
+        "NeMo Curator for benchmarking, RAGAS for general MMLU runs, and DCGM for measuring per-task accuracy across the cluster.",
+        "lm-evaluation-harness for training only, NeMo Evaluator for serving metrics, and human eval for measuring latency SLAs.",
+        "TensorRT-LLM for benchmark execution, Triton Model Analyzer for accuracy scoring, and NIM for human-preference collection.",
+        "NeMo Evaluator for open-ended rubric scoring only, with lm-evaluation-harness restricted to closed multiple-choice benchmarks.",
+        "Nsight Systems for benchmark profiling, lm-evaluation-harness for safety rails, and LLM-as-judge for throughput testing.",
+        "NeMo Guardrails as the benchmarking harness, with human evaluation used to decontaminate the public benchmark sets."
+      ]
+    },
+    {
+      "front": "Which metrics evaluate the retrieval stage of a RAG pipeline, separate from generation?",
+      "back": "Retrieval is scored with ranking metrics: Recall@k (did the relevant document appear in the top k), MRR (mean reciprocal rank of the first relevant hit), NDCG (graded relevance discounted by rank), and Precision@k. These measure whether the right context was fetched, independent of whether the LLM then used it faithfully — so a low end-to-end score can be localized to retrieval versus generation.",
+      "quizAnswer": "Ranking metrics — Recall@k, MRR, NDCG, Precision@k — measuring whether the right context was retrieved, independent of generation.",
+      "distractors": [
+        "Generation metrics — faithfulness, relevance, and completeness — since retrieval quality is judged by the final answer's grounding.",
+        "BLEU and ROUGE-L between the retrieved chunks and the gold answer, measuring how much the context overlaps the response.",
+        "Perplexity of the query under the retriever's encoder, since lower query perplexity indicates more relevant documents are fetched.",
+        "Ranking metrics like Recall@k and MRR, but only after the LLM has generated, since retrieval cannot be scored on its own.",
+        "Latency@k and throughput@k, which measure how quickly the top k documents are returned by the vector database.",
+        "Embedding cosine similarity averaged over the corpus, since a higher mean similarity means retrieval is more accurate."
+      ]
+    },
+    {
+      "front": "What does slice (stratified) analysis add over a single aggregate eval score?",
+      "back": "It breaks performance down by meaningful subgroups — input length, topic, language, difficulty, or user segment — revealing failures that a single average hides. A model can post a strong overall score while badly underperforming on a critical slice (e.g., long inputs or a specific language). Slicing localizes weaknesses so fixes and regression tests can target the right cases.",
+      "quizAnswer": "It breaks performance down by subgroup (length, topic, language, difficulty), exposing critical failures a single average hides.",
+      "distractors": [
+        "It averages scores across many random data splits, tightening the confidence interval around the single aggregate metric.",
+        "It re-runs the eval at several temperatures and reports the best slice, showing the model's ceiling under ideal decoding.",
+        "It splits the eval set into train and test halves, so the aggregate score can be cross-validated for stability.",
+        "It breaks performance down by subgroup, but only across model versions, to track how the aggregate score drifts over time.",
+        "It samples slices of the production traffic to estimate latency percentiles, complementing the offline accuracy score.",
+        "It partitions the model's parameters into slices and evaluates each, localizing which layers cause the most errors."
+      ]
+    }
+  ]
+}
