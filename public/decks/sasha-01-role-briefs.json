@@ -1,0 +1,97 @@
+{
+  "title": "Sasha Interview · The Four Roles",
+  "description": "Per-role briefing for the four target roles: CACIB Financial Crime intern (priority — Apply-now), CACIB M&A GIB intern (Apply-now), Augusta & Co renewables IB intern (Apply-after-sprint), and Macquarie MCVC VC off-cycle (optional/stretch, Jan 2027 intake) — what each team does, how she matches the top requirements, the 60-second pitch, why-this-team, likely probes, and questions to ask back. She is a new graduate with zero paid finance experience; scope of published, self-directed work carries the argument throughout.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "CACIB Financial Crime: What does this team do, and where do you fit in?",
+      "general": "Describe the team's mandate straight from the posting, then name the one or two task lines you can already evidence rather than the whole job description back at them.",
+      "specific": "The Financial Security Advisory & Governance Team at Crédit Agricole CIB supports compliance with financial crime and sanctions policy — EDD drafting, committee prep, training-attendance tracking, liaison with business lines. I'd fit directly on the EDD-drafting and committee-prep lines: I've already published two EDD/sanctions memos on my own, and I sit on a monthly programme board as LSE Student Ambassador, so committee cadence isn't unfamiliar territory.",
+      "hint": "FinSec team: EDD drafting and committee prep are my strengths."
+    },
+    {
+      "front": "CACIB Financial Crime: How do you match the JD's top requirements?",
+      "general": "Match each stated requirement to concrete, checkable evidence, and say plainly where you only have the ability-to-learn half of the requirement, not the experience half.",
+      "specific": "\"Ability to learn compliance monitoring\" — I built EDD/sanctions methodology from scratch across two published work samples (Lantana, Meridian), citing FATF R.1/R.10/R.12/R.24-25 and the OFAC 50 Percent Rule. \"High-quality written reports tracked to resolution\" — six pro bono employment-law cases at LSE's clinic, each advice letter reviewed by a supervising solicitor. \"Committee support\" — monthly board meetings as Student Ambassador. I don't have paid compliance-monitoring experience yet, and I say that plainly.",
+      "hint": "EDD samples, six clinic cases, monthly board seat match the JD."
+    },
+    {
+      "front": "CACIB Financial Crime: Give me your 60-second pitch.",
+      "general": "Lead with degree status, then the strongest evidence for this specific role family, and land on the current live habits, not one-off exercises.",
+      "specific": "I'm a new graduate finishing an MSc in Law and Finance at LSE, conferred 26 July 2026, alongside a first-class BSc from Amsterdam (8.5/10, cum laude). I don't have paid compliance experience, so instead of just saying I'm interested in financial crime, I built the evidence: two EDD/sanctions-screening memos, published and public, tracing beneficial ownership through the Danske Bank Estonia case and applying the OFAC 50 Percent Rule to a DPRK-linked payment chain. I also ran six live employment-law cases at LSE's clinic and sit on a monthly programme board as student ambassador — committee exposure and structured written work under deadline are real, current habits, not one-off exercises.",
+      "hint": "New grad; two published EDD memos, six clinic cases, monthly board."
+    },
+    {
+      "front": "CACIB Financial Crime: Why this team specifically?",
+      "general": "Tie the answer to the one thing that's genuinely differentiated about this role family for her — real, checkable output rather than borrowed enthusiasm.",
+      "specific": "This is my highest-conviction role family — financial crime/AML is the one place I already have real, checkable output rather than borrowed enthusiasm. The posting's own task list — EDD drafting, committee prep, liaising with business lines — maps almost line-for-line onto work I did unprompted: the two EDD memos and the LSE clinic's client-facing advice work. I'd rather show that pattern than describe an interest in compliance.",
+      "hint": "Highest-conviction role — JD tasks mirror what I built unprompted."
+    },
+    {
+      "front": "CACIB Financial Crime: What will this loop probe hardest, and what will you ask back?",
+      "general": "Know the honest gap before the interviewer finds it, and prepare questions that show you've read the JD's task list closely.",
+      "specific": "Expect probing on whether my EDD samples are \"real\" compliance work (they're not, and I say so directly — self-directed, clearly labelled illustrative) and on whether I've ever administered a live monitoring/control plan (I haven't). Questions I'd ask back: How is the committee-prep workload split between interns and analysts? What does a reviewer look for in an EDD summary that a self-directed one wouldn't capture? How does the team track training-attendance follow-ups day to day?",
+      "hint": "Name the self-directed gap first; ask about review and committee split."
+    },
+    {
+      "front": "CACIB M&A: What does this team do, and where do you fit in?",
+      "general": "Describe the team's sector scope and the intern's real task list from the posting, then tie it to the closest real evidence you have.",
+      "specific": "The UK GIB team covers M&A origination and execution across infrastructure, power, renewables, energy transition, and TMT infra, reporting up to the Head of GIB Europe in Paris. Intern scope is pitch prep, dataroom/process organisation, financial analysis, and presentation materials — comps and model maintenance, the exact muscle I've built on the Costco and KLOS models, just not yet inside a live mandate.",
+      "hint": "GIB covers infra/power/renewables/TMT M&A; intern scope is comps and decks."
+    },
+    {
+      "front": "CACIB M&A: How do you match the JD's top requirements?",
+      "general": "Match valuation/modelling knowledge, three-statement mechanics, and tool fluency to specific evidence, and name plainly the one requirement (prior deal-team experience) you don't have.",
+      "specific": "Valuation and modelling — a three-method Costco valuation (DCF, APV, comps) with bear/base/bull scenarios, and a separate KLOS unit-economics and IRR model. Three-statement mechanics — a five-day Training the Street course, circular references and the debt schedule done cold. Excel/PowerPoint — both models built and presented in exactly those tools. What I don't have is prior work experience in a modelling/M&A/corporate finance team — the posting flags that as \"advantageous,\" not required, and I say so plainly.",
+      "hint": "Costco DCF/APV/comps plus KLOS IRR model plus Training the Street."
+    },
+    {
+      "front": "CACIB M&A: Give me your 60-second pitch.",
+      "general": "Lead with a number, not an adjective — the Costco finding is the strongest single fact in the whole profile for this role, so open with it.",
+      "specific": "I'm finishing an MSc in Law and Finance at LSE, conferred 26 July 2026, and I lead with a number: in a Costco valuation I built using DCF, APV, and comps, the base case implied a $649 share price against a $998 market price — the model reads Costco as roughly 35% overvalued, and I'd say that to an MD's face the way I'm saying it now. I ran the same rigor on KLOS, a venture pitch, coming out to a 76% IRR and a £162M exit at year six against a £550k raise, presented to specialists from nine London VC firms. I did Training the Street to make the three-statement mechanics automatic. What I haven't done is sit inside a live mandate — that's exactly the gap this internship closes.",
+      "hint": "Costco: $649 vs $998 (35% overvalued); KLOS 76% IRR."
+    },
+    {
+      "front": "CACIB M&A: What's the hardest grill, and what will you ask back?",
+      "general": "Rehearse the Costco 'is the market wrong' challenge and the 'no internship' challenge cold, then have deal-flow questions ready.",
+      "specific": "Expect the hardest grill on Costco: \"market's wrong, or you are?\" — the answer is no; I'd name the terminal-growth or margin driver I'd stress-test first and treat it as a modelling finding to interrogate, not a call to defend. Also expect \"why no banking internship\" — I point to the LSE PE&VC and Corporate Transactions modules plus the two independently built models, applying at intern level for exactly this reason. Questions to ask back: How is deal flow currently split across infra, power, renewables, and TMT infra within the team? What does an intern's first live mandate look like in month one versus month six?",
+      "hint": "Never defend the Costco gap — name the driver to stress-test."
+    },
+    {
+      "front": "Augusta & Co (renewables IB): What does this firm do, and why apply here specifically?",
+      "general": "Use the firm's single-sector focus as the reason for applying here rather than a generic banking application, and back it with sector-specific modelling work, not just stated interest.",
+      "specific": "Augusta & Co is an independent advisory house focused exclusively on European renewables and energy transition — 125 transactions, 25GW, over €13bn since 2002, across wind, solar, hydro, storage, and hydrogen. That single-sector focus is the whole reason I'm applying here specifically: I've been building sector-specific modelling depth (capacity × capacity factor × power price, contracted vs. merchant split, LCOE, CfD strike mechanics) rather than a general interest in banking that happens to have found renewables.",
+      "hint": "Boutique, renewables-only: 125 deals, 25GW, over €13bn since 2002."
+    },
+    {
+      "front": "Augusta & Co: How do you match the top requirements, and what's your 60-second pitch?",
+      "general": "Reuse the Costco/KLOS modelling proof, add the sector-specific sprint work as the gap-closing step, and lead with the language asset the posting explicitly names as a plus.",
+      "specific": "I bring the same modelling discipline from Costco (DCF/APV/comps, quantified bear/base/bull) and KLOS (unit economics, 76% IRR) to a sector I've deliberately built toward — a renewables mini-teardown (capacity × CF × price to EBITDA, contracted/merchant split, infra WACC) closes the sector-specific gap directly. I'm a native Russian speaker alongside native English, which the posting flags as a plus for a European advisory practice, and I've operated across UK and Dutch academic environments in mixed-nationality teams under deadline. The posting's own bar is 0-1 years of relevant experience — I'm applying honestly within that band, not overreaching.",
+      "hint": "Costco/KLOS modelling plus renewables teardown plus native Russian."
+    },
+    {
+      "front": "Augusta & Co: What will this loop probe hardest, and what will you ask back?",
+      "general": "This is a less structured loop than CACIB's — CV screen, then 1-2 senior-banker interviews on commercial awareness and sector fit, possibly an in-meeting modelling test. Know the one open gap (live-deal awareness) before walking in.",
+      "specific": "Expect commercial-awareness questions on a live 2026 European renewables deal — this is a named prep gap I still need to close before the interview, not something I can bluff. Expect a possible in-meeting modelling test on capacity-factor/LCOE mechanics. Questions to ask back: What does the intern's role look like on a live mandate versus a pitch? How does the team split contracted versus merchant-exposed assets across the current pipeline? Which sub-sector — wind, solar, storage, hydrogen — is seeing the most deal flow right now?",
+      "hint": "Live-deal commercial awareness is an open gap — close it first."
+    },
+    {
+      "front": "Macquarie MCVC (optional/stretch): What's the honest fit here?",
+      "general": "Name this as the optional, lower-priority role plainly — the posting wants prior VC/PE/M&A internship experience she doesn't have, and the intake isn't urgent, so prep here is opportunistic only.",
+      "specific": "This is my optional, stretch role — Macquarie's own posting wants prior internship experience in VC, PE, M&A, or deal advisory, which I don't have, and the intake isn't until January 2027, so it's opportunistic prep, not urgent. MCVC invests in early-stage internet and software companies; interns do investment memos, valuation, due diligence, and market research. My honest substitute for deal experience is KLOS: a full unit-economics and exit model built and defended live in front of nine VC firms' specialists.",
+      "hint": "Stretch role, Jan 2027 intake; KLOS substitutes for missing VC internship."
+    },
+    {
+      "front": "Macquarie MCVC: Give me your 60-second pitch.",
+      "general": "Lead with the closest real substitute for VC deal experience, quantify it fully, and don't let the self-directed framing get lost.",
+      "specific": "I don't have a VC, PE, or M&A internship, so I lead with the closest real substitute: I built KLOS, a full venture model — CAC, gross margin, LTV/CAC, payback — modelling a £550,000 seed raise against a 76% IRR and a £162M exit at year six, and presented and defended that model live to specialists from nine London VC firms, not classmates. I'm finishing an MSc in Law and Finance at LSE, conferred 26 July 2026. I know that's a self-directed project, not a live portfolio deal, and I say that plainly.",
+      "hint": "KLOS: £550k raise, 76% IRR, £162M exit, nine VC firms."
+    },
+    {
+      "front": "Macquarie MCVC: What's the sharpest weak-claim challenge, and what will you ask back?",
+      "general": "The sharpest challenge is \"you've never worked on a deal\" — agree plainly, then counter with the closest real substitute; also rehearse \"why isn't 76% fantasy.\"",
+      "specific": "\"You've never worked on a deal\" — true, I agree it plainly, then point to KLOS's end-to-end build and live specialist pitch as a substitute, not an equivalent. \"Why isn't 76% fantasy?\" — I'd name the assumption most likely to be wrong under pressure (probably the CAC or retention assumption driving LTV/CAC) rather than over-defending the headline IRR number. Questions to ask back: What does the intern's involvement in an active portfolio company's board reporting look like? How does the team source deal flow across UK and European internet/software targets?",
+      "hint": "Agree 'never worked a deal' plainly; name the shaky KLOS assumption."
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "title": "Sasha Interview · VC & Startup Finance",
+  "description": "Venture and startup-finance mechanics anchored in the KLOS pitch deck and model — market sizing, unit economics, the £550k raise, the 76% IRR/£162M exit — plus the Macquarie MCVC internship's stated scope.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "TAM/SAM/SOM — and how would you defend yours?",
+      "general": "TAM = total addressable market at 100% share; SAM = the serviceable segment reachable given the business model/geography; SOM = the realistically capturable share given competition and execution capacity, usually the year-1-to-3 target.",
+      "specific": "On KLOS I sized TAM/SAM/SOM top-down from the resale/digital-wardrobe market and bottom-up from target user segments and expected penetration, then defended the SOM figure live to specialists from nine London VC firms. The defensible move under pressure is naming which layer — TAM, SAM, or SOM — a challenged number actually sits in, rather than treating market sizing as one number.",
+      "hint": "Know which layer (TAM/SAM/SOM) a challenged number sits in."
+    },
+    {
+      "front": "Walk through CAC, LTV/CAC, and payback period.",
+      "general": "CAC = fully-loaded cost to acquire one customer; LTV = expected lifetime gross margin per customer; LTV/CAC above roughly 3x is the standard health threshold; payback = months for cumulative gross margin to cover CAC.",
+      "specific": "I modelled CAC, gross margin, LTV/CAC, and payback period for KLOS as the backbone of the unit-economics section, feeding directly into the 76% IRR output — the return story only holds together if those unit economics are defensible, not the growth-rate assumption alone.",
+      "hint": "LTV/CAC ~3x threshold; unit economics feed the IRR, not just growth."
+    },
+    {
+      "front": "Why isn't your 76% IRR fantasy?",
+      "general": "Seed-stage IRR headlines reflect power-law return distributions, not a guaranteed base case — the honest answer names the specific assumption driving the number (exit multiple, exit timing, dilution path) and states which one is most fragile.",
+      "specific": "KLOS's 76% modelled IRR comes from a £550k seed raise against a £162M year-6 exit valuation at an EV/Revenue multiple. I don't defend the headline number itself — I'd name the assumption most likely to be wrong if pressed, most likely the exit multiple or the revenue-growth trajectory feeding it, and walk through how the IRR moves if that assumption compresses. That's the same transparency I used pitching it live to nine VC firms.",
+      "hint": "Name the fragile assumption (exit multiple/growth path), don't defend the headline."
+    },
+    {
+      "front": "How did you size the £550k KLOS raise?",
+      "general": "Seed raise sizing should map to a defined runway against specific, de-risking milestones, not an arbitrary round-number ask.",
+      "specific": "The £550,000 KLOS raise was sized against the operating model's near-term milestones — enough runway to reach the point where the unit economics (CAC, LTV/CAC) could be validated with real usage data, not a round number pulled from comparable seed rounds. I'd walk through the burn-rate assumptions behind it if asked to justify the figure.",
+      "hint": "Sized to runway-to-milestone, not a round-number ask."
+    },
+    {
+      "front": "Exit valuation and EV/Revenue multiples — why that multiple for KLOS?",
+      "general": "EV/Revenue is used for pre-profitability or high-growth companies where EBITDA isn't yet a stable base; the multiple is benchmarked against comparable-stage exits or public comps, adjusted for growth and margin trajectory.",
+      "specific": "KLOS's £162M year-6 exit valuation was built off an EV/Revenue multiple rather than EV/EBITDA, since the model doesn't assume EBITDA profitability by year 6 — the same logic I'd apply to any pre-earnings company, consistent with how I'd answer 'value a company with no earnings' on the valuation side.",
+      "hint": "EV/Revenue because no stable EBITDA base by year 6."
+    },
+    {
+      "front": "How does dilution work across funding rounds?",
+      "general": "Each new financing round issues new shares, reducing existing shareholders' percentage ownership unless they participate pro rata; founders and early investors typically dilute across multiple subsequent rounds.",
+      "specific": "This is bookwork from LSE's Legal Aspects of PE & VC module rather than something I modelled directly — KLOS only carried the seed round through to exit. I'd give the mechanical answer honestly (percentage-ownership reduction per new issuance, pro-rata rights as the main investor protection) and flag it as conceptual depth, not a modelled multi-round cap table.",
+      "hint": "Conceptual (LSE PE&VC Law), not a modelled multi-round cap table."
+    },
+    {
+      "front": "What do seed VCs actually screen for?",
+      "general": "Founder-market fit, evidence of early traction or a credible path to it, defensible unit economics, a market large enough for venture-scale returns, and a believable use of the specific raise amount.",
+      "specific": "Pitching KLOS to specialists from nine London VC firms, the recurring pushback was on unit-economics credibility and the specificity of the raise's use — not the headline market-sizing story. That's the real lesson I'd carry into the '76% isn't fantasy' question: VCs stress-test the assumptions under the number, not the number itself.",
+      "hint": "VCs pushed on unit-economics credibility, not the headline market size."
+    },
+    {
+      "front": "What does a VC internship day actually look like?",
+      "general": "Sourcing and screening deal flow, building investment memos, market and comparable-company research, supporting due diligence on prospective portfolio companies, and preparing IC presentation materials.",
+      "specific": "This maps directly onto the Macquarie MCVC internship's stated scope — investment memos, market research, financial modelling and valuation for active/potential investments. I don't have live deal-flow experience, but KLOS gave me the full loop end-to-end once — market sizing, model build, memo-equivalent pitch materials, live pitch to specialists — which I'd name as a substitute, not an equivalent, if asked directly.",
+      "hint": "KLOS = substitute for the memo/sourcing/diligence loop, not an equivalent."
+    },
+    {
+      "front": "Cap table basics.",
+      "general": "A cap table tracks who owns what percentage of a company across founders, employees (option pool), and investors by round, and models how new issuances and conversions (e.g., SAFEs/convertible notes) affect each holder's stake.",
+      "specific": "I haven't built a full multi-round cap table — this is conceptual knowledge from the LSE PE & VC Law module. KLOS's model tracked the founder/seed-investor split at one point in time, post-£550k raise, rather than a full waterfall across subsequent rounds, so I'd be honest that the deeper cap-table mechanics are studied theory, not a built deliverable.",
+      "hint": "KLOS tracked one point in time, not a full multi-round waterfall."
+    },
+    {
+      "front": "Pre-money vs post-money valuation.",
+      "general": "Pre-money is the agreed company value before the new investment is added; post-money = pre-money + the new investment; the investor's ownership percentage = investment ÷ post-money valuation.",
+      "specific": "On KLOS I set the £550k raise against an implied pre-money valuation, with post-money simply the sum of the two, then derived the investor's resulting ownership stake from that — standard mechanics I'd apply the same way to any seed-stage raise if asked to walk through it cold.",
+      "hint": "Post-money = pre-money + raise; stake = investment ÷ post-money."
+    },
+    {
+      "front": "What feedback did you get pitching to nine VC firms, and what did you change?",
+      "general": "n/a — this is her own experience; the point is that incorporating specialist feedback after a live pitch is itself a credibility signal.",
+      "specific": "Presenting the KLOS deck to specialists from nine London VC firms, the most consistent feedback was to tighten the unit-economics narrative — make CAC and payback period the first thing a specialist could sanity-check, rather than leading with the market-sizing story. I rebuilt the pitch flow around that, leading with unit economics before the TAM/SAM/SOM framing, which is the structure I'd use again.",
+      "hint": "Rebuilt the pitch to lead with unit economics, not TAM/SAM/SOM."
+    },
+    {
+      "front": "Top-down vs bottom-up market sizing — which did you use?",
+      "general": "Top-down starts from an industry-wide figure and narrows by addressable segment; bottom-up builds up from a unit of value (target customers × price × penetration). Bottom-up is generally viewed as more defensible under VC scrutiny because it's auditable assumption by assumption.",
+      "specific": "I used both on KLOS — a top-down figure from the resale/digital-wardrobe market as a sanity check, and a bottom-up build from target user segments × expected penetration × average revenue per user as the number I actually defended live. When challenged in the pitch, the bottom-up build was what let me walk through each assumption individually rather than defend one aggregate figure.",
+      "hint": "Top-down for a sanity check; bottom-up is the number defended live."
+    }
+  ]
+}

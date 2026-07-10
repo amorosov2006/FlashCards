@@ -90,6 +90,20 @@
         "citizenship-06-1800s-and-recent-history.json",
         "citizenship-07-geography-symbols-holidays.json"
       ]
+    },
+    {
+      "id": "sasha-interview",
+      "title": "Sasha Interview Prep",
+      "description": "Alexandra's interview prep — CACIB Financial Crime & M&A, Augusta renewables, Macquarie VC. Study-only two-part cards (concept + her experience) from the resumes, cover letters, and prep plan.",
+      "decks": [
+        "sasha-01-role-briefs.json",
+        "sasha-02-financial-crime-aml.json",
+        "sasha-03-valuation-modelling.json",
+        "sasha-04-vc-startup-finance.json",
+        "sasha-05-renewables-energy.json",
+        "sasha-06-projects-deep-dive.json",
+        "sasha-07-behavioral-weak-claims.json"
+      ]
     }
   ]
 }

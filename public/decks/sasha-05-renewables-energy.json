@@ -1,0 +1,79 @@
+{
+  "title": "Sasha Interview · Renewables & Energy Transition",
+  "description": "Renewables and energy-transition fundamentals for the Augusta application — capacity/CF/price mechanics, PPA vs merchant, LCOE, and the S2 mini-teardown, flagged honestly as planned, not yet shipped, work.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "What is capacity factor, and what ranges do you use?",
+      "general": "Actual energy output over a period divided by theoretical maximum output if running at full rated capacity continuously. Typical UK offshore wind ~40-50%, UK solar ~10-12%, onshore wind somewhat lower than offshore.",
+      "specific": "I'm using UK offshore wind ~40-50% and UK solar ~10-12% as my working ranges for the S2 renewables teardown I'm building — capacity factor is the first input into the capacity × CF × price revenue build, so getting the range right before touching the model matters more than any downstream assumption.",
+      "hint": "UK offshore wind ~40-50%, UK solar ~10-12% — first input into the model."
+    },
+    {
+      "front": "Walk through the capacity × CF × price revenue model.",
+      "general": "Annual generation = installed capacity (MW) × capacity factor × hours in year; revenue = generation × achieved price (contracted or merchant), before opex/capex.",
+      "specific": "This is the core structure of the S2 renewables mini-teardown I'm building for the Augusta application — capacity × capacity factor × price into an EBITDA bridge, then into a DCF at an infrastructure-appropriate discount rate. It's planned work, not yet shipped — I'd say that plainly if asked how far along it is.",
+      "hint": "Capacity × CF × price → EBITDA bridge → DCF — planned, not shipped yet."
+    },
+    {
+      "front": "PPA vs merchant exposure — why does the split matter?",
+      "general": "A Power Purchase Agreement fixes price and/or volume via contracted offtake, reducing revenue volatility. Merchant exposure means revenue floats with the wholesale power price — higher risk, higher potential upside.",
+      "specific": "I'd build the S2 model with an explicit contracted/merchant split rather than assuming one blended price, since that split is usually the single biggest driver of revenue volatility in a renewables asset — PPA-covered volume gets a stable price, merchant volume gets the wholesale-price risk, and I'd flag which share sits in each bucket.",
+      "hint": "Split PPA vs merchant volume explicitly — the biggest driver of volatility."
+    },
+    {
+      "front": "What is LCOE, and what drives it?",
+      "general": "Levelised Cost of Energy = (total lifetime capex + opex + cost of capital, discounted) ÷ total lifetime energy generation — a per-MWh cost benchmark used to compare technologies or projects independent of financing structure.",
+      "specific": "I don't have a built LCOE model yet — this is the framework I'd apply once the S2 teardown's capex/opex and generation assumptions are in place, annualising total lifetime cost against capacity × CF × hours. I'd connect it explicitly to that in-progress model rather than claim a finished output I don't have.",
+      "hint": "Framework I'd apply to S2 once capex/opex assumptions are set — not built yet."
+    },
+    {
+      "front": "EV/MW and EV/EBITDA comps in renewables — when do you use each?",
+      "general": "EV/MW is a quick capacity-based cross-check when asset-level cash-flow data is thin; EV/EBITDA is the standard comp once there's a stable operating cash-flow base; DCF stays primary once the data supports it.",
+      "specific": "For the S2 teardown I'd use EV/MW as a fast sanity check on the asset early on, then lean on DCF as the primary valuation once the operating model is built out — the same sequencing (quick multiple first, DCF once the data supports it) I used moving from a rough Costco comps set to the full three-method build.",
+      "hint": "EV/MW = quick early check; DCF primary once data supports it."
+    },
+    {
+      "front": "Project finance vs corporate finance basics — gearing and DSCR?",
+      "general": "Project finance is non-recourse debt secured against a specific asset's cash flows, sized off a Debt Service Coverage Ratio and gearing level appropriate to the asset's risk. Corporate finance is balance-sheet-level debt secured against the whole company.",
+      "specific": "This is conceptual depth from LSE's Corporate Finance and Corporate Transactions Finance modules rather than a built model — I'd give the mechanical answer (DSCR sizing debt capacity, gearing higher for contracted/operational assets, lower for greenfield/construction-risk assets) and note plainly that I haven't sized a project-finance debt package myself.",
+      "hint": "DSCR sizes debt capacity — theory from LSE modules, not a built package."
+    },
+    {
+      "front": "Wind vs solar vs storage — how do the economics differ?",
+      "general": "Wind and solar differ mainly in capacity factor, capex/MW, and generation-price correlation (solar generates when prices are often lower, midday). Storage doesn't earn from generation volume but from price arbitrage, capacity payments, and ancillary services — a fundamentally different revenue model.",
+      "specific": "For the S2 teardown I'm treating wind and solar as variants of the same capacity × CF × price structure with different input ranges, but I'd flag storage as needing a genuinely different revenue model — arbitrage and ancillary-service income rather than a generation-volume line — if a scenario asked me to model it, rather than force it into the same template.",
+      "hint": "Wind/solar share the capacity×CF×price template; storage needs a different model."
+    },
+    {
+      "front": "What's driving the European energy transition right now?",
+      "general": "Policy tailwinds (EU Green Deal, national renewable targets, carbon pricing), grid capacity constraints and interconnection queues increasingly gating new build-out, and rising corporate PPA demand as offtake for new capacity.",
+      "specific": "I'd discuss this at the general-knowledge level expected of an intern candidate — policy tailwinds and grid-queue constraints as the two forces I'd name unprompted — and tie it back to why the S2 teardown's contracted/merchant split and grid-connection-risk section matter for any real asset, rather than claim sector-veteran depth I don't have yet.",
+      "hint": "Policy tailwinds + grid-queue constraints — general knowledge, tied to S2's risk section."
+    },
+    {
+      "front": "What does a renewables M&A boutique like Augusta actually do?",
+      "general": "Sell-side and buy-side M&A advisory, capital raising (debt and equity), and increasingly asset management/special-situations investing within a specific sector, trading on deep sector relationships rather than balance-sheet scale.",
+      "specific": "This maps directly onto Augusta's stated scope — capital raising, M&A advice, and a growing asset-management business across wind, solar, hydro, storage, and hydrogen. I'd position the S2 teardown and the Costco/KLOS modelling discipline as evidence I can do the analytical piece named directly in their JD — in-depth company/sector analysis, financial modelling for pitches — while being upfront that I don't have live deal experience yet.",
+      "hint": "Capital raising + M&A advice + asset management — Augusta's exact scope."
+    },
+    {
+      "front": "Which renewables deal caught your eye?",
+      "general": "n/a — open prep item, not yet completed.",
+      "specific": "Open prep item — not yet selected. I need to pick one live 2026 European renewables transaction (M&A, capital raise, or asset sale) before interviews and be ready to walk through it using the same framework: deal structure, the commercial rationale, and one risk I'd flag (contracted/merchant split, grid-connection timeline, or financing structure). I have not chosen a specific deal yet — this stays a to-do, not a claim.",
+      "hint": "OPEN ITEM — must pick a live 2026 deal before interviews."
+    },
+    {
+      "front": "Why does interconnection/grid-queue position matter as a value driver?",
+      "general": "In markets with constrained grid capacity (notably the UK), a project's position in the grid-connection queue can delay revenue start by years — increasingly treated as a distinct, quantifiable risk factor in valuation, not a footnote.",
+      "specific": "I'd name UK grid-connection-offer (GCO) queue position as the execution risk I'd flag first on any UK asset in the S2 teardown — multi-year connection delays can dominate the downside case more than price or capacity-factor assumptions, which is exactly the kind of risk factor I'd want in the model's risk section rather than left as a qualitative caveat.",
+      "hint": "UK GCO queue delays can dominate the downside case — quantify, don't caveat."
+    },
+    {
+      "front": "How should your S2 renewables teardown be structured?",
+      "general": "n/a — this is her own planned work, not yet built.",
+      "specific": "Planned, not yet built. The S2 renewables mini-teardown is scoped as: pick one asset and confirm data availability, build the capacity × CF × price operating model, then an EBITDA bridge and short memo, then a DCF at an infrastructure-appropriate discount rate with a contracted/merchant split and a named grid-risk section. If asked how far along it is, the honest answer is 'structured and scheduled, not yet shipped' — I'd never claim it's finished before it is.",
+      "hint": "Scoped and scheduled, not shipped — say so plainly if asked."
+    }
+  ]
+}

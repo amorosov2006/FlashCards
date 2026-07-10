@@ -1,0 +1,91 @@
+{
+  "title": "Sasha Interview · Projects & CV Deep-Dive",
+  "description": "One card per resume line an interviewer can probe — the two published EDD/KYC samples, the LSE clinic and student-firm leadership, the Costco and KLOS models, Training the Street, the European Horizons fellowship, the UvA thesis, the Army Research Lab internship, Moot Court, Student Ambassador, and the EMT/ski-instructor colour. Real figures only, no invented metrics.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Walk me through the Lantana work sample's structure, 90 seconds.",
+      "general": "A strong EDD memo walkthrough moves in a fixed order: client/relationship overview and trigger for review, risk classification with weighted factors, beneficial-ownership tracing, source of wealth/funds, jurisdictional and sanctions-screening risk, red-flag/typology mapping, then a disposition with a defensible recommendation — each section builds the case for the final call.",
+      "specific": "Lantana Trade LLP is a UK LLP with a non-resident Estonian-branch account, built on the Danske Bank Estonia matter. I open with the trigger (a statutory-filing/activity mismatch), rate it HIGH on five weighted factors, trace ownership through Marshall Islands/Seychelles nominee members to a PEP link, note that sanctions screening returned no hits, map seven red flags including structuring and round-tripping, and recommend exit plus an STR, with no client tip-off.",
+      "hint": "Overview → risk rating → BO tracing → screening → red flags → exit + STR."
+    },
+    {
+      "front": "Walk me through the Meridian work sample — payment-chain screening and escalation.",
+      "general": "A payment-chain sanctions case has to separate the named counterparty, who may screen clean, from the parties actually sitting inside the payment chain — indirect-exposure analysis, then an escalation path proportionate to what's found: freeze specific payments, exit the relationship, or both.",
+      "specific": "Meridian is a Singapore trading company built on the 2023 BAT/DPRK resolution. Legal ownership screens clean, but I argue control retention behind a EUR 1 'divestment,' then show two OFAC-designated DPRK banks sitting in the payment chain behind Chinese front companies — a 50 Percent Rule exposure invisible to name-matching. My escalation: decline/exit the relationship, file an STR, freeze any in-flight payment with blocked-bank interest, and extend future screening to ownership chains.",
+      "hint": "Clean name screen, blocked banks in the chain — decline, STR, freeze tainted payments."
+    },
+    {
+      "front": "How did you actually build and publish these two samples?",
+      "general": "Speaking honestly about self-directed work means naming exactly what it is — published methodology work built on public enforcement records — without implying it's employed compliance experience; credibility comes from citing real primary sources, not from the label.",
+      "specific": "I built both memos myself, self-directed, after my LSE coursework, using only public sources — the Bruun & Hjejle 2018 report and OCCRP/ICIJ FinCEN Files reporting for Lantana, the April 2023 OFAC and DOJ press releases for Meridian — and published both as PDFs plus LaTeX source in a public GitHub repo. Both documents state 'illustrative work sample... not a live compliance record' on their own footer, and I'd say the same to an interviewer directly.",
+      "hint": "Self-directed, built on public enforcement records, published on GitHub — say so plainly."
+    },
+    {
+      "front": "Tell me about the six pro bono employment-law cases at the LSE clinic.",
+      "general": "For client-facing legal/compliance work, an interviewer wants the actual workflow — how a case comes in, how it's investigated and drafted, and how it's tracked to a close — not just a headline case count.",
+      "specific": "Across six pro bono employment-law cases at the LSE Legal Advice Centre — unfair dismissal, unpaid wages — I conducted client interviews to gather facts and identify the legal issues, researched the relevant statutory and case law, and drafted advice letters for non-legal clients, all under supervision of qualified solicitors. I also shadowed clinics in other practice areas, including personal injury.",
+      "hint": "Intake interviews → legal research → drafted advice letters, six cases, supervised."
+    },
+    {
+      "front": "You 'managed a small firm of six students' — what did that actually look like?",
+      "general": "'Managed a small firm' should translate into a concrete answer about what leading a small team on casework looked like day-to-day — task allocation, review, and keeping quality consistent across the team.",
+      "specific": "I managed a small 'firm' of six students within the clinic — organising how we split casework, reviewing each other's statutory and case-law research, and making sure the advice letters we sent non-legal clients were clear, accurate, and accessible before supervising solicitors signed off. It's the closest thing I have to a structured peer-review workflow, and it's genuinely leadership, not just group participation.",
+      "hint": "Led six-student peer team; split casework, cross-reviewed advice letters before sign-off."
+    },
+    {
+      "front": "Walk me through the Costco valuation — mechanics and the headline finding.",
+      "general": "A three-method valuation (DCF, APV, comps) triangulates intrinsic value from different angles — DCF and APV both build up from projected cash flows, with APV isolating unlevered value from financing effects, while comps cross-checks against how the market actually prices similar businesses — then scenario analysis stress-tests the output.",
+      "specific": "For Costco, I built DCF, APV, and comparable-company analysis using Capital IQ and Costco's financial statements, forecasting revenue, EBITDA, and net income, then ran bear (-15%), base, and bull (+15%) scenarios. My base case implied a $649 share price against a $998 market price — a finding that Costco was trading materially above the model's intrinsic value, which I'd defend as an assumption to interrogate, like terminal growth or margin, not reframe as a bullish call.",
+      "hint": "DCF+APV+comps; bear/base/bull ±15%; base $649 vs $998 spot — overvaluation finding."
+    },
+    {
+      "front": "Walk me through the KLOS model and pitch.",
+      "general": "A seed-stage pitch model needs to show the funding ask sized against a bottoms-up market read (TAM/SAM/SOM), unit economics that justify the growth assumptions (CAC, LTV/CAC, payback), and a return profile (IRR, exit multiple/valuation) that a VC can underwrite.",
+      "specific": "For KLOS, a digital wardrobe and resale-marketplace app, I modelled the market opportunity, funding rounds, and unit economics — CAC, gross margin, LTV/CAC, payback period — plus an exit strategy, in Excel. The model showed a £550,000 seed raise against a 76% IRR and a £162M exit valuation at year 6 post-seed. I presented the pitch deck live to specialists from nine venture capital firms across London.",
+      "hint": "£550k raise, 76% IRR, £162M year-6 exit; pitched to nine London VC firms."
+    },
+    {
+      "front": "What did the Training the Street financial-modelling certification actually cover?",
+      "general": "A financial-modelling bootcamp certification is worth naming specifically — what statements and schedules you actually built, not just 'I took a course' — because the mechanics (circularity, balancing, sensitivity) are exactly what gets tested cold in interviews.",
+      "specific": "Training the Street was a five-day course where I built a complete three-statement model from scratch — core statements plus working-capital, depreciation, amortisation, other-long-term-items, equity, shares-outstanding, and debt-and-interest schedules — then handled circular-reference control, balanced the model to 'deal ready,' and added data tables and scenario/sensitivity analysis. It's structured coursework, not a professional credential, but it's the mechanical foundation under both the Costco and KLOS models.",
+      "hint": "5-day course; full 3-statement build, circularity control, deal-ready, sensitivity analysis."
+    },
+    {
+      "front": "Tell me about the European Horizons fellowship and the TEPSA publication.",
+      "general": "A competitive research fellowship story should name the selection bar, the actual research contribution, and where it landed publicly — a memo that only lived internally is a much weaker claim than one that was published and presented to real policymakers.",
+      "specific": "I was selected as 1 of 20 global fellows for the European Horizons Research Fellowship, researching AI governance and cross-border biometric data sharing. I produced a policy memo on EU-US regulatory cooperation, presented recommendations to European policymakers and MEPs, won the Democratic Technology track, and had the work published by TEPSA — the Brief is a live, re-verified working link.",
+      "hint": "1 of 20 fellows; AI/biometric-data memo; presented to MEPs; published by TEPSA."
+    },
+    {
+      "front": "Tell me about your UvA thesis.",
+      "general": "A thesis answer should state the legal/regulatory question in one sentence, the analytical method, and the conclusion — enough for a follow-up question to land somewhere specific, not just a topic label.",
+      "specific": "My BSc thesis, 'The Price of DNA,' examined how direct-to-consumer genetic-testing firms use behavioural and psychological techniques to influence consent, and evaluated whether that meets the GDPR 'freely given consent' standard given Big Data information asymmetries and power imbalances. I combined doctrinal legal analysis with behavioural insight to argue for a stricter reading of informed consent, and it graded 8.5/10.",
+      "hint": "GDPR 'freely given consent' vs DTC genetic testing; doctrinal + behavioural argument; 8.5/10."
+    },
+    {
+      "front": "Tell me about the US Army Research Laboratory internship.",
+      "general": "For a technical research internship, name the actual method and output — what you modelled, in what tool, and what got published or presented — rather than describing it only as 'research.'",
+      "specific": "At the US Army Research Laboratory in summer 2019, I researched quantum networking under Dr. Michael Brodsky, using MATLAB to model noise photons from self-phase modulation in an entangled photon source. I co-authored the resulting technical paper, published by DEVCOM as ARL-TR-8790, and presented findings to a panel of senior researchers.",
+      "hint": "MATLAB modelling, entangled-photon noise; co-authored DEVCOM ARL-TR-8790."
+    },
+    {
+      "front": "You judged a moot court — what does that actually involve, and why does it matter here?",
+      "general": "Judging, rather than competing in, a moot court signals a different skill — structured, defensible evaluation of someone else's argument against fixed criteria, which is close to the judgement a compliance analyst applies reviewing a case file.",
+      "specific": "I judged the Amsterdam Law Trials Moot Court, adjudicating honours-level law students' oral advocacy. I assessed clarity, coherence, and correctness of legal reasoning and gave structured feedback — the same kind of disciplined, criteria-based evaluation I'd apply reviewing a case file or an EDD memo for internal consistency.",
+      "hint": "Adjudicated honours moot court; structured feedback on legal reasoning."
+    },
+    {
+      "front": "What does the LSE Student Ambassador role actually involve?",
+      "general": "A stakeholder-facing leadership role should be described by what actually happens in the room — whose feedback you're representing, and to whom, on what cadence — not just the title.",
+      "specific": "As LSE Law and Finance Student Ambassador, I gather cohort feedback and represent it in monthly board meetings alongside LSE's Department of Finance programme directors, feeding into programme enhancements. It's a small but real stakeholder-management role — recurring exposure to a senior academic audience, on a fixed cadence, not a one-off.",
+      "hint": "Monthly board meetings with LSE Finance programme directors; represents cohort feedback."
+    },
+    {
+      "front": "How do the EMT and ski-instructor experience fit into an interview answer?",
+      "general": "Service and instruction roles are legitimate colour for resilience-under-pressure and communication questions — they're honest, non-finance evidence, and should be framed that way rather than stretched into something they're not.",
+      "specific": "I volunteered 200+ hours as an EMT with a local ambulance corps, making time-sensitive, high-pressure decisions in the field — my clearest resilience-under-pressure story. Separately, as an alpine ski instructor in Verbier I taught over 60 clients, which is my clearest structured-communication and safety-compliance story. Both are non-finance, but I use them honestly as colour, not as a substitute for finance experience.",
+      "hint": "200+ EMT hours (pressure); 60+ ski clients (structured comms) — honest non-finance colour."
+    }
+  ]
+}

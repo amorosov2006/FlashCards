@@ -1,0 +1,103 @@
+{
+  "title": "Sasha Interview · Financial Crime, AML & Sanctions",
+  "description": "Domain fundamentals for financial-crime/AML/KYC/sanctions interviews, each tied wherever possible to her two published EDD work samples (Lantana Trade LLP — built on the Danske Bank Estonia matter; Meridian Leaf Trading — built on the 2023 BAT/DPRK resolution). No invented metrics; case facts sourced from the samples and the interview prep plan.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "What is the FATF risk-based approach, and how does it show up in your Lantana sample?",
+      "general": "The risk-based approach (FATF Recommendation 1) matches the intensity of controls and resources to the assessed level of risk, rather than applying uniform due diligence to every customer — higher-risk relationships get deeper scrutiny, lower-risk ones get proportionately lighter treatment.",
+      "specific": "Both my work samples open with a risk classification before any deep-dive work happens — Lantana and Meridian are both rated HIGH up front, and that rating is what justifies the depth of the beneficial-ownership tracing and screening that follows. The point I'd make to an interviewer is that the risk-based approach drove how much work each file got; it wasn't screening alone that flagged either case.",
+      "hint": "R.1: resource intensity matches assessed risk; both samples rated HIGH before deep-dive."
+    },
+    {
+      "front": "CDD vs EDD — what actually triggered EDD in the Lantana case?",
+      "general": "CDD is baseline identity verification and understanding of the relationship's purpose, applied to every customer; EDD adds measures — source of wealth/funds, senior-management approval, enhanced ongoing monitoring — triggered by elevated risk factors such as high-risk jurisdiction, opaque structure, or PEP proximity.",
+      "specific": "In Lantana, three EDD triggers stacked at once: offshore corporate members with no verified natural-person owner, geography linked to Russia/CIS and secrecy jurisdictions (Marshall Islands, Seychelles), and a PEP nexus. Under the institution's own methodology, any one of those factors alone would mandate EDD per FATF R.10/R.12 — together they pushed the file to HIGH with a senior-management approval requirement.",
+      "hint": "Offshore structure + high-risk jurisdiction + PEP proximity — any one alone triggers EDD."
+    },
+    {
+      "front": "Walk me through beneficial-ownership tracing — how far up the chain did you go in Lantana?",
+      "general": "FATF R.24/25 requires identifying the natural person(s) who ultimately own or control a legal entity, tracing through layered corporate structures — often against a stated ownership/control threshold — until a real person is reached, not just the first registered layer.",
+      "specific": "Lantana's two registered members were offshore corporate vehicles — one in the Marshall Islands, one in Seychelles — neither jurisdiction requiring public beneficial-ownership disclosure. I traced apparent control through a Promsberbank-linked layer to a named PEP, Igor Putin, two layers up. The finding itself was the point: the chain terminates in nominee corporate members, not a verified natural person, so beneficial ownership could not be confirmed to the FATF R.10 standard.",
+      "hint": "Two offshore nominee members → Promsberbank link → PEP, two layers up; UBO unverifiable."
+    },
+    {
+      "front": "Source of wealth vs. source of funds — what's the difference, and where was it missing in Lantana?",
+      "general": "Source of wealth is the origin of a person's overall net worth built up over time; source of funds is the origin of the specific money used in the particular relationship or transaction. EDD for PEPs requires establishing both, not just one.",
+      "specific": "My Lantana memo flags that the file evidenced none of the required R.12 measures for a PEP-linked customer — no senior-management approval, no established source of wealth, no established source of funds, and no enhanced ongoing monitoring. I treat that gap itself as a finding: it's part of why I recommend exit, and I'd flag it as a control failure for remediation, not just a missing data field.",
+      "hint": "SoW = origin of overall wealth; SoF = origin of specific funds — both absent in Lantana's file."
+    },
+    {
+      "front": "How do you handle a PEP hit in practice?",
+      "general": "FATF R.12 requires identifying PEP status or proximity, obtaining senior-management approval before establishing or continuing the relationship, establishing source of wealth and source of funds, and applying enhanced ongoing monitoring — all beyond baseline CDD.",
+      "specific": "Lantana's control nexus reached a close family member of a foreign head of state, two layers up an ownership chain that sanctions screening itself never caught — the PEP hit came from beneficial-ownership analysis, not name-matching. None of the R.12 measures were evidenced in the file, which is exactly the control gap I flag in my recommendation section alongside the exit-and-report disposition.",
+      "hint": "PEP hit came from BO tracing, not screening — R.12 measures were absent, flagged as a gap."
+    },
+    {
+      "front": "What red flags and typologies show up in your work, and how do individual flags become a laundering pattern?",
+      "general": "Individual red flags are often innocuous on their own; typology analysis looks for clusters of indicators — structuring, layering, round-tripping — that only cohere as a laundering pattern when read together, not in isolation.",
+      "specific": "Lantana showed a cluster: 'dormant' Companies House filings against millions in daily flow, 1-2 day rapid pass-through with no retained balances, sub-threshold structuring, round-tripping among roughly 20 affiliated companies, and volume up to €90m a week for a small new entity. Individually explainable; together they match the non-resident 'laundromat' typology from the real Danske Estonia matter this sample is built on.",
+      "hint": "Dormant filings vs. real flow, structuring, round-tripping, €90m/week — cluster, not one flag."
+    },
+    {
+      "front": "How does risk rating drive escalation in your samples?",
+      "general": "A risk rating combines weighted factors — customer/product, legal structure, geography, PEP exposure, transaction behaviour — into an overall tier that sets the required approval authority and monitoring intensity; HIGH ratings typically need senior-management or MLRO sign-off.",
+      "specific": "Both memos rate HIGH from a convergence of factors — Lantana from opaque structure plus high-risk geography plus PEP; Meridian from DPRK geography plus high-risk industry plus opaque ownership. Both dispositions are exit-and-report, and both recommendation sections explicitly call for MLRO and senior-management escalation before the account is restricted or closed.",
+      "hint": "Weighted factors → HIGH tier → MLRO/senior-management sign-off required in both memos."
+    },
+    {
+      "front": "SARs and tipping-off — how does that obligation work, and how did you apply it?",
+      "general": "Under UK POCA 2002, a suspicion of money laundering triggers a duty to file a Suspicious Activity Report with the NCA; separately, 'tipping off' the customer that a report has been made, or that they're under investigation, is itself a criminal offence under POCA s.333A — the two obligations run in parallel.",
+      "specific": "Both my memos end the same way: file an STR with the relevant FIU covering the entity and connected parties, and explicitly 'do not tip off' the client, before restricting or closing the account. I'd apply the same POCA structure in a UK institution — Lantana's booking entity happens to be an Estonian branch, but the filing-plus-no-contact discipline is the same principle I'd bring to a UK-regulated relationship.",
+      "hint": "File STR with FIU; 'do not tip off' — both memos end this way, matching POCA structure."
+    },
+    {
+      "front": "What are the mechanics of sanctions screening, and where does it fall short?",
+      "general": "Name-matching (exact plus fuzzy) against consolidated lists — OFAC SDN, UN, EU, OFSI — is a point-in-time control that screens entities and names, not ownership chains or economic control; it can clear a relationship on paper while missing indirect exposure entirely.",
+      "specific": "In Lantana, every party screened returned no match — screening alone would have cleared the relationship; the material finding was a PEP hit invisible to name-matching. In Meridian, the named counterparty and directors also cleared, while two OFAC-designated DPRK banks sat blocked inside the payment chain. Same teaching point both times: name screening isn't risk clearance.",
+      "hint": "Name-matching cleared both files on paper; the real risk sat one layer deeper each time."
+    },
+    {
+      "front": "Walk me through the OFAC 50 Percent Rule, cold.",
+      "general": "Entities aggregately owned 50% or more by one or more blocked persons are themselves blocked by operation of law, even if not individually listed on a sanctions list — screening has to extend past the named counterparty into ownership chains to catch this.",
+      "specific": "I applied this in Meridian to argue indirect DPRK exposure: two OFAC-designated DPRK banks, Korea Kwangson Banking Corporation (designated 2009) and Foreign Trade Bank (designated 2013), sat in the payment chain behind layered Chinese front companies with no verifiable business rationale. My control-fix recommendation was to extend counterparty screening to ownership chains going forward, not just names on the wire.",
+      "hint": "≥50% blocked-persons ownership = blocked by operation of law; KKBC/FTB behind front companies."
+    },
+    {
+      "front": "Blocked property vs. rejecting a transaction — what's the difference, and what did you recommend in Meridian?",
+      "general": "Blocked (frozen) property must be held in a segregated account and reported to OFAC when a blocked person has an interest in a transaction reaching U.S. jurisdiction; a rejected transaction is simply stopped and returned without a blocking obligation, typically because no blockable interest attaches.",
+      "specific": "In Meridian I recommended two different actions at two different levels: freeze/block any specific in-flight payment carrying a KKBC or FTB blocked-bank interest, while the overall relationship disposition was decline/exit rather than blocking the client itself. The distinction matters — you block the tainted payment, you exit the relationship; they're not the same action.",
+      "hint": "Block the tainted payment (KKBC/FTB interest); decline/exit the relationship — two different actions."
+    },
+    {
+      "front": "What are the actual Danske Bank Estonia facts your Lantana sample is built on?",
+      "general": "Danske Bank's Estonian branch ran a non-resident portfolio (2007–15) that processed roughly €200bn in flows tied to Russia/CIS, exposed by whistleblower Howard Wilkinson and detailed in the Bruun & Hjejle 2018 report — the reference case for 'laundromat' typologies, leading to a 2022 DOJ/SEC resolution.",
+      "specific": "I built Lantana directly on this matter's public record — the Bruun & Hjejle 2018 report, OCCRP reporting, the ICIJ FinCEN Files, and the 2022 DOJ/SEC resolution. Lantana Trade LLP is a real entity named in that reporting; I used its actual fact pattern — offshore nominee members, a PEP nexus to Igor Putin — rather than inventing a generic hypothetical.",
+      "hint": "~€200bn non-resident flows 2007-15; Bruun & Hjejle 2018; 2022 DOJ/SEC — Lantana's real basis."
+    },
+    {
+      "front": "What are the BAT/DPRK case facts your Meridian sample is built on, and why does the penalty matter?",
+      "general": "In April 2023, British American Tobacco p.l.c. and BAT Marketing (Singapore) resolved OFAC/DOJ enforcement for a DPRK sanctions-evasion scheme, in which BAT nominally divested its DPRK joint-venture stake for EUR 1 while continuing to control the business and clear USD proceeds through front companies.",
+      "specific": "Meridian is a disguised hypothetical built on the real OFAC and DOJ 2023 press releases — the $508.6M OFAC settlement, the largest OFAC penalty against a non-financial institution at the time, is why this case is a teaching reference. The EUR 1 divestment, continued Group involvement in the JV, and layered Chinese-front-company remittances in my sample all track the real fact pattern.",
+      "hint": "EUR 1 nominal divestment; $508.6M OFAC penalty, largest against a non-financial institution."
+    },
+    {
+      "front": "What's the UK AML regulatory landscape you'd be operating in — MLR 2017, FCA?",
+      "general": "The Money Laundering, Terrorist Financing and Transfer of Funds Regulations 2017 (MLR 2017) transpose FATF standards into UK law for regulated firms, mandating risk-based CDD/EDD, PEP identification, and reporting; the FCA supervises AML compliance for UK financial-services firms and can take enforcement action for control failures.",
+      "specific": "This is the regulatory layer I'd operate under in a UK financial-crime role — MLR 2017's risk-based CDD/EDD requirements are the same FATF R.1/R.10/R.12 logic I applied directly in both work samples. I haven't worked inside an FCA-supervised firm yet, so I'd frame this honestly as applied regulatory knowledge from my LSE International Financial Law module plus the samples, not employment experience.",
+      "hint": "MLR 2017 = FATF transposed into UK law; FCA supervises; I know it from coursework + samples, not employment."
+    },
+    {
+      "front": "Three lines of defence — where would you sit as an intern or graduate analyst?",
+      "general": "First line = business/front-office risk ownership and initial controls; second line = compliance/risk functions (AML, financial-crime advisory) setting policy, challenging, and monitoring; third line = internal audit, independently testing both.",
+      "specific": "An entry-level financial-crime analyst role like the ones I'm targeting sits in the second line. The work in both my samples — risk rating, PEP handling, screening review, STR recommendation — is exactly second-line advisory and control work: setting the call on a file, not owning the client relationship (first line) or independently auditing the control framework afterward (third line).",
+      "hint": "Second line: advisory/control work, not client ownership (1st) or independent audit (3rd)."
+    },
+    {
+      "front": "What would you check first on a new high-risk client?",
+      "general": "Start with what the customer says about itself — declared purpose, structure, ownership — versus what's independently verifiable: registry filings, transaction behaviour, adverse media. The fastest way to find EDD triggers is a contradiction between stated profile and observed activity.",
+      "specific": "In Lantana, the first contradiction was exactly that: Companies House filings represented the entity as dormant and low-turnover, while the account processed millions daily. That mismatch — not any single red flag in isolation — is what I'd check for first on any new high-risk client, then work outward to ownership structure, PEP exposure, and sanctions screening.",
+      "hint": "Declared profile vs. verifiable activity first; Lantana's dormant filings vs. real flow was the tell."
+    }
+  ]
+}

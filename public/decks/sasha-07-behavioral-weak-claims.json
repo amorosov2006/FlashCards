@@ -1,0 +1,103 @@
+{
+  "title": "Sasha Interview · Behavioral & Weak Claims",
+  "description": "The six weak-claim drills from the interview prep plan, six behavioral-competency cards mapped to her real STAR stories, three 'why this path' narrative cards (flagged as an open prep gap — no single rehearsed anecdote exists yet), and one work-authorization logistics card. Applies across CACIB Financial Crime, CACIB M&A, and Augusta & Co; Macquarie MCVC where noted.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Weak claim: 'Your samples are self-directed, not real compliance work.'",
+      "general": "Agree with the framing rather than fighting it — both PDFs literally say \"illustrative work sample\" on their own title pages — then pivot to the substance: FATF-cited methodology built on real public enforcement records with named primary sources.",
+      "specific": "I'd agree with that framing directly — both memos say \"illustrative work sample\" on their own title pages, so I'm not going to pretend otherwise. What I'd push back on is the implication that self-directed means low-rigor: both cite the FATF Recommendations directly (R.1, R.10, R.12, R.24-25), are built on real public enforcement records — the Danske Bank Estonia matter and the OFAC/DOJ British American Tobacco DPRK resolution — and are published where anyone can check them line by line. I don't have paid compliance experience yet; this is the evidence I built instead of just claiming interest.",
+      "hint": "Agree 'illustrative work sample' label; pivot to FATF-cited methodology."
+    },
+    {
+      "front": "Weak claim: 'Did you write these yourself?'",
+      "general": "Answer yes, immediately, and be ready to name every source cold — hesitation here reads worse than any factual gap would.",
+      "specific": "Yes. For Lantana I built on the Bruun & Hjejle 2018 report, OCCRP reporting, the ICIJ FinCEN Files, and the 2022 DOJ/SEC resolution on Danske Bank Estonia. For Meridian I built on the OFAC/DOJ British American Tobacco DPRK resolution and worked through why the OFAC 50 Percent Rule — aggregate ownership of 50% or more by blocked persons — was the right lens for the indirect exposure, rather than a straightforward name-match screen. I can walk through either document's sourcing line by line.",
+      "hint": "Name sources cold: Bruun & Hjejle, FinCEN Files, OFAC/DOJ."
+    },
+    {
+      "front": "Weak claim: 'Your model says Costco is 35% overvalued — is the market wrong?'",
+      "general": "No — never claim the market is wrong; name the specific driver you'd stress-test first and treat the gap as a modelling finding to interrogate, not a thesis to defend.",
+      "specific": "No, I wouldn't say the market's wrong — a $649 base case against a $998 spot price is a signal to interrogate my own assumptions first, not a bullish or bearish call to defend. The first thing I'd stress-test is the terminal growth rate and margin assumptions feeding the DCF and APV legs, since those are the levers most likely to be understating a mature, high-multiple retailer's actual growth trajectory or capital efficiency. I'd rather show I know which assumption to interrogate than insist the model is right.",
+      "hint": "Never defend the gap — name the driver to stress-test first."
+    },
+    {
+      "front": "Weak claim: 'You have no banking internship.'",
+      "general": "Agree plainly, then point to the concrete substitutes — coursework plus two independently built, fully quantified models — and frame the application itself as consistent with that gap, not despite it.",
+      "specific": "That's accurate — I have no paid banking internship on record. What I have instead is the LSE PE&VC and Corporate Transactions Law/Finance modules, a five-day Training the Street course that made the three-statement mechanics automatic, and two independently built, fully quantified models — Costco's DCF/APV/comps and KLOS's unit-economics and IRR build. I'm applying at intern level specifically because of this gap, not despite it.",
+      "hint": "Agree the gap; cite LSE modules, Training the Street, Costco/KLOS."
+    },
+    {
+      "front": "Weak claim: 'Forage isn't an internship.'",
+      "general": "Agree plainly and immediately — it's an unpaid simulation, not employment; never let it drift into being described as work history.",
+      "specific": "Agreed — it's an unpaid virtual simulation, not employment, and I wouldn't phrase it as one on a CV or in an interview. What it gave me was structured practice with real deal mechanics — a CP checklist and disclosure-schedule clause review on the Latham & Watkins M&A simulation, and aviation-finance-and-leasing materials on the Norton Rose Fulbright one. I treat it as self-directed technical practice, not as a substitute for an internship.",
+      "hint": "Agree plainly: simulation, not employment; reframe as practice."
+    },
+    {
+      "front": "Weak claim: 'How good is your French really?'",
+      "general": "Give the exact, honest wording rather than rounding up, then pivot to the language asset that's actually strong.",
+      "specific": "Conversational, low-intermediate — that's the honest, exact level, not \"intermediate\" rounded up. I wouldn't want to walk into a French-language conversation and be caught overstating it. My real language asset is native Russian alongside native English, which is directly relevant for financial-crime and sanctions work involving Russian-language source material, and for European advisory practices more broadly.",
+      "hint": "Exact wording: conversational, low-intermediate — pivot to Russian."
+    },
+    {
+      "front": "Behavioral: Tell me about a time you led a team.",
+      "general": "Pick the story with the clearest ownership-plus-coordination shape, and be honest about scale — this is peer coordination in a structured clinic, not managing subordinates.",
+      "specific": "At LSE's Legal Advice Centre I worked inside a firm-like structure of about six students handling live client matters together. I didn't have formal authority over anyone, but I owned individual case intake, research, and drafting while coordinating with the rest of the group so nothing fell through — flagging conflicts and escalation points to the firm rather than resolving ambiguity alone. Across six pro bono employment-law cases over the year, nothing was dropped or missed.",
+      "hint": "LSE clinic, six-student firm — zero cases dropped."
+    },
+    {
+      "front": "Behavioral: Tell me about producing a high-quality written report under deadline pressure.",
+      "general": "Use a story where the writing had to hold up to more than one reviewer and had real consequences if wrong.",
+      "specific": "Across six pro bono employment-law cases at LSE's clinic, I drafted client-facing advice letters that were reviewed by both peers and a supervising solicitor before they went out, so the writing had to be right, not just readable. That two-layer review discipline is close to how an EDD summary or a deal memo gets checked before it reaches a committee or an MD, which is part of why I think that experience transfers directly.",
+      "hint": "Six clinic advice letters, peer plus solicitor review each time."
+    },
+    {
+      "front": "Behavioral: Tell me about something you did without being asked.",
+      "general": "This is the strongest initiative story in the whole profile — use it and be explicit that it was unprompted.",
+      "specific": "I noticed the gap between saying I'm interested in financial crime and having any evidence of it — no employment on record in compliance. So I built two EDD/sanctions-screening work samples from scratch, on real public enforcement cases, applying FATF methodology and the OFAC 50 Percent Rule, citing primary sources throughout, and published both to a public GitHub repo. Nobody assigned this; I built it because a claim isn't evidence and I wanted something a recruiter could actually open and check.",
+      "hint": "Nobody assigned the EDD memos — built and published unprompted."
+    },
+    {
+      "front": "Behavioral: Tell me about presenting under real scrutiny.",
+      "general": "Use the audience's expertise, not just the presentation itself, to establish the stakes.",
+      "specific": "I built a venture pitch deck and financial model for KLOS and presented it to specialists from nine different VC firms in London — not classmates, people who evaluate pitches like this for a living. I'd built the CAC, gross margin, LTV/CAC, and payback assumptions from the ground up, so when they pushed on the assumptions rather than the slides, I could defend the build itself, not just the output. It came out to a 76% IRR and £162M exit at year six against a £550k raise.",
+      "hint": "Presented KLOS live to nine VC specialists; defended the assumptions."
+    },
+    {
+      "front": "Behavioral: Tell me about exercising structured judgment on someone else's work.",
+      "general": "Use a story where you applied a defined rubric rather than a gut call, and delivered feedback specific enough to be actionable.",
+      "specific": "I judged the Amsterdam Law Trials Moot Court, adjudicating honours-track students' advocacy across a full cycle. I applied a structured rubric consistently across rounds and gave written and verbal feedback on reasoning gaps and argument structure, not just delivery style, so students could actually use it to improve the next round. It's the same evaluative posture a deal team or a VC needs when assessing a pitch or a target — criteria-driven, not gut-feel.",
+      "hint": "Moot Court judge — rubric-driven feedback on reasoning, not delivery."
+    },
+    {
+      "front": "Behavioral: Tell me about a time you had to make a call under real pressure.",
+      "general": "This is the highest-stakes story in the profile — use it when a finance-specific pressure story would feel thin.",
+      "specific": "I volunteered as an EMT for about a year, over 200 hours, responding to emergency calls and making triage decisions in real time, often with incomplete information and no time to deliberate. I followed protocol, prioritized by severity, and communicated clearly with both patients and the rest of the crew, with no formal incident against my record across that time. It's a genuinely higher-stakes example of judgment under pressure than most interview stories I could borrow from a classroom.",
+      "hint": "EMT, 200+ hours, real triage — higher stakes than a classroom."
+    },
+    {
+      "front": "Narrative: 'Why financial crime?'",
+      "general": "Flagged as an open prep gap in the interview prep plan — no single rehearsed anecdote exists yet for this question. Build and rehearse one before the loop; don't improvise it live.",
+      "specific": "[Skeleton — still needs rehearsal] The honest thread: financial crime is the one role family where I already have real, checkable evidence instead of borrowed enthusiasm — I built and published two EDD/sanctions memos on my own before ever applying anywhere, because I wanted proof, not a talking point. I'd tie that to a specific moment: reading the Danske Bank Estonia case and realizing how a name-matching screen alone misses a beneficial-ownership chain. I'd rather build the evidence than describe the interest.",
+      "hint": "PREP GAP — anchor: built EDD samples before ever applying."
+    },
+    {
+      "front": "Narrative: 'Why investment banking?'",
+      "general": "Also flagged as an open prep gap — same issue, no single rehearsed anecdote yet. Build it from the Costco/KLOS modelling motivation, honestly, not from a generic 'I like finance' line.",
+      "specific": "[Skeleton — still needs rehearsal] The honest thread: I like the discipline of turning a messy set of assumptions into a defensible number under real scrutiny — that's what both the Costco valuation and the KLOS pitch actually were, not classroom exercises I could coast through. Costco in particular, where the model told me the stock was overvalued rather than confirming what I expected, is the moment I'd point to: I trusted the process over the answer I wanted. I don't have a live-mandate story yet, and I'd say that directly rather than inventing one.",
+      "hint": "PREP GAP — anchor: the Costco model surprised me, and I trusted it."
+    },
+    {
+      "front": "Narrative: 'Why should we hire someone starting their career?'",
+      "general": "Don't apologize for being a new grad — lead with the pattern of shipping real, checkable work before being asked, which is unusual at this level.",
+      "specific": "Because I've already shown the pattern you're actually hiring for at this level: building real, checkable work before anyone assigned it to me — two published EDD memos, a fully quantified Costco valuation, a KLOS model defended live to nine VC firms — rather than waiting for a badge to start doing the work. I'm not going to pretend that's equivalent to years of live-mandate experience. What I'm offering is that the habit of shipping and being checked is already in place, so the ramp is about scope, not about learning to work rigorously in the first place.",
+      "hint": "Lead with shipping-before-asked, not an apology for being new."
+    },
+    {
+      "front": "Logistics: What's your work authorization across markets?",
+      "general": "Give a clean, accurate answer per market, with dates, rather than a vague 'I'm eligible to work' — interviewers want the specific mechanism and timeline.",
+      "specific": "In the US I'm a citizen, so there's zero friction there. In the UK I'm currently on a student visa tied to LSE, and I need to file my Graduate Route application by 31 December 2026 to lock in the full two-year post-study work window — it drops to 18 months for anything filed from January 2027, so I'm treating that deadline as fixed. In the Netherlands I have zoekjaar (orientation-year) eligibility open until roughly July 2028, tied to my Amsterdam degree, though I haven't exercised it — it's a future option, not something I'm using yet.",
+      "hint": "US citizen; UK Grad Route by 31 Dec 2026; NL zoekjaar 2028."
+    }
+  ]
+}

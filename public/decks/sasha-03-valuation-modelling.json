@@ -1,0 +1,97 @@
+{
+  "title": "Sasha Interview · Valuation & Modelling",
+  "description": "DCF/APV/comps mechanics anchored in the Costco Wholesale valuation, the paper-LBO and 3-statement drills from Training the Street, and the mental-math discipline for CA-CIB's SHL-style numerical tests.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Walk me through a DCF.",
+      "general": "Forecast unlevered free cash flow, discount each year at WACC, add a terminal value (also discounted), sum the present values to get enterprise value, then bridge to equity value and a per-share price.",
+      "specific": "Costco — DCF alongside APV and comps. I built revenue/EBITDA/net-income projections off Capital IQ and Costco's financial statements, discounted at WACC, computed terminal value, then ran bear/base/bull scenarios (±15%) to stress the output. Base case gave a $649 implied share price versus the $998 spot price at the time.",
+      "hint": "Forecast FCF → discount at WACC → terminal value → bridge to price."
+    },
+    {
+      "front": "WACC — components, and how did you sensitise it?",
+      "general": "Cost of equity (CAPM: risk-free rate + beta × equity risk premium) weighted by E/V, plus after-tax cost of debt weighted by D/V.",
+      "specific": "On Costco I built WACC from CAPM cost of equity and after-tax cost of debt, weighted by market cap and debt. Because Costco carries low leverage, cost of equity dominates the discount rate. I sensitised WACC and terminal growth together in a data table to see how much of the $649-vs-$998 gap survived across reasonable ranges.",
+      "hint": "CAPM cost of equity dominates (low leverage); sensitised vs terminal growth."
+    },
+    {
+      "front": "Terminal value — Gordon growth vs exit multiple?",
+      "general": "Gordon growth: FCF in year n+1 × (1+g) ÷ (WACC − g). Exit multiple: apply a market multiple to the terminal-year metric. Good practice is to cross-check both.",
+      "specific": "For Costco I used Gordon growth as the primary terminal-value method and cross-checked it against an exit-multiple approach implied by the comps set, so the DCF's terminal assumption wasn't silently doing all the work behind the $649 output.",
+      "hint": "Gordon growth primary; exit multiple as a cross-check."
+    },
+    {
+      "front": "DCF vs APV — when and why did you use APV?",
+      "general": "DCF discounts at a blended WACC assuming roughly constant leverage. APV separates unlevered firm value from the value of financing side effects (the debt tax shield), useful when isolating capital-structure effects.",
+      "specific": "I built both on Costco specifically to isolate financing effects from operating value. Costco is a low-leverage retailer, so running APV alongside DCF let me separate the debt tax shield's contribution from unlevered operating value rather than burying it inside one blended discount rate — the differentiator I'd raise unprompted, since most classmates stopped at DCF and comps.",
+      "hint": "APV isolates the tax shield; DCF blends it into WACC."
+    },
+    {
+      "front": "Comps selection — and the main pitfall?",
+      "general": "Match peers on business model and margin structure, not sector label or size alone; adjust for accounting differences; be cautious of undisclosed outliers.",
+      "specific": "On Costco I picked membership-warehouse peers rather than generic big-box retail, because the membership-fee revenue stream and volume-driven margin structure don't map onto a department-store comp set. The pitfall from that exercise: sector labels are a weak filter — business-model fit and margin profile are the real test.",
+      "hint": "Membership-warehouse peers, not generic retail — model fit over sector label."
+    },
+    {
+      "front": "Walk me through the EV-to-equity-value bridge.",
+      "general": "Equity value = Enterprise Value − net debt − minority interest − preferred + non-operating assets (conventions vary); divide by shares outstanding for price per share.",
+      "specific": "On Costco I built the standard bridge from the DCF/APV enterprise value down to equity value and per-share price, subtracting net debt and other claims before dividing by shares outstanding — the same mechanics I'd apply to any DCF output, not something unique to that model.",
+      "hint": "EV minus net debt/preferred/minority interest, ÷ shares out."
+    },
+    {
+      "front": "Your model says the market is 35% wrong. Is it, or are you?",
+      "general": "Name the specific assumption driving the gap and say which one you'd stress-test first, rather than either defending the model as gospel or capitulating to the market price.",
+      "specific": "Costco's base case gives $649 against a $998 spot price — the model reads Costco as trading materially above intrinsic value. I don't defend the call; I'd name the driver I'd stress-test first, most likely terminal growth or long-run margin assumptions, and treat the 35% gap as a finding to interrogate, not a thesis to defend.",
+      "hint": "Name the driver you'd stress-test first — a finding, not a call."
+    },
+    {
+      "front": "Scenario analysis vs sensitivity analysis — what's the difference?",
+      "general": "Scenario analysis varies multiple assumptions together under a named narrative (bear/base/bull). Sensitivity analysis (data tables) varies one or two inputs in isolation across a range.",
+      "specific": "On Costco I ran both — bear/base/bull scenarios at ±15% on the core assumptions to bound outcomes, then a WACC/terminal-growth data table for pure sensitivity, from the Training the Street scenario/sensitivity module. The scenario framing is what let me quantify the bear case rather than leave 'downside risk' as a qualitative flag.",
+      "hint": "Scenario = narrative bundle; sensitivity = one-input data table."
+    },
+    {
+      "front": "How does net income link the three statements?",
+      "general": "Net income flows into retained earnings on the balance sheet and starts the indirect cash-flow statement; D&A is added back in CFO and depletes the PP&E schedule; working-capital changes flow through CFO.",
+      "specific": "This is the Training the Street 5-day build, cold: net income rolls into retained earnings and starts the indirect CFS; D&A is added back in CFO and depletes the PP&E schedule; the model only balances once every schedule — working capital, D&A, debt/interest — ties back correctly.",
+      "hint": "Net income → retained earnings + CFS start; D&A add-back."
+    },
+    {
+      "front": "How do you build a working-capital schedule?",
+      "general": "Build AR, AP, and inventory off days-based ratios (DSO/DPO/DIO) tied to revenue/COGS, then feed the period change into the change-in-NWC line on the cash-flow statement.",
+      "specific": "Built this from scratch in the Training the Street course — DSO/DPO/DIO assumptions driving AR/AP/inventory balances, then the period-over-period change flowing into CFO. I'd apply the same schedule logic to any operating model, including the Costco DCF's near-term forecast years.",
+      "hint": "DSO/DPO/DIO drive AR/AP/inventory; delta feeds CFO."
+    },
+    {
+      "front": "Circular references in a debt/interest schedule — and how do you control for them?",
+      "general": "Interest expense depends on the debt balance, which depends on the cash sweep, which depends on net income after interest — a circularity. Control it with a circularity switch/breaker or iterative-calculation settings.",
+      "specific": "Training the Street covered this directly — building the debt-and-interest schedule with a circularity switch so the model doesn't error out on the interest-expense-to-cash-sweep loop, then confirming the model still balances with the breaker on. It's a mechanical control I'd walk through on a whiteboard if asked cold.",
+      "hint": "Interest → cash sweep → interest loop; switch/breaker controls it."
+    },
+    {
+      "front": "Run me through a paper LBO in five steps.",
+      "general": "(1) Entry EV = entry multiple × EBITDA. (2) Size debt off leverage capacity, sponsor equity plugs the rest. (3) Build a simple operating case — growth and debt paydown from FCF. (4) Exit EV at an assumed exit multiple × exit-year EBITDA. (5) Back out equity value at exit and compute IRR/MOIC.",
+      "specific": "I rehearse it as: entry multiple × EBITDA, debt sized at roughly 4–5x EBITDA with sponsor equity plugging the balance, a simple operating/paydown case, exit at an assumed multiple, then IRR off entry vs exit equity. From that structure the dominant lever is usually the exit multiple — the biggest single swing — with entry multiple and debt paydown close behind.",
+      "hint": "Entry multiple → 4-5x debt → paydown → exit multiple → IRR; exit multiple dominates."
+    },
+    {
+      "front": "How would you value a company with no earnings?",
+      "general": "Shift to revenue or forward-looking multiples, a longer-horizon DCF with an explicit path to profitability, or venture/growth-stage precedent comps (EV/Revenue); unit economics matter more than trailing earnings multiples.",
+      "specific": "This maps directly onto KLOS, a pre-scale startup pitch: instead of an earnings multiple I used unit economics — CAC, LTV/CAC, gross margin, payback — to build a credible path to profitability, then an EV/Revenue exit multiple rather than EV/EBITDA, since there wasn't a stable EBITDA base yet.",
+      "hint": "EV/Revenue + unit economics, not EV/EBITDA — KLOS is the example."
+    },
+    {
+      "front": "Give me the accretion/dilution one-liner.",
+      "general": "A deal is accretive if the acquirer's pro forma EPS rises post-transaction (roughly: the acquirer pays a lower multiple than its own, adjusted for financing mix); dilutive if EPS falls.",
+      "specific": "I haven't built a live accretion/dilution model — this is bookwork from LSE's Corporate Transactions Finance module, not a project output. I'd give the mechanical answer honestly and flag it as conceptual depth rather than a modelled deliverable, the same way I'd flag any topic I know in theory but haven't built.",
+      "hint": "Accretive if pro forma EPS rises — theory, not a built model, and I'd say so."
+    },
+    {
+      "front": "How do you keep mental-math sharp for numerical reasoning tests?",
+      "general": "Practice percentage-growth, margin, and multiple arithmetic without a calculator, rounding cleanly and sanity-checking order of magnitude before committing to an answer.",
+      "specific": "I run daily 15–20 minute mental-math drills on EV/EBITDA, percentage growth, and margin calculations ahead of the SHL-style numerical reasoning tests gating the CA-CIB roles — the same arithmetic instinct I built doing the Costco scenario table by hand before dropping it into Excel.",
+      "hint": "Daily 15-20m drills: EV/EBITDA, %growth, margins — no calculator."
+    }
+  ]
+}
