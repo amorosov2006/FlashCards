@@ -1,193 +1,193 @@
 {
   "title": "Interview · FedInsight Deep Dive",
-  "description": "Deep-dive interview cards on FedInsight's FOMC-minutes RAG pipeline, pairing each transferable concept with Hanna Murai's actual implementation and honesty caveats about shipped vs. local-only work.",
+  "description": "Deep-dive interview cards on FedInsight's FOMC-minutes RAG pipeline, pairing each transferable concept with my actual implementation and honesty caveats about shipped vs. local-only work.",
   "studyOnly": true,
   "cards": [
     {
       "front": "How do you separate what's publicly verifiable on FedInsight from what's only local work?",
       "general": "In any RAG or portfolio project, be precise about what is shipped and public versus what is built locally but not yet published. Distinguish deployed, committed code from untracked working-copy code, and distinguish a feature that merely exists from an eval harness that actually measures its quality. Never cite evaluation numbers you have not personally run, and never imply a commit, PR, or public link for code that hasn't been pushed. This kind of disciplined honesty is what keeps a technical narrative credible under scrutiny.",
-      "specific": "Phase 0/1 is true-today and public on github.com/murai1998/FedInsight (verified live, ~98% Python, 8 commits): the scraper, PyMuPDF parsing, 800/150 chunking, MiniLM embeddings, dual vector backends, basic RAG generation, Streamlit UI, and Docker/HF Space deployment. Hybrid search (src/rag/hybrid.py) and cross-encoder reranking (src/rag/rerank.py) are code-complete and tested but exist ONLY in the local working copy — untracked/uncommitted, not on the public repo. They may be described as recent engineering work ('I've built and locally tested hybrid dense+BM25 retrieval with RRF fusion and a cross-encoder reranking stage') but must never be presented as published/visible on GitHub, and no commit hash, PR, or public link should ever be implied. The retrieval-quality eval harness (recall@k, MRR) does NOT exist at all for FedInsight — not built, not roadmapped. Never cite any FedInsight recall@k/MRR number under any framing; the only true-today eval-harness evidence in the whole portfolio is the Policy & Compliance RAG service at USAA. Honest answer if pressed: 'That harness isn't built for FedInsight yet — the recall@k/MRR work I've actually run is on a production RAG service at USAA, over a held-out QA set.'",
+      "specific": "My Phase 0/1 is true-today and public on github.com/murai1998/FedInsight (verified live, ~98% Python, 8 commits): my scraper, PyMuPDF parsing, 800/150 chunking, MiniLM embeddings, dual vector backends, basic RAG generation, Streamlit UI, and Docker/HF Space deployment. My hybrid search (src/rag/hybrid.py) and cross-encoder reranking (src/rag/rerank.py) are code-complete and tested but exist ONLY in my local working copy — untracked/uncommitted, not on my public repo. I describe them as recent engineering work ('I've built and locally tested hybrid dense+BM25 retrieval with RRF fusion and a cross-encoder reranking stage') but I never present them as published/visible on GitHub, and I never imply a commit hash, PR, or public link. My retrieval-quality eval harness (recall@k, MRR) does NOT exist at all for FedInsight — I haven't built it and I haven't roadmapped it. I never cite any FedInsight recall@k/MRR number under any framing; the only true-today eval-harness evidence in my whole portfolio is my Policy & Compliance RAG service at USAA. My honest answer if pressed: 'That harness isn't built for FedInsight yet — the recall@k/MRR work I've actually run is on a production RAG service at USAA, over a held-out QA set.'",
       "hint": "Public Phase 0/1 vs. local-only hybrid/rerank vs. an eval harness that doesn't exist."
     },
     {
       "front": "For the scraper, what are the actual politeness and rate-limiting numbers?",
       "general": "A well-behaved web scraper throttles itself to avoid hammering the source server, using deliberate delays between requests and downloads plus timeouts so a single slow response can't hang the whole run. Matching document links with a regex and capturing structured metadata at scrape time makes the downstream ingestion pipeline deterministic and traceable back to the original source.",
-      "specific": "src/scraper/fomc_minutes_scraper.py pulls FOMC minutes from federalreserve.gov (1994 onward), following the URL pattern /monetarypolicy/fomchistorical{year}.htm and matching PDF links via the regex fomcminutes\\d{8}\\.pdf. Politeness delays are 0.4s between requests and 0.6s between downloads; timeouts are 25s per request and 120s per PDF. It captures metadata for each document: meeting_date, release_date, pdf_url, and document_type."
+      "specific": "My scraper (src/scraper/fomc_minutes_scraper.py) pulls FOMC minutes from federalreserve.gov (1994 onward), following the URL pattern /monetarypolicy/fomchistorical{year}.htm and matching PDF links via the regex fomcminutes\\d{8}\\.pdf. I set politeness delays of 0.4s between requests and 0.6s between downloads; timeouts are 25s per request and 120s per PDF. I capture metadata for each document: meeting_date, release_date, pdf_url, and document_type."
     },
     {
       "front": "Why did you choose PyMuPDF over pdfplumber for parsing the documents?",
       "general": "PDF parsing quality depends heavily on how the parser handles page layout. Documents laid out in multiple columns break column-naive parsers, which read straight across the page and interleave text from adjacent columns out of reading order. A layout-aware parser respects column boundaries and reconstructs the correct reading order, and good parsing also cleans up artifacts like hyphenation at line breaks, Unicode ligatures, and repeated headers or page numbers that would otherwise pollute chunks.",
-      "specific": "FOMC minutes are laid out in two columns, and PyMuPDF (fitz) respects that layout, extracting text in correct reading order, whereas a column-naive parser interleaves left/right-column text incorrectly. pdfplumber and pypdf exist as fallback options, but PyMuPDF is primary. It also handles de-hyphenation and Unicode normalization (ligatures, the U+2212 minus-sign character) plus stripping of running headers and page numbers."
+      "specific": "FOMC minutes are laid out in two columns, and PyMuPDF (fitz) respects that layout, extracting text in correct reading order, whereas a column-naive parser interleaves left/right-column text incorrectly. I keep pdfplumber and pypdf as fallback options, but PyMuPDF is my primary parser. It also handles de-hyphenation and Unicode normalization (ligatures, the U+2212 minus-sign character) plus stripping of running headers and page numbers."
     },
     {
       "front": "What are the exact chunking parameters, cold?",
       "general": "Chunking splits long documents into passages small enough to embed and retrieve precisely, with an overlap between adjacent chunks so a fact straddling a boundary isn't lost. A recursive splitter tries a hierarchy of separators — paragraph breaks first, then sentences, then words — to break at the most natural point that still fits the size budget. Carrying positional metadata on each chunk lets you reconstruct context and cite location later.",
-      "specific": "FedInsight uses LangChain's RecursiveCharacterTextSplitter with chunk_size of 800 characters and overlap of 150, and the separator hierarchy [\"\\n\\n\", \"\\n\", \". \", \" \", \"\"]. Each chunk carries metadata: chunk_index, chunk_size, and total_chunks."
+      "specific": "I use LangChain's RecursiveCharacterTextSplitter with chunk_size of 800 characters and overlap of 150, and the separator hierarchy [\"\\n\\n\", \"\\n\", \". \", \" \", \"\"]. Each chunk carries metadata: chunk_index, chunk_size, and total_chunks."
     },
     {
       "front": "For the embedder, what model, dimensionality, and batching do you use?",
       "general": "Embedding turns each chunk into a fixed-length vector for similarity search. Model choice trades off speed, dimensionality, and quality; smaller models are fast and cheap and a common default. Auto-selecting the best available compute device and using a larger batch size on GPU than CPU keeps ingestion efficient, and normalizing embeddings at encode time means cosine similarity can be computed directly without a separate normalization step downstream.",
-      "specific": "FedInsight uses sentence-transformers/all-MiniLM-L6-v2, producing 384-dim vectors. Device auto-selects in the order CUDA → Apple MPS → CPU; batch size is 256 on GPU and 32 on CPU; and normalize_embeddings=True, so the vectors are cosine-ready without a separate normalization step downstream."
+      "specific": "I use sentence-transformers/all-MiniLM-L6-v2, producing 384-dim vectors. My device auto-selects in the order CUDA → Apple MPS → CPU; batch size is 256 on GPU and 32 on CPU; and I set normalize_embeddings=True, so the vectors are cosine-ready without a separate normalization step downstream."
     },
     {
       "front": "How does the vector-store abstraction work?",
       "general": "Abstracting the vector store behind a shared interface lets the RAG pipeline stay agnostic to which storage backend is active. A common base interface exposes the operations the pipeline needs — add, similarity search, clear, count, etc. — and a factory function selects the concrete backend from configuration. That way the retrieval code above this layer never branches on backend, and swapping stores is a config change rather than a rewrite.",
-      "specific": "There's a shared base interface with add_documents, similarity_search(query_embedding, k, metadata_filter), clear_collection, count, get_all, and close. A factory function get_vector_store() reads the env var VECTOR_BACKEND, defaulting to pgvector, while the Hugging Face Space overrides it to chroma. The RAG pipeline code above this layer never branches on which backend is active."
+      "specific": "I have a shared base interface with add_documents, similarity_search(query_embedding, k, metadata_filter), clear_collection, count, get_all, and close. My factory function get_vector_store() reads the env var VECTOR_BACKEND, defaulting to pgvector, while my Hugging Face Space overrides it to chroma. My RAG pipeline code above this layer never branches on which backend is active."
     },
     {
       "front": "What are the ChromaDB-specific implementation details?",
       "general": "ChromaDB is a lightweight, on-disk vector store good for demos and local deployment. It builds an approximate-nearest-neighbor graph index over a chosen distance space, auto-batches writes, and supports scalar metadata filtering — simpler but less expressive than a full relational/JSON filter. Because it reports a distance, a similarity score is derived by converting distance to similarity.",
-      "specific": "FedInsight's Chroma backend uses PersistentClient, on-disk, with collection name fed_chunks. It uses an HNSW index in cosine space, scalar-only metadata filtering (less expressive than pgvector's JSONB), auto-batched writes (default 5000), and reports its score as 1 − distance."
+      "specific": "My Chroma backend uses PersistentClient, on-disk, with collection name fed_chunks. It uses an HNSW index in cosine space, scalar-only metadata filtering (less expressive than pgvector's JSONB), auto-batched writes (default 5000), and reports its score as 1 − distance."
     },
     {
       "front": "What are the pgvector-specific implementation details?",
       "general": "pgvector adds vector search to PostgreSQL, so you get relational storage, JSON metadata, and vector similarity in one system. A cosine-distance operator drives similarity search, an approximate index accelerates nearest-neighbor lookups, and a separate index on the metadata column speeds up filtered queries. This gives richer, containment-based metadata filtering than a scalar-only store.",
-      "specific": "FedInsight's pgvector backend uses PostgreSQL via psycopg in autocommit mode. Schema: id BIGSERIAL, content TEXT, embedding VECTOR(384), metadata JSONB, created_at. It uses the cosine operator <=>, an IVFFlat index with lists=100 for approximate nearest-neighbor search, and a GIN index on the JSONB metadata column for fast containment-based filtering via the @> operator."
+      "specific": "My pgvector backend uses PostgreSQL via psycopg in autocommit mode. Schema: id BIGSERIAL, content TEXT, embedding VECTOR(384), metadata JSONB, created_at. It uses the cosine operator <=>, an IVFFlat index with lists=100 for approximate nearest-neighbor search, and a GIN index on the JSONB metadata column for fast containment-based filtering via the @> operator."
     },
     {
       "front": "How do you migrate between vector backends without re-embedding?",
       "general": "When only the storage and indexing layer changes but the embedding model stays the same, the vectors themselves are still valid — so you can copy chunks and their existing embeddings directly from one store to another instead of re-running the whole corpus through the embedder. Inferring the embedding dimension from the data and batching the copy keeps the migration simple and avoids the compute cost of re-embedding.",
-      "specific": "scripts/migrate_chroma_to_pgvector.py copies chunks plus embeddings directly from Chroma to pgvector, batch size 1000, with the embedding dimension inferred from the first row read. There's no re-embedding step, since the embedding model itself didn't change between backends — only the storage/index layer did — which saves the cost of re-running the whole corpus through the embedder."
+      "specific": "My scripts/migrate_chroma_to_pgvector.py copies chunks plus embeddings directly from Chroma to pgvector, batch size 1000, with the embedding dimension inferred from the first row read. I don't re-embed, since the embedding model itself didn't change between backends — only the storage/index layer did — which saves the cost of re-running the whole corpus through the embedder."
     },
     {
       "front": "Why did you choose IVFFlat instead of HNSW on the pgvector side?",
       "general": "Approximate-nearest-neighbor indexes trade recall, memory, and build time. Cluster-based indexes like IVFFlat are simpler to set up but can miss near-neighbors that fall into a different partition, causing recall artifacts. Graph-based indexes like HNSW generally avoid that at the cost of more memory and slower builds. Naming this as a known, stated limitation with a planned switch is more honest than presenting the choice as strictly optimal.",
-      "specific": "IVFFlat was chosen for setup simplicity within standard PostgreSQL. The project's own plan states the honest limitation: IVFFlat's cluster-based approximate search can produce recall artifacts (near-neighbors landing in a different partition get missed) that HNSW's graph structure generally avoids, at the cost of more memory and slower index builds. Switching is named future work, not an unrecognized gap."
+      "specific": "I chose IVFFlat for setup simplicity within standard PostgreSQL. My own plan states the honest limitation: IVFFlat's cluster-based approximate search can produce recall artifacts (near-neighbors landing in a different partition get missed) that HNSW's graph structure generally avoids, at the cost of more memory and slower index builds. I've named switching as future work, not an unrecognized gap."
     },
     {
       "front": "Walk me through your hybrid search pipeline architecture.",
       "general": "Hybrid retrieval runs a dense (semantic vector) arm and a sparse (lexical keyword) arm in parallel, then fuses their ranked lists. The dense arm catches meaning-level matches while the sparse arm catches exact-term matches that embeddings can blur past. Each arm returns a candidate pool, and a rank-fusion step merges them. A pure-Python sparse implementation avoids native build dependencies, easing deployment.",
-      "specific": "Note: this is local-only work — code-complete and tested in Hanna's working copy but NOT committed to the public FedInsight repo; describe it as recent engineering work, never as published on GitHub. The query goes to two arms in parallel: dense (vector cosine similarity) and sparse (BM25Okapi from the rank-bm25 library, pure Python, no native build dependencies). Each arm returns a candidate pool of 50 (env HYBRID_CANDIDATES), then the two ranked lists are combined via Reciprocal Rank Fusion. The BM25-side tokenizer is lowercase [a-z0-9]+.",
+      "specific": "Note: this is local-only work — code-complete and tested in my working copy but NOT committed to my public FedInsight repo; I describe it as recent engineering work, never as published on GitHub. My query goes to two arms in parallel: dense (vector cosine similarity) and sparse (BM25Okapi from the rank-bm25 library, pure Python, no native build dependencies). Each arm returns a candidate pool of 50 (env HYBRID_CANDIDATES), then I combine the two ranked lists via Reciprocal Rank Fusion. My BM25-side tokenizer is lowercase [a-z0-9]+.",
       "hint": "Local-only, not on GitHub. Dense + BM25 arms → RRF."
     },
     {
       "front": "What's the exact RRF formula, and why is rank fusion the right method here?",
       "general": "Reciprocal Rank Fusion combines ranked lists by summing, for each document, a reciprocal of its rank position across the lists (with a smoothing constant). Because it uses ranks rather than raw scores, it's robust when the two rankers produce scores on incomparable scales — one bounded, one unbounded and corpus-dependent. A weighted-sum approach would need brittle per-signal weight tuning to keep one signal from dominating; RRF needs none and naturally rewards documents that rank well under both signals.",
-      "specific": "In FedInsight's local-only hybrid code, the formula is score = Σ 1 / (k + rank + 1) across each ranker's list, using 0-based rank and k = 60. Rank-based fusion is robust to the fact that cosine similarity (bounded ~0–1) and BM25 scores (unbounded, corpus-dependent magnitude) live on incomparable scales — a weighted sum would need careful, brittle weight tuning to avoid one signal dominating, while RRF needs none and naturally rewards documents that rank well under both signals.",
+      "specific": "In my local-only hybrid code, the formula is score = Σ 1 / (k + rank + 1) across each ranker's list, using 0-based rank and k = 60. I use rank-based fusion because it's robust to the fact that cosine similarity (bounded ~0–1) and BM25 scores (unbounded, corpus-dependent magnitude) live on incomparable scales — a weighted sum would need careful, brittle weight tuning to avoid one signal dominating, while RRF needs none and naturally rewards documents that rank well under both signals.",
       "hint": "Σ 1 / (k + rank + 1), k = 60."
     },
     {
       "front": "Where do you apply metadata filtering in the hybrid pipeline, and why does that placement matter?",
       "general": "Where you apply a metadata filter in a fusion pipeline changes the result. Filtering each arm's candidate pool before fusion narrows what either ranker can contribute and distorts the fused ranking. Applying the filter after fusion preserves the full ranking signal from both arms and only then restricts to the matching subset, keeping the fused ordering intact.",
-      "specific": "In FedInsight's hybrid code, metadata filtering is applied post-fusion — after RRF has already combined the dense and sparse rankings — to preserve the ranking signal from both arms rather than narrowing either arm's candidate pool before fusion and distorting the result."
+      "specific": "In my hybrid code, I apply metadata filtering post-fusion — after RRF has already combined the dense and sparse rankings — to preserve the ranking signal from both arms rather than narrowing either arm's candidate pool before fusion and distorting the result."
     },
     {
       "front": "What's the failure mode if BM25 isn't available in the hybrid pipeline?",
       "general": "A resilient retrieval system degrades gracefully when an optional component is missing rather than throwing a hard error. If the sparse arm is unavailable, the system can quietly fall back to the dense arm alone — the interface and behavior stay the same, just with a narrower signal set.",
-      "specific": "If BM25 isn't available, FedInsight silently degrades to dense-only retrieval — no hard error, no visible change in interface, just a quieter signal set."
+      "specific": "If BM25 isn't available, my pipeline silently degrades to dense-only retrieval — no hard error, no visible change in interface, just a quieter signal set."
     },
     {
       "front": "Tell me about your cross-encoder reranker — the model and how it works mechanically.",
       "general": "A reranker refines the top retrieval candidates for precision. Unlike a bi-encoder that embeds query and document independently and compares vectors, a cross-encoder scores each (query, document) pair jointly in a single forward pass, which is more accurate at the top ranks but more expensive per query. Lazy-loading the model and reusing existing device-resolution logic keeps it cheap when unused, and storing the rerank score alongside each result keeps the pipeline transparent.",
-      "specific": "Note: local-only work, code-complete and tested but NOT committed to the public repo. FedInsight uses cross-encoder/ms-marco-MiniLM-L-6-v2 (~80 MB), lazy-loaded, reusing the embedder's device-resolution logic (CUDA/MPS/CPU). It scores each (query, document) pair jointly via model.predict — unlike the bi-encoder retrieval stage, which encodes query and document independently — sorts descending, returns the top-k, and stores the rerank_score alongside each result. The candidate pool going into reranking is max(k, 50) when enabled.",
+      "specific": "Note: local-only work, code-complete and tested but NOT committed to my public repo. I use cross-encoder/ms-marco-MiniLM-L-6-v2 (~80 MB), lazy-loaded, reusing my embedder's device-resolution logic (CUDA/MPS/CPU). It scores each (query, document) pair jointly via model.predict — unlike my bi-encoder retrieval stage, which encodes query and document independently — sorts descending, returns the top-k, and stores the rerank_score alongside each result. My candidate pool going into reranking is max(k, 50) when enabled.",
       "hint": "Local-only. Joint (query, doc) scoring, not bi-encoder."
     },
     {
       "front": "Why is reranking off by default (RERANK=false)?",
       "general": "Reranking improves quality but adds real per-query latency because a cross-encoder scores every candidate pair jointly rather than doing a single cheap vector comparison. Making it opt-in keeps a demo responsive by default while still exposing the quality upgrade for cases where retrieval precision matters more than speed.",
-      "specific": "Reranking is off by default to keep the Hugging Face Space demo fast and responsive — the cross-encoder adds real per-query latency since it scores every candidate pair jointly rather than doing a single vector comparison. It's exposed as a Streamlit sidebar checkbox, opt-in when retrieval quality matters more than latency."
+      "specific": "I keep reranking off by default to keep my Hugging Face Space demo fast and responsive — the cross-encoder adds real per-query latency since it scores every candidate pair jointly rather than doing a single vector comparison. I expose it as a Streamlit sidebar checkbox, opt-in when retrieval quality matters more than latency."
     },
     {
       "front": "What's the failure mode if the reranker fails?",
       "general": "As with any optional refinement stage, the safe design is to degrade gracefully: if reranking fails, fall back to the pre-rerank ordering rather than erroring the whole request. The user still gets retrieved results, just without the reordering.",
-      "specific": "In FedInsight, a reranker failure degrades gracefully — it falls back to keeping the original (pre-rerank) order rather than erroring the request."
+      "specific": "In my pipeline, a reranker failure degrades gracefully — it falls back to keeping the original (pre-rerank) order rather than erroring the request."
     },
     {
       "front": "What does the RAG system prompt actually enforce?",
       "general": "A grounded-generation system prompt constrains the model to answer only from the provided context, cite sources by index, and explicitly say it lacks enough information rather than guessing. Numbering the context passages and requiring inline citation tags makes answers traceable back to specific source excerpts and discourages hallucination.",
-      "specific": "FedInsight's system prompt enforces: 'Use ONLY the provided context, cite [n], mention meeting dates, say you don't have enough information rather than guessing.' The context block format is [n] (fomc_minutes YYYY-MM-DD) followed by the chunk text, and the user-facing prompt ends with an explicit instruction to cite excerpts as [n]."
+      "specific": "My system prompt enforces: 'Use ONLY the provided context, cite [n], mention meeting dates, say you don't have enough information rather than guessing.' My context block format is [n] (fomc_minutes YYYY-MM-DD) followed by the chunk text, and the user-facing prompt ends with an explicit instruction to cite excerpts as [n]."
     },
     {
       "front": "Walk me through the LLM provider resolution and fallback chain.",
       "general": "An 'auto' provider resolver tries options in priority order so the system works across environments without reconfiguration: a hosted API first, then a local model, then a no-LLM fallback that returns retrieved text directly. The extractive fallback structurally can't hallucinate because nothing is generated — it just returns source excerpts. A low temperature throughout keeps answers factual and low-variance.",
-      "specific": "get_llm(\"auto\") resolves in order: OpenAI (gpt-4o-mini, 60s timeout, requires OPENAI_API_KEY) → Ollama (llama3.1, localhost:11434, 120s timeout) → NoLLM extractive fallback (returns excerpted chunk text directly, capped at 400 characters per snippet, structurally can't hallucinate since nothing is generated). Temperature 0.1 is used throughout for factual, low-variance answers."
+      "specific": "My get_llm(\"auto\") resolves in order: OpenAI (gpt-4o-mini, 60s timeout, requires OPENAI_API_KEY) → Ollama (llama3.1, localhost:11434, 120s timeout) → NoLLM extractive fallback (returns excerpted chunk text directly, capped at 400 characters per snippet, structurally can't hallucinate since nothing is generated). I use temperature 0.1 throughout for factual, low-variance answers."
     },
     {
       "front": "What is the extractive fallback actually doing, mechanically?",
       "general": "When no generative model is available, an extractive fallback skips generation entirely and returns the top-ranked retrieved passages as the answer, truncated for brevity and tagged with the same citation scheme. It's a deliberate design choice: the system degrades to something honest and non-hallucinating rather than failing outright, because it surfaces real source text instead of generating anything.",
-      "specific": "In FedInsight, when no LLM is configured or reachable, the system skips generation entirely and returns the top-ranked chunk excerpts (truncated to 400 chars each) directly as the answer, using the same [n] citation scheme — a deliberate choice so the system degrades to something honest and non-hallucinating rather than failing outright."
+      "specific": "In my pipeline, when no LLM is configured or reachable, I skip generation entirely and return the top-ranked chunk excerpts (truncated to 400 chars each) directly as the answer, using the same [n] citation scheme — a deliberate choice so the system degrades to something honest and non-hallucinating rather than failing outright."
     },
     {
       "front": "What does test_hybrid.py actually verify?",
       "general": "Good unit tests for a retrieval fusion layer validate logic correctness without requiring real models or a database, so they run fast and deterministically. They check tokenization behavior, that the sparse ranker ranks by term frequency, edge cases like an empty corpus, that rank fusion rewards cross-ranker consensus, and that metadata filters return the correct subset.",
-      "specific": "test_hybrid.py is pure Python with no models or DB required. It verifies tokenizer lowercasing/splitting behavior; that BM25 correctly ranks by term frequency; that the empty-corpus edge case is handled safely; that RRF rewards documents that rank well across multiple rankings (consensus); and that the metadata filter correctly returns only the subset match."
+      "specific": "My test_hybrid.py is pure Python with no models or DB required. It verifies tokenizer lowercasing/splitting behavior; that BM25 correctly ranks by term frequency; that the empty-corpus edge case is handled safely; that RRF rewards documents that rank well across multiple rankings (consensus); and that the metadata filter correctly returns only the subset match."
     },
     {
       "front": "What does test_retriever_modes.py actually verify?",
       "general": "Using fake test doubles instead of real models lets you assert exact ordering behavior deterministically. Such tests confirm that dense retrieval preserves the store's order, that rank fusion lifts a consensus document above a dense-only leader, that filters apply at the correct pipeline stage, that reranking reorders by cross-encoder score, and that empty input yields empty output.",
-      "specific": "test_retriever_modes.py uses fake test doubles (FakeEmbedder, FakeStore, FakeReranker) rather than real models. It verifies that dense retrieval preserves the underlying store's result order; that hybrid RRF lifts a consensus document above a dense-only-leading document; that metadata filters apply post-fusion (not pre-fusion); that the reranker correctly reorders results by cross-encoder score; and that an empty query returns an empty list."
+      "specific": "My test_retriever_modes.py uses fake test doubles (FakeEmbedder, FakeStore, FakeReranker) rather than real models. It verifies that dense retrieval preserves the underlying store's result order; that hybrid RRF lifts a consensus document above a dense-only-leading document; that metadata filters apply post-fusion (not pre-fusion); that the reranker correctly reorders results by cross-encoder score; and that an empty query returns an empty list."
     },
     {
       "front": "What's NOT tested in FedInsight?",
       "general": "Being explicit about test gaps is part of an honest engineering account. Unit tests that validate logic correctness — tokenization, fusion math, fallback behavior — do not measure retrieval quality on real data. If no integration tests against the real corpus and no eval harness exist, you should say so plainly rather than imply coverage you don't have.",
-      "specific": "There are no integration tests against the real corpus, and — per the guardrail — no eval harness at all: no recall@k or MRR tests exist to run, on any corpus. The test suite validates logic correctness (tokenization, fusion math, fallback behavior), not retrieval-quality-on-real-data. Never cite a FedInsight recall@k/MRR number; the only true eval-harness evidence in the portfolio is the USAA Policy & Compliance RAG service.",
+      "specific": "I have no integration tests against the real corpus, and no eval harness at all: no recall@k or MRR tests exist to run, on any corpus. My test suite validates logic correctness (tokenization, fusion math, fallback behavior), not retrieval-quality-on-real-data. I never cite a FedInsight recall@k/MRR number; the only true eval-harness evidence in my portfolio is my USAA Policy & Compliance RAG service.",
       "hint": "No integration tests, no eval harness — don't imply either exists."
     },
     {
       "front": "How is FedInsight actually deployed?",
       "general": "Containerized deployment pins a slim base image, installs only the build dependencies a native library needs, and launches the app on a fixed headless port. Shipping a prebuilt vector store with the deployment (via large-file storage) avoids re-ingesting the corpus at startup, and cache configuration keeps model downloads out of the request path.",
-      "specific": "FedInsight's Dockerfile uses a python:3.11-slim base, installs build-essential (needed for hnswlib), and runs streamlit run app.py on port 7860 headless. The Hugging Face Space ships a prebuilt Chroma vector store (~4,000 FOMC chunks) via Git LFS, with VECTOR_BACKEND=chroma set for that deployment, plus HF_HOME cache configuration for model downloads."
+      "specific": "My Dockerfile uses a python:3.11-slim base, installs build-essential (needed for hnswlib), and runs streamlit run app.py on port 7860 headless. My Hugging Face Space ships a prebuilt Chroma vector store (~4,000 FOMC chunks) via Git LFS, with VECTOR_BACKEND=chroma set for that deployment, plus HF_HOME cache configuration for model downloads."
     },
     {
       "front": "What does the Streamlit sidebar expose to the user?",
       "general": "A demo UI surfaces the pipeline's key knobs as controls: backend selector, LLM provider selector, retrieval mode, a rerank toggle, a top-k slider, and expandable source citations with dates and scores. Caching the pipeline object as a singleton avoids rebuilding it on every interaction. Be careful that a control's option only functions where the underlying feature actually ships.",
-      "specific": "The sidebar exposes a backend selector (chroma | pgvector), an LLM provider selector (auto | openai | ollama | none), a retrieval mode (hybrid | dense — but hybrid is local-only per the guardrail, so that option only functions in the local working copy, not the deployed public Space), a rerank checkbox, a k slider (1–15, default 5), and expandable source citations ([i] date · score). The pipeline object is cached as an @st.cache_resource singleton.",
+      "specific": "My sidebar exposes a backend selector (chroma | pgvector), an LLM provider selector (auto | openai | ollama | none), a retrieval mode (hybrid | dense — but hybrid is local-only, so that option only functions in my local working copy, not the deployed public Space), a rerank checkbox, a k slider (1–15, default 5), and expandable source citations ([i] date · score). I cache the pipeline object as an @st.cache_resource singleton.",
       "hint": "The hybrid mode option only works locally, not on the public Space."
     },
     {
       "front": "How is local Postgres set up for the pgvector path?",
       "general": "For local development of a pgvector backend, a container image bundling PostgreSQL with the vector extension, exposed on the standard port with a readiness healthcheck, gives a reproducible dev environment to test the relational vector store before or alongside the demo store.",
-      "specific": "FedInsight uses docker-compose running pgvector/pgvector:pg16 on port 5432, with a pg_isready healthcheck — the local-dev path for testing the pgvector backend before or alongside Chroma."
+      "specific": "I use docker-compose running pgvector/pgvector:pg16 on port 5432, with a pg_isready healthcheck — my local-dev path for testing the pgvector backend before or alongside Chroma."
     },
     {
       "front": "Quick-fire: why RRF over weighted-sum fusion?",
       "general": "Rank-based fusion is robust to incomparable score scales — bounded cosine similarity versus unbounded, corpus-dependent BM25 scores — and requires no weight tuning, whereas a weighted sum needs brittle per-signal weights to keep one signal from dominating.",
-      "specific": "In FedInsight's local-only hybrid code: RRF is rank-based and robust to incomparable score scales (bounded cosine vs. unbounded BM25), with no weight tuning required."
+      "specific": "In my local-only hybrid code: RRF is rank-based and robust to incomparable score scales (bounded cosine vs. unbounded BM25), with no weight tuning required."
     },
     {
       "front": "Quick-fire: why all-MiniLM-L6-v2 as the embedding model?",
       "general": "A small, fast, widely-used embedding model is a sensible first choice for a semantic-search pipeline. Upgrading to a stronger model is often deferred because a model change forces a full re-ingest of the corpus, which couples an easy swap to expensive reprocessing.",
-      "specific": "FedInsight uses all-MiniLM-L6-v2 because it's fast, 384-dim, and a ubiquitous first choice; a bge/e5 upgrade is deferred because it couples with a full re-ingest."
+      "specific": "I use all-MiniLM-L6-v2 because it's fast, 384-dim, and a ubiquitous first choice; I've deferred a bge/e5 upgrade because it couples with a full re-ingest."
     },
     {
       "front": "Quick-fire: why the ms-marco cross-encoder for reranking?",
       "general": "A small, lazy-loaded cross-encoder trained on a passage-relevance task transfers well to reranking, and its joint (query, document) scoring beats bi-encoder precision at the top ranks — exactly where reranking matters most.",
-      "specific": "FedInsight's local-only reranker uses the ms-marco cross-encoder because it's small, lazy-loaded, the MS MARCO relevance-transfer task is a good fit, and joint (query, doc) scoring beats bi-encoder precision at the top ranks."
+      "specific": "My local-only reranker uses the ms-marco cross-encoder because it's small, lazy-loaded, the MS MARCO relevance-transfer task is a good fit, and joint (query, doc) scoring beats bi-encoder precision at the top ranks."
     },
     {
       "front": "Quick-fire: why BM25 via rank-bm25?",
       "general": "A pure-Python BM25 implementation is deterministic across platforms and needs no native build step, easing deployment. The lexical IDF signal specifically helps with domain-specific terminology that a dense embedding might blur past.",
-      "specific": "FedInsight's local-only hybrid arm uses rank-bm25 because it's pure Python, deterministic across platforms, with no native build step; the IDF signal matters specifically for Fed-specific terminology that a dense embedding might blur past."
+      "specific": "My local-only hybrid arm uses rank-bm25 because it's pure Python, deterministic across platforms, with no native build step; the IDF signal matters specifically for Fed-specific terminology that a dense embedding might blur past."
     },
     {
       "front": "Quick-fire: why IVFFlat (lists=100), not HNSW, on pgvector?",
       "general": "Simplicity first: a cluster-based index is easy to set up in standard PostgreSQL. Its known recall-artifact limitation is stated openly in the project's plan, and tuning or switching to a graph index is named future work rather than an unrecognized gap.",
-      "specific": "FedInsight uses IVFFlat with lists=100 for simplicity; the known recall-artifact limitation is stated in the project's own plan, and tuning/switching is named future work."
+      "specific": "I use IVFFlat with lists=100 for simplicity; the known recall-artifact limitation is stated in my own plan, and I've named tuning/switching as future work."
     },
     {
       "front": "Quick-fire: why lazy-load BM25 and the reranker?",
       "general": "Lazy-loading optional components trades a one-time first-call latency hit for zero overhead when those features aren't used, so the common fast path stays cheap. A sparse index in particular can be built on demand from the store's contents on the first query that needs it.",
-      "specific": "In FedInsight's local-only code, BM25 and the reranker are lazy-loaded to trade a first-call latency hit for zero overhead when those optional features aren't used; the BM25 index is built from store.get_all() on the first hybrid query."
+      "specific": "In my local-only code, I lazy-load BM25 and the reranker to trade a first-call latency hit for zero overhead when those optional features aren't used; my BM25 index is built from store.get_all() on the first hybrid query."
     },
     {
       "front": "Quick-fire: why JSONB metadata plus a GIN index?",
       "general": "Storing per-chunk metadata as JSON allows a flexible, per-document schema, and a GIN index over that column makes containment-based filtered lookups fast — combining schema flexibility with query performance.",
-      "specific": "FedInsight's pgvector backend uses JSONB metadata for a flexible per-chunk schema (meeting date, document type, etc.) with a GIN index for fast filtered lookups."
+      "specific": "My pgvector backend uses JSONB metadata for a flexible per-chunk schema (meeting date, document type, etc.) with a GIN index for fast filtered lookups."
     },
     {
       "front": "Quick-fire: why migrate between backends without re-embedding?",
       "general": "When only the storage and indexing layer changes, the embeddings are unchanged, so they can be copied directly between stores with the dimension inferred from the data — saving the cost of re-running the whole corpus through the embedder.",
-      "specific": "In FedInsight, embeddings are copied directly between Chroma and pgvector with the dimension inferred, saving the cost of re-running the corpus through the embedder when only storage/indexing changes."
+      "specific": "In my pipeline, I copy embeddings directly between Chroma and pgvector with the dimension inferred, saving the cost of re-running the corpus through the embedder when only storage/indexing changes."
     },
     {
       "front": "Quick-fire: what are the actual failure modes, end to end?",
       "general": "A well-designed pipeline degrades gracefully at every optional stage rather than erroring: a failed reranker keeps the prior order, a missing sparse arm falls back to dense-only, no available LLM falls back to extractive retrieval, and empty input yields empty output.",
-      "specific": "In FedInsight: reranker failure → keep original order; BM25 unavailable → dense-only; no LLM configured → extractive fallback; empty query → empty results list. Every failure mode degrades gracefully rather than erroring."
+      "specific": "In my pipeline: reranker failure → keep original order; BM25 unavailable → dense-only; no LLM configured → extractive fallback; empty query → empty results list. Every failure mode degrades gracefully rather than erroring."
     },
     {
       "front": "Quick-fire: how do citations actually work, and is there a faithfulness check?",
       "general": "Numbered citation tags map directly to the order of retrieved (and reranked) hits, with full source metadata returned alongside for UI expansion. Be honest about the limits of the guard: if the only protections are prompt discipline and an extractive fallback, then a dedicated faithfulness/grounding check is roadmap, not built.",
-      "specific": "In FedInsight, numbered [n] tags map directly to hit order in the retrieved/reranked list, and full source metadata (date, score) is returned alongside for UI expansion. There is no hallucination guard beyond prompt discipline and the extractive fallback — a dedicated faithfulness check is roadmap (Phase 3), not built.",
+      "specific": "In my pipeline, numbered [n] tags map directly to hit order in the retrieved/reranked list, and I return full source metadata (date, score) alongside for UI expansion. I have no hallucination guard beyond prompt discipline and the extractive fallback — a dedicated faithfulness check is roadmap (Phase 3), not built.",
       "hint": "A dedicated faithfulness check is Phase 3 roadmap, not built."
     }
   ]

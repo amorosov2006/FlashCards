@@ -1,6 +1,6 @@
 {
   "title": "Interview · GenAI & LLM Core",
-  "description": "Transformer internals, PEFT (LoRA/QLoRA), CoT and VLM SFT, quantization, prompt/context engineering, and agent patterns — mapped to Hanna Murai's UT Austin M.S. coursework and applied LLM systems.",
+  "description": "Transformer internals, PEFT (LoRA/QLoRA), CoT and VLM SFT, quantization, prompt/context engineering, and agent patterns — mapped to my UT Austin M.S. coursework and applied LLM systems.",
   "studyOnly": true,
   "cards": [
     {

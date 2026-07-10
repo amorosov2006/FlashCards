@@ -1,204 +1,204 @@
 {
   "title": "Interview · LocalLLM Deep Dive",
-  "description": "Deep-dive interview cards on Hanna Murai's LocalLLM project: llama.cpp Gemma serving, multi-agent StateGraph, real-time transports, and the concurrency/config decisions behind them.",
+  "description": "Deep-dive interview cards on my LocalLLM project: llama.cpp Gemma serving, my multi-agent StateGraph, real-time transports, and the concurrency/config decisions I made behind them.",
   "studyOnly": true,
   "cards": [
     {
       "front": "Why did you cap max concurrent requests at exactly 2?",
       "general": "When a system is backed by a single resident model, inference is inherently serialized — only one forward pass runs at a time. A concurrency limit in that setting is not a raw throughput dial; it is chosen to let complementary stages of a pipeline overlap. The right number reflects the shape of the workload (which stages can run in parallel without contending for the same resource) and the memory budget of the target hardware, not a round number picked for marketing. Excess requests should wait on a bounded primitive with a timeout so the system sheds load gracefully rather than piling up unboundedly.",
-      "specific": "One resident model (LlamaServerManager.shared() singleton owning the llama-server subprocess) serializes inference, so the 2 slots specifically let STT for the next segment run in parallel with MT/TTS for the current segment in the live voice pipeline — not an arbitrary throughput number. Requests beyond the 2 slots wait on an asyncio.Semaphore; a 30s queue timeout returns 503 if no slot frees up.",
+      "specific": "I run one resident model (my LlamaServerManager.shared() singleton owning the llama-server subprocess), which serializes inference, so I sized the 2 slots specifically to let STT for the next segment run in parallel with MT/TTS for the current segment in my live voice pipeline — not an arbitrary throughput number. Requests beyond the 2 slots wait on an asyncio.Semaphore; I return 503 on a 30s queue timeout if no slot frees up.",
       "hint": "STT for next segment ∥ MT/TTS for current"
     },
     {
       "front": "How does streaming interact with the concurrency semaphore?",
       "general": "Streaming responses complicate concurrency accounting because a request is not 'done' when the first bytes go out — it stays open for as long as the client keeps reading. If a concurrency slot is tied to the lifetime of the stream, then a slow consumer genuinely occupies capacity the entire time, which is the honest model of the cost. The alternative (releasing the slot at request start) would undercount real resource usage and let slow readers oversubscribe the backend.",
-      "specific": "SSE pass-through (text/event-stream media type): a streaming request holds its semaphore slot for the entire lifetime of the stream, and the relay generator releases the slot only when the stream closes. So a slow client reading a long stream genuinely occupies a concurrency slot the whole time, not just at request start.",
+      "specific": "I do SSE pass-through (text/event-stream media type): a streaming request holds its semaphore slot for the entire lifetime of the stream, and my relay generator releases the slot only when the stream closes. So a slow client reading a long stream genuinely occupies a concurrency slot the whole time, not just at request start.",
       "hint": "Slot held until the stream closes"
     },
     {
       "front": "When you say the provider is switchable with 'one config switch,' what does that actually mean?",
       "general": "A provider abstraction lets the same client code target different inference backends by changing configuration rather than rewriting call sites. The key enabler is presenting one stable API surface — commonly an OpenAI-compatible interface — so local and cloud providers are interchangeable. Switching then reduces to changing a setting (which provider) and a base URL, plus provider-appropriate timeouts, with no changes to the code that constructs requests or parses responses.",
-      "specific": "Settings-driven: provider: \"local\" targets the gateway's own llama-server; switching to OpenAI/Azure/Anthropic is a base_url swap (600s timeout) with no client-code changes — the same FastAPI OpenAI-compatible surface either way.",
+      "specific": "It's settings-driven: provider: \"local\" targets my gateway's own llama-server; switching to OpenAI/Azure/Anthropic is a base_url swap (600s timeout) with no client-code changes — I expose the same FastAPI OpenAI-compatible surface either way.",
       "hint": "base_url swap, OpenAI-compatible surface"
     },
     {
       "front": "What guardrails exist on the gateway itself?",
       "general": "An inference gateway should bound the abuse surface even in a modest deployment. Common protections include a request body size limit (to reject oversized payloads cheaply, ideally via the declared content length) and optional token-based authentication. It is honest to state trade-offs explicitly: if auth is off by default for local/dev convenience, that is a deliberate posture, not a claim of production hardening.",
-      "specific": "64 MB request body limit (checked via content-length), plus optional Bearer-token auth that is off when no api_key is configured — an explicit, stated trade-off for local/dev use, not a production-hardened default.",
+      "specific": "I enforce a 64 MB request body limit (checked via content-length), plus optional Bearer-token auth that I leave off when no api_key is configured — an explicit trade-off I made for local/dev use, not a production-hardened default.",
       "hint": "64 MB body cap, optional Bearer auth"
     },
     {
       "front": "What model are you serving, and how is it served?",
       "general": "Local LLM serving typically pairs an open-weights model with a lightweight inference runtime and a quantization format that trades a little quality for a large memory reduction. A quality-first default quant is chosen to fit the target VRAM tier, with a lower-precision profile available as a fallback for constrained hardware. Multimodal support requires loading an additional projector/encoder file alongside the base weights.",
-      "specific": "Gemma 4 12B via llama.cpp, default quant Q6_K (gemma-4-12b-it-Q6_K.gguf, HF repo unsloth/gemma-4-12b-it-GGUF), with a Q5_K_M profile as the explicit low-VRAM fallback. mmproj-F16.gguf is loaded alongside for vision/audio (multimodal) support.",
+      "specific": "I serve Gemma 4 12B via llama.cpp, with my default quant Q6_K (gemma-4-12b-it-Q6_K.gguf, HF repo unsloth/gemma-4-12b-it-GGUF), and a Q5_K_M profile as my explicit low-VRAM fallback. I load mmproj-F16.gguf alongside for vision/audio (multimodal) support.",
       "hint": "Gemma 4 12B, llama.cpp, Q6_K default"
     },
     {
       "front": "Walk me through the context window and GPU offload configuration.",
       "general": "Serving a quantized model requires setting a context length (how many tokens the model can attend to) and deciding how many transformer layers to offload to the GPU versus keep on CPU. Full-GPU offload is expressed as a large layer count that exceeds the model's actual layers. The runtime also needs hardware detection to pick the correct acceleration backend (CUDA on NVIDIA, Metal on Apple Silicon, CPU otherwise), plus flags to wire up context size, offload, templating, and any multimodal projector.",
-      "specific": "16384-token context window; n_gpu_layers: 999 (offload all layers to GPU); llama-server invoked with -c, -ngl, --jinja, --mmproj flags. Hardware detection: nvidia-smi presence → CUDA, macOS → Metal, else CPU.",
+      "specific": "I use a 16384-token context window; I set n_gpu_layers: 999 to offload all layers to GPU; I invoke llama-server with -c, -ngl, --jinja, --mmproj flags. My hardware detection: nvidia-smi presence → CUDA, macOS → Metal, else CPU.",
       "hint": "16384 context, ngl 999, detect CUDA/Metal/CPU"
     },
     {
       "front": "Why is Q6_K the default quant rather than Q5_K?",
       "general": "Quantization is a quality-versus-memory trade-off: lower-bit formats save VRAM but degrade output quality. If a higher-precision quant already fits the target hardware's memory budget, there is no reason to pay the quality cost of a lower one by default. The lower-precision profile then exists specifically for memory-constrained machines rather than as the general recommendation.",
-      "specific": "Quality-first: Q6_K fits comfortably in the 8-12 GB VRAM tier the project targets, so there's no need to trade quality away by default. Q5_K_M exists specifically for memory-constrained hardware, not as a general recommendation.",
+      "specific": "I went quality-first: Q6_K fits comfortably in the 8-12 GB VRAM tier my project targets, so there's no need for me to trade quality away by default. I keep Q5_K_M specifically for memory-constrained hardware, not as a general recommendation.",
       "hint": "Q6_K fits the 8-12 GB tier; no need to trade quality"
     },
     {
       "front": "Why choose llama.cpp over vLLM for this project?",
       "general": "Inference runtime choice should follow the deployment shape, not benchmark bragging rights. Single-node, locally-hosted serving favors a runtime that is a single binary with no server dependencies, supports Apple Silicon acceleration natively, gives precise control over GPU layer offload, and uses a portable quantization format. High-throughput batch-serving frameworks optimize for multi-GPU throughput at scale — a genuinely different problem. The honest framing is 'better fit here,' not 'strictly better.'",
-      "specific": "Single binary, no server dependencies, native Metal support (Apple Silicon), exact -ngl layer-offload control, and GGUF quantization — the right fit for single-node, locally-hosted serving. Honest framing: vLLM targets multi-GPU batch-serving throughput at scale, a different problem; not a claim that llama.cpp is 'better,' just better-fit here.",
+      "specific": "I chose it for the single binary, no server dependencies, native Metal support (Apple Silicon), exact -ngl layer-offload control, and GGUF quantization — the right fit for my single-node, locally-hosted serving. My honest framing: vLLM targets multi-GPU batch-serving throughput at scale, a different problem; I'm not claiming llama.cpp is 'better,' just better-fit here.",
       "hint": "Single binary, Metal, -ngl control, GGUF"
     },
     {
       "front": "Describe the single-agent graph topology.",
       "general": "A ReAct-style single agent is a small state machine: an agent node produces a response, a conditional edge routes to a tools node when tool calls are present, and control returns to the agent after tools run. The loop terminates when the agent replies with no tool calls. A recursion limit acts as the hard stop against runaway loops where the model never stops calling tools.",
-      "specific": "agent node → conditional route → tools node → back to agent, terminating (END) when the agent's response contains no tool calls. Recursion limit 12 — the hard stop against a runaway loop. Uses LangChain message types throughout.",
+      "specific": "Mine goes agent node → conditional route → tools node → back to agent, terminating (END) when the agent's response contains no tool calls. I set a recursion limit of 12 as the hard stop against a runaway loop. I use LangChain message types throughout.",
       "hint": "agent ⇄ tools, END on no tool calls, recursion 12"
     },
     {
       "front": "How are tool calls actually parsed out of the model's reply?",
       "general": "Local models don't always emit tool-call syntax as reliably as hosted, RLHF-tuned APIs, so a robust parser uses a fallback chain rather than a single format assumption. A good chain tries the model's native tool-call tag first, then a structural scan (e.g. balanced-JSON extraction) of the raw text, then a last-resort extraction from markdown code fences. Deduplicating repeated calls prevents the agent from acting on the same tool invocation twice.",
-      "specific": "Fallback chain, in order: (1) Gemma-native <|tool_call|> tag format, (2) a balanced-JSON scan of the raw text if the native format isn't found, (3) markdown code-fence extraction as a last resort — plus a seen-set to dedup repeated tool calls. The chain exists because a local model doesn't always emit its tool-call format perfectly.",
+      "specific": "I built a fallback chain, in order: (1) Gemma-native <|tool_call|> tag format, (2) a balanced-JSON scan of the raw text if the native format isn't found, (3) markdown code-fence extraction as a last resort — plus a seen-set I use to dedup repeated tool calls. I added the chain because a local model doesn't always emit its tool-call format perfectly.",
       "hint": "native tag → balanced JSON → code fence, + dedup set"
     },
     {
       "front": "Give me the exact multi-agent topology, cold.",
       "general": "A multi-agent orchestration can be expressed as a graph with parallel fan-out and fan-in. A prepare step sets up shared state, two or more specialized roles run in parallel (fan-out), and their outputs merge into a downstream synthesis-and-review chain (fan-in). Concurrent writes into a shared list state key must use a concurrent-safe reducer so parallel branches don't clobber each other — no manual locking needed. The recursion cap scales up relative to the single agent because there are more roles and steps in the chain.",
-      "specific": "build_multi_agent_graph: START → prepare → researcher_primary ∥ researcher_contrarian (parallel fan-out inside the StateGraph) → analyst → critic → END. Four roles, each running the same tool-use loop as the single agent but with a distinct role preamble. Findings from the two parallel researchers merge into a single findings: list state key via operator.add (a concurrent-safe reducer). Recursion limit 36 (3x the single-agent limit). Exposed via the --multi CLI flag and a web-UI toggle; same output contract as the single agent plus a merged tool trace.",
+      "specific": "My build_multi_agent_graph: START → prepare → researcher_primary ∥ researcher_contrarian (parallel fan-out inside the StateGraph) → analyst → critic → END. I have four roles, each running the same tool-use loop as my single agent but with a distinct role preamble. I merge findings from the two parallel researchers into a single findings: list state key via operator.add (a concurrent-safe reducer). I set the recursion limit to 36 (3x the single-agent limit). I expose it via the --multi CLI flag and a web-UI toggle; same output contract as the single agent plus a merged tool trace.",
       "hint": "prepare → 2 researchers ∥ → analyst → critic → END; operator.add; recursion 36"
     },
     {
       "front": "Why run parallel researchers instead of one researcher with more steps?",
       "general": "Fanning out to multiple parallel roles buys coverage and redundancy against a single point of failure in the reasoning angle, not just wall-clock speed. Deliberately assigning opposing framings — e.g. a primary role and a contrarian role prompted to surface what the primary might miss — produces independent perspectives that a single sequential agent would not generate. The parallelism is bounded by the system's concurrency budget.",
-      "specific": "Two independent angles running simultaneously within the 2-slot concurrency budget — the 'contrarian' role is deliberately prompted to surface what the 'primary' role's framing might miss. The value is coverage/redundancy against a single point of failure in the research angle, not just wall-clock speed.",
+      "specific": "I run two independent angles simultaneously within my 2-slot concurrency budget — I deliberately prompt the 'contrarian' role to surface what the 'primary' role's framing might miss. For me the value is coverage/redundancy against a single point of failure in the research angle, not just wall-clock speed.",
       "hint": "Coverage/redundancy via a contrarian angle"
     },
     {
       "front": "What does the analyst do, and what does the critic check — and be precise about critic-rejection behavior?",
       "general": "In a synthesis-and-review chain, an analyst reconciles the merged outputs of the parallel workers into one coherent result, and a critic reviews that result for quality and consistency before termination. When asked about what happens on critic rejection, discipline matters: describe the actually implemented behavior rather than inventing a retry loop that isn't in the code. Under follow-up pressure it is better to state the real, bounded behavior than to guess at an elaborate mechanism.",
-      "specific": "The analyst reconciles/synthesizes the merged findings from both researchers into a coherent analysis. The critic reviews that analysis for quality/consistency before the graph reaches END. On critic rejection, state the actual implemented behavior — annotate/pass-through within the existing graph shape, bounded by the recursion-36 cap — rather than guessing at a retry loop that isn't confirmed in the code. Don't invent a behavior under follow-up pressure.",
+      "specific": "My analyst reconciles/synthesizes the merged findings from both researchers into a coherent analysis. My critic reviews that analysis for quality/consistency before the graph reaches END. On critic rejection, I state the actual implemented behavior — annotate/pass-through within the existing graph shape, bounded by my recursion-36 cap — rather than guessing at a retry loop that isn't confirmed in my code. I won't invent a behavior under follow-up pressure.",
       "hint": "Analyst synthesizes; critic reviews; annotate/pass-through, not an invented retry loop"
     },
     {
       "front": "What tools exist for the agent, and how are they gated?",
       "general": "Agent tool exposure is often tiered: a small set of base tools is always available, and additional tools are gated behind skills that must be explicitly enabled. This keeps the default tool surface minimal and activates riskier or heavier capabilities (network access, filesystem search, media conversion) only when the relevant skill is turned on, which also shapes what the model is even prompted to consider using.",
-      "specific": "Base tools always available: read_file, list_directory, write_note. Skill-gated tools activate only when the corresponding skill is enabled: internet-access → fetch_url/web_search; file-search → search_project; system-status → datetime/status; media-convert → audio/PDF/document/render tools.",
+      "specific": "My base tools are always available: read_file, list_directory, write_note. My skill-gated tools activate only when the corresponding skill is enabled: internet-access → fetch_url/web_search; file-search → search_project; system-status → datetime/status; media-convert → audio/PDF/document/render tools.",
       "hint": "3 base tools always on; the rest are skill-gated"
     },
     {
       "front": "What sandboxing is actually enforced on agent file access?",
       "general": "An agent with filesystem tools needs a real sandbox, not just prompt instructions. Effective controls include restricting all access to a project root, explicitly blocking sensitive paths (VCS internals, token/secret files, env files), whitelisting file suffixes, confining writes to a dedicated output directory, and truncating reads so a single file cannot blow out the context window.",
-      "specific": "File access is restricted to the project root; explicitly blocked paths: .git, hf_token.txt, .env*; a file-suffix whitelist further limits what can be touched; writes are restricted to an outputs/ directory only; reads are truncated to 8000 characters to bound context usage.",
+      "specific": "I restrict file access to the project root; I explicitly block paths: .git, hf_token.txt, .env*; I further limit what can be touched with a file-suffix whitelist; I restrict writes to an outputs/ directory only; I truncate reads to 8000 characters to bound context usage.",
       "hint": "Project root only, block .git/tokens/.env, writes → outputs/, reads capped 8000 chars"
     },
     {
       "front": "Walk through the SSRF protection specifics for the fetch tool.",
       "general": "Server-side request forgery protection for a URL-fetching tool must block private IP ranges, localhost, and cloud-metadata endpoints — but pattern-matching the hostname alone is bypassable via DNS rebinding. The robust approach resolves the DNS name and checks the resolved IP against the blocklist. Additional caps on fetch size, extracted-text length, and timeout bound the resource cost of any single fetch.",
-      "specific": "Blocks private IP ranges (10/8, 192.168/16, 172.16/12, 127/8, plus IPv6 equivalents), localhost, and cloud-metadata hosts — enforced by resolving the DNS name and checking the resolved IP, not just pattern-matching the hostname (which would be bypassable via DNS rebinding). Additional caps: 500 KB fetch size limit, 12 KB extracted-text limit, 30s timeout; search backend is DuckDuckGo.",
+      "specific": "I block private IP ranges (10/8, 192.168/16, 172.16/12, 127/8, plus IPv6 equivalents), localhost, and cloud-metadata hosts — I enforce it by resolving the DNS name and checking the resolved IP, not just pattern-matching the hostname (which would be bypassable via DNS rebinding). My additional caps: 500 KB fetch size limit, 12 KB extracted-text limit, 30s timeout; my search backend is DuckDuckGo.",
       "hint": "Resolve DNS then check the IP (defeats rebinding)"
     },
     {
       "front": "What's the actual distinction between tools and skills in your agent?",
       "general": "It helps to separate executable capability from declarative policy. Tools are code — the callable functions the agent can invoke. Skills are declarative workflow definitions (a markdown file with YAML frontmatter) injected into the system prompt; they govern which tools are available and how they should be used, but the skills themselves are not executable code. Caching the skill definitions avoids re-reading them on every request.",
-      "specific": "Tools are code (the actual callable functions). Skills are declarative workflow rules (skills/<name>/SKILL.md, YAML frontmatter + markdown, LRU-cached) injected into the agent's system prompt — skills gate which tools are available and how they should be used, but skills themselves aren't executable code.",
+      "specific": "In my agent, tools are code (the actual callable functions). Skills are declarative workflow rules (skills/<name>/SKILL.md, YAML frontmatter + markdown, LRU-cached) that I inject into the agent's system prompt — skills gate which tools are available and how they should be used, but skills themselves aren't executable code.",
       "hint": "Tools = callable code; skills = declarative prompt-injected rules"
     },
     {
       "front": "Describe the WebSocket protocol end-to-end for the live voice pipeline.",
       "general": "A real-time bidirectional voice protocol suits WebSocket because it needs the client to stream binary audio up while the server pushes typed events down. The handshake is a JSON start message (sample rate, target language, tone, voice), followed by streamed binary PCM frames. The server emits discrete JSON events as each stage completes, and attaching a per-event latency measurement (computed from a monotonic clock minus a capture timestamp) lets the UI show a real latency badge. A stop message flushes any buffered audio at session end.",
-      "specific": "Client connects to /ws/translate, sends a JSON start message (sample_rate: 16000, target language, tone, voice), then streams binary Int16 PCM audio frames. Server emits JSON events as produced: segment | transcript | translation | audio (base64 WAV) | error | done, each carrying lag_sec = monotonic_now − captured_at so the client can show a real latency badge. Client sends stop to flush buffered audio at end of session. NOTE: this WebSocket /ws/translate live-voice transport is LocalLLM-only — never a USAA project.",
+      "specific": "In my design the client connects to /ws/translate, sends a JSON start message (sample_rate: 16000, target language, tone, voice), then streams binary Int16 PCM audio frames. My server emits JSON events as produced: segment | transcript | translation | audio (base64 WAV) | error | done, each carrying lag_sec = monotonic_now − captured_at so the client can show a real latency badge. The client sends stop to flush buffered audio at end of session. NOTE: this WebSocket /ws/translate live-voice transport is LocalLLM-only — never a USAA project.",
       "hint": "/ws/translate: start JSON → binary PCM → typed JSON events with lag_sec"
     },
     {
       "front": "Walk me through the VAD (voice activity detection) numbers, cold.",
       "general": "Energy-based voice activity detection decides when speech starts and stops from frame energy. An adaptive threshold (a baseline floored against a multiple of an estimated noise floor) adapts to real ambient conditions rather than using one fixed cutoff; the noise floor can be a low-percentile moving average over quiet frames. Practical tuning parameters include the frame size, a hangover time to avoid cutting off trailing speech, a pre-roll buffer to avoid clipping the onset, and minimum/maximum segment durations to bound how short or long a captured utterance can be.",
-      "specific": "Energy-based, adaptive threshold: max(0.0035 baseline, noise_floor × 3), where the noise floor is a 20th-percentile EMA over quiet frames. Frame size 30 ms. 600 ms hangover after energy drops below threshold before a segment ends (prevents cutting trailing speech). 300 ms pre-roll buffered before detected onset (prevents clipping the start). Segment bounds: minimum 1.2s, maximum 12s hard cut — the 12s cap is conservative given Gemma's audio encoder practical limit is closer to ~30s; minimum flush is 0.5s.",
+      "specific": "Mine is energy-based with an adaptive threshold: max(0.0035 baseline, noise_floor × 3), where the noise floor is a 20th-percentile EMA over quiet frames. I use a 30 ms frame size. I apply a 600 ms hangover after energy drops below threshold before a segment ends (prevents cutting trailing speech). I buffer 300 ms of pre-roll before detected onset (prevents clipping the start). My segment bounds: minimum 1.2s, maximum 12s hard cut — I kept the 12s cap conservative given Gemma's audio encoder practical limit is closer to ~30s; minimum flush is 0.5s.",
       "hint": "30ms frames, 600ms hangover, 300ms pre-roll, 1.2s–12s segments"
     },
     {
       "front": "Why energy-based VAD instead of a neural VAD like Silero?",
       "general": "For an offline-first design, an energy-based detector is attractive: it is fast, adds no extra runtime dependency, and runs fully offline. A neural VAD can improve robustness in noisy conditions but adds a model dependency. A clean way to keep the option open is to design the detector behind a stable API surface so a neural swap can slot in later without rewriting the pipeline — and to name that swap explicitly as roadmap.",
-      "specific": "Fast, zero extra runtime dependency, fully offline — fits the project's offline-first design goal. A Silero-based swap is explicitly named as roadmap, designed to slot into the same API surface without a pipeline rewrite.",
+      "specific": "It's fast, adds zero extra runtime dependency, and runs fully offline — it fits my project's offline-first design goal. I explicitly named a Silero-based swap as roadmap, and I designed it to slot into the same API surface without a pipeline rewrite.",
       "hint": "Fast, no dependency, offline-first; Silero is roadmap"
     },
     {
       "front": "You get 5-8s lag even though max segment is 12s — explain that, since it's a common probe.",
       "general": "Segment-duration caps and end-to-end latency are different metrics. When processing stages are wired as a pipeline of async workers connected by bounded queues, stage N of one segment overlaps with stage N-1 of the next, so total latency is not the sum of every stage's time per segment. Steady-state lag is driven by the slowest stage, not by the maximum segment length, which only bounds how long a single stretch of speech runs before being force-flushed. A rolling context buffer of recent segments can feed the translation stage for continuity.",
-      "specific": "Three asyncio workers (STT → MT → TTS) connected by bounded queues (maxsize 8) run as a pipeline, not a strict sequential chain — TTS for segment N overlaps with STT for segment N+1, so total latency isn't the sum of each stage. Per-stage budget: STT <5s, MT <5s, TTS 5-8s; because of overlap, steady-state lag is 5-8s, driven by the TTS stage (Piper, offline, language-aware voice selection), not the 12s segment cap. A rolling context deque of the last 2 transcript/translation pairs feeds MT for cross-segment continuity.",
+      "specific": "I run three asyncio workers (STT → MT → TTS) connected by bounded queues (maxsize 8) as a pipeline, not a strict sequential chain — TTS for segment N overlaps with STT for segment N+1, so total latency isn't the sum of each stage. My per-stage budget: STT <5s, MT <5s, TTS 5-8s; because of the overlap, my steady-state lag is 5-8s, driven by the TTS stage (Piper, offline, language-aware voice selection), not the 12s segment cap. I feed MT a rolling context deque of the last 2 transcript/translation pairs for cross-segment continuity.",
       "hint": "3-worker overlapping pipeline; lag set by TTS stage, not the segment cap"
     },
     {
       "front": "How does chat streaming work in the web UI, and how is it different from the voice path?",
       "general": "Not every streaming surface needs a special protocol. Chat token streaming can ride standard chunked HTTP using the browser's fetch plus a readable-stream reader, with a text decoder accumulating bytes and a per-line JSON (NDJSON) parser dispatching typed events to a callback. This is deliberately simpler than a WebSocket (used for bidirectional binary audio) or server-sent events (used for a dedicated token-stream media type) — three distinct real-time transports chosen per use case.",
-      "specific": "React + Vite + Tailwind frontend; NDJSON-over-chunked-HTTP: fetch() plus Response.body.getReader(), a TextDecoder accumulator parses JSON-per-line events (Chunk/Result/Error types) dispatched to an onEvent callback — no special streaming protocol beyond standard chunked HTTP, unlike the WebSocket voice path or the gateway's SSE token-streaming path. NOTE: these NDJSON chat, WebSocket voice, and SSE token-streaming transports are all LocalLLM-only — never USAA.",
+      "specific": "My frontend is React + Vite + Tailwind; I use NDJSON-over-chunked-HTTP: fetch() plus Response.body.getReader(), with a TextDecoder accumulator that parses JSON-per-line events (Chunk/Result/Error types) dispatched to an onEvent callback — no special streaming protocol beyond standard chunked HTTP, unlike my WebSocket voice path or my gateway's SSE token-streaming path. NOTE: these NDJSON chat, WebSocket voice, and SSE token-streaming transports are all LocalLLM-only — never USAA.",
       "hint": "NDJSON via getReader()/TextDecoder; not WebSocket, not SSE"
     },
     {
       "front": "What pages and apps exist in the web UI?",
       "general": "A multi-surface local AI app typically exposes several purpose-built pages: a chat page with multimodal attachments, translation pages in different modes, a dedicated live-translation page for the real-time voice path, an OCR/documents page, and a batch transcription page. An alternate UI framework can coexist for quick internal surfaces. Dev tooling proxies API and WebSocket routes to the backend port, and the production build emits static assets to a dist directory.",
-      "specific": "ChatPage (multimodal attachments), TranslatePage (live/record/upload modes), LiveTranslate (the WebSocket page — dual waveform display, lag badges), DocumentsPage (OCR), TranscribePage (batch STT); Streamlit apps also exist as an alternate UI surface. Dev proxy: /api → :8095, /ws → ws://:8095; production build outputs to webui/dist.",
+      "specific": "I built ChatPage (multimodal attachments), TranslatePage (live/record/upload modes), LiveTranslate (my WebSocket page — dual waveform display, lag badges), DocumentsPage (OCR), TranscribePage (batch STT); I also have Streamlit apps as an alternate UI surface. My dev proxy: /api → :8095, /ws → ws://:8095; my production build outputs to webui/dist.",
       "hint": "Chat, Translate, LiveTranslate, Documents, Transcribe + Streamlit"
     },
     {
       "front": "How do you test an LLM-serving system without a GPU in CI?",
       "general": "The key insight is that orchestration logic and model inference are separable concerns. By injecting the inference functions at the pipeline boundary, tests can pass in lightweight fakes/lambdas instead of real model calls, and the gateway's model manager and HTTP client can be mocked directly. This lets the full suite run with no GPU and no model weights while still exercising the parts that actually break in production.",
-      "specific": "Dependency injection at the pipeline boundary: the voice pipeline takes stt_fn/mt_fn/tts_fn as parameters, so tests pass in lambdas instead of real model calls; gateway tests mock LlamaServerManager and httpx.AsyncClient directly. Notable test files: test_agent_tool_security (sandbox), test_internet_tools (SSRF), test_live_endpointer (VAD edge cases), test_gateway_guardrails (size limits/auth), test_multi_agent (parallel-researcher merge), test_live_ws (WebSocket protocol).",
+      "specific": "I use dependency injection at the pipeline boundary: my voice pipeline takes stt_fn/mt_fn/tts_fn as parameters, so my tests pass in lambdas instead of real model calls; my gateway tests mock LlamaServerManager and httpx.AsyncClient directly. My notable test files: test_agent_tool_security (sandbox), test_internet_tools (SSRF), test_live_endpointer (VAD edge cases), test_gateway_guardrails (size limits/auth), test_multi_agent (parallel-researcher merge), test_live_ws (WebSocket protocol).",
       "hint": "Inject stt_fn/mt_fn/tts_fn; mock LlamaServerManager + httpx"
     },
     {
       "front": "Give me the interview-ready framing for that GPU-free testing approach.",
       "general": "The crisp way to justify inference-free testing is to state what you are and aren't testing: you validate orchestration — routing, guardrails, concurrency, protocol correctness — not model quality. Because inference is an injected dependency, the suite runs with no GPU and no model weights, and it covers exactly the failure modes that show up in production rather than trying to benchmark the model itself.",
-      "specific": "'You test orchestration logic, not model quality — inference is an injected dependency, so the pytest suite runs with no GPU and no model weights required, and it validates the things that actually break in production: routing, guardrails, concurrency, protocol correctness.'",
+      "specific": "'I test orchestration logic, not model quality — inference is an injected dependency, so my pytest suite runs with no GPU and no model weights required, and it validates the things that actually break in production: routing, guardrails, concurrency, protocol correctness.'",
       "hint": "Test orchestration, not model quality"
     },
     {
       "front": "How is configuration layered in the project?",
       "general": "A layered configuration strategy separates readable defaults from override paths. A settings library with a typed schema loads YAML defaults checked into the repo, then lets environment variables override them (env-over-YAML precedence), using a prefix and a nested delimiter for structured overrides. Caching the resolved settings as a per-process singleton ensures configuration is computed once rather than re-parsed on every access.",
-      "specific": "pydantic-settings with env prefix LOCALLLM_ and nested __ delimiter for structured overrides; YAML defaults (config/default.yaml) with env-over-YAML precedence (environment variables win); an @lru_cache singleton so settings are computed once per process.",
+      "specific": "I use pydantic-settings with env prefix LOCALLLM_ and nested __ delimiter for structured overrides; YAML defaults (config/default.yaml) with env-over-YAML precedence (environment variables win); and an @lru_cache singleton so my settings are computed once per process.",
       "hint": "pydantic-settings, LOCALLLM_ prefix, YAML + env, @lru_cache singleton"
     },
     {
       "front": "List the key default configuration values, cold.",
       "general": "Knowing your system's default configuration cold signals real ownership. The important defaults for a local serving + voice system span the model (quantization), concurrency, context and generation limits, and the voice pipeline's timing and detection parameters, plus the chosen TTS engine.",
-      "specific": "Quantization q6_k; max_concurrent_requests 2; context 16384; max_tokens 4096; hangover_ms 600; max_segment 12s; energy_threshold 0.0035; TTS engine Piper.",
+      "specific": "My defaults: quantization q6_k; max_concurrent_requests 2; context 16384; max_tokens 4096; hangover_ms 600; max_segment 12s; energy_threshold 0.0035; TTS engine Piper.",
       "hint": "q6_k, 2, 16384, 4096, 600ms, 12s, 0.0035, Piper"
     },
     {
       "front": "Why use YAML plus env vars plus pydantic rather than just one config mechanism?",
       "general": "Each layer earns its place. YAML gives a readable, nested default that lives in version control. Environment variables provide the override path needed for containers and secrets — you never bake a secret into a checked-in file. A typed schema validates configuration at startup so a malformed value fails fast rather than surfacing as a confusing runtime error mid-request. Together they cover readability, deployment overrides, and safety in a way no single mechanism does alone.",
-      "specific": "YAML gives a readable, nested, checked-into-repo default; environment variables give the override path needed for containers and secrets (never bake a secret into a YAML file); pydantic gives type validation at startup so a malformed config fails fast rather than surfacing as a runtime error mid-request.",
+      "specific": "For me, YAML gives a readable, nested, checked-into-repo default; environment variables give the override path I need for containers and secrets (I never bake a secret into a YAML file); pydantic gives type validation at startup so a malformed config fails fast rather than surfacing as a runtime error mid-request.",
       "hint": "YAML = readable default; env = overrides/secrets; pydantic = fail-fast validation"
     },
     {
       "front": "Walk me through the Docker packaging.",
       "general": "Packaging a compiled inference runtime cleanly calls for a multi-stage build: a builder stage compiles the runtime with the desired acceleration flags, and the final stage carries only the compiled binary and its libraries, keeping the image lean. An entrypoint can fetch the model weights on first run before starting the server, and the container exposes the relevant service ports.",
-      "specific": "Multi-stage build: builder stage compiles llama.cpp with OpenBLAS CPU flags, final stage carries only the compiled binary + libs; entrypoint auto-downloads the GGUF model then runs localllm-serve. Ports: 8090 (gateway), 8501 (Streamlit).",
+      "specific": "I use a multi-stage build: my builder stage compiles llama.cpp with OpenBLAS CPU flags, and my final stage carries only the compiled binary + libs; my entrypoint auto-downloads the GGUF model then runs localllm-serve. Ports: 8090 (gateway), 8501 (Streamlit).",
       "hint": "Multi-stage build llama.cpp; entrypoint pulls GGUF; ports 8090/8501"
     },
     {
       "front": "Why one resident model behind a gateway instead of one model per app?",
       "general": "Centralizing a single model instance behind a gateway gives one place to enforce concurrency control and avoids duplicating expensive model loads across apps — each load costs significant VRAM and startup time. The gateway also becomes the single seam where a config switch can retarget all client code to a cloud provider if local capacity runs short.",
-      "specific": "Central concurrency control and no duplicated per-app model loads (each load is expensive in VRAM and startup time); one config switch retargets the same client code to a cloud provider if local capacity is insufficient.",
+      "specific": "It gives me central concurrency control and no duplicated per-app model loads (each load is expensive in VRAM and startup time); one config switch retargets the same client code to a cloud provider if local capacity is insufficient.",
       "hint": "One place for concurrency + no duplicated VRAM loads"
     },
     {
       "front": "How do you handle out-of-memory (OOM) conditions?",
       "general": "Honesty about limitations is stronger than overclaiming. If there is no dynamic OOM recovery, say so, and describe the documented manual mitigation — dropping to a lower-precision quant or a smaller context and restarting. Presenting it as a known, stated limitation rather than glossing over it builds credibility.",
-      "specific": "Honest: no dynamic OOM handling exists today — the documented mitigation is manually switching to Q5_K or a smaller context and restarting. Stated as a known limitation, not glossed over.",
+      "specific": "I'll be honest: I have no dynamic OOM handling today — my documented mitigation is manually switching to Q5_K or a smaller context and restarting. I state it as a known limitation, not glossed over.",
       "hint": "No dynamic handling; manual Q5_K / smaller context + restart"
     },
     {
       "front": "Why exactly 2 concurrent request slots, sized to what?",
       "general": "A concurrency limit should map to the actual work that can overlap and to the memory budget of the target hardware. Two slots that each serve a distinct pipeline stage let complementary work proceed in parallel while staying within the VRAM the target tier provides — a sizing decision, not a round number.",
-      "specific": "One slot for STT, one for MT/TTS, sized to the actual VRAM budget of the target hardware tier (8-12 GB) — not an arbitrary round number.",
+      "specific": "I gave one slot to STT and one to MT/TTS, sized to the actual VRAM budget of the target hardware tier (8-12 GB) — not an arbitrary round number.",
       "hint": "One slot STT, one MT/TTS; sized to 8-12 GB VRAM"
     },
     {
       "front": "5-8s lag with a 12s max segment — isn't that contradictory?",
       "general": "No — the two numbers measure different things. A max-segment duration bounds how long a single stretch of continuous speech can run before being force-flushed. The end-to-end lag is the steady-state per-segment processing latency once the pipeline stages overlap. One is a segment-duration cap; the other is processing lag. They are not the same metric measured two ways.",
-      "specific": "No contradiction: the 12s figure bounds how long a single segment of continuous speech can run before being force-flushed; the 5-8s figure is the steady-state per-segment pipeline latency once STT/MT/TTS overlap via the 3-worker pipeline. They describe different things (segment duration cap vs. end-to-end processing lag).",
+      "specific": "No contradiction: my 12s figure bounds how long a single segment of continuous speech can run before being force-flushed; my 5-8s figure is the steady-state per-segment pipeline latency once STT/MT/TTS overlap via my 3-worker pipeline. They describe different things (segment duration cap vs. end-to-end processing lag).",
       "hint": "Segment-duration cap vs. end-to-end processing lag — different metrics"
     }
   ]

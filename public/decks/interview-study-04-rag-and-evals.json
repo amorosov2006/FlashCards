@@ -1,176 +1,176 @@
 {
   "title": "Interview · RAG, Retrieval & Evals",
-  "description": "Study cards on retrieval metrics, chunking, embeddings, hybrid retrieval, reranking, grounding, and vector stores, mapped to Hanna's Policy RAG and FedInsight systems.",
+  "description": "Study cards on retrieval metrics, chunking, embeddings, hybrid retrieval, reranking, grounding, and vector stores, mapped to my Policy RAG and FedInsight systems.",
   "studyOnly": true,
   "cards": [
     {
       "front": "Can you define recall@k and give the formula?",
       "general": "Recall@k measures, of all the relevant documents that exist for a query, what fraction appear in the top-k retrieved results: recall@k = (number of relevant docs in top-k) / (total number of relevant docs for the query). For example, if a query has 4 relevant chunks in the corpus and the top-5 results contain 3 of them, then recall@5 = 3/4 = 0.75. It answers the question 'are we finding the right material at all,' independent of the ranking order within the top-k. It's the metric that catches when a system is missing relevant material entirely.",
-      "specific": "This is one of the two metrics in the recall@k/MRR eval harness Hanna built and ran on the Policy & Compliance RAG service at USAA, scored over a held-out QA set with known-relevant chunks. That harness is the only true-today eval-harness evidence in the portfolio.",
+      "specific": "This is one of the two metrics in the recall@k/MRR eval harness I built and ran on the Policy & Compliance RAG service at USAA, scored over a held-out QA set with known-relevant chunks. That harness is my only true-today eval-harness evidence in my portfolio.",
       "hint": "found in top-k / total relevant"
     },
     {
       "front": "What is MRR, and how is it calculated?",
       "general": "Mean Reciprocal Rank: for each query, the reciprocal rank is 1 / (rank of the first relevant result); MRR is the mean of that value across all queries, MRR = (1/N) * Σ(1/rank_i). Worked example: query A's first relevant hit is at rank 1 so RR = 1.0; query B's first hit is at rank 3 so RR = 1/3 ≈ 0.33; query C has no relevant hit in the returned set so RR = 0; MRR = (1.0 + 0.33 + 0) / 3 ≈ 0.44. It answers 'how quickly does the first good answer show up,' which matters most when a user only reads the top result or the system only passes the top chunk to the LLM.",
-      "specific": "MRR is the second metric in Hanna's Policy RAG eval harness at USAA, run alongside recall@k over the held-out QA set. It's especially load-bearing for RAG because the pipeline typically only passes the top few chunks to the LLM.",
+      "specific": "MRR is the second metric in my Policy RAG eval harness at USAA, which I run alongside recall@k over the held-out QA set. It's especially load-bearing for RAG because my pipeline typically only passes the top few chunks to the LLM.",
       "hint": "mean of 1/(rank of first relevant hit)"
     },
     {
       "front": "How does precision@k differ from recall@k?",
       "general": "Precision@k measures, of the k results actually retrieved, what fraction are relevant: precision@k = (number of relevant docs in top-k) / k. For example, if 3 of the top-5 results are relevant, precision@5 = 3/5 = 0.6. Recall@k and precision@k are a trade-off pair: recall asks 'did we find everything,' precision asks 'is what we returned mostly useful.' Both matter for RAG, because a system that retrieves everything relevant plus a pile of noise still confuses the LLM's grounding step.",
-      "specific": "Precision@k rounds out the offline retrieval-metric vocabulary alongside the recall@k and MRR that Hanna's Policy RAG harness actually reports.",
+      "specific": "Precision@k rounds out the offline retrieval-metric vocabulary alongside the recall@k and MRR that my Policy RAG harness actually reports.",
       "hint": "relevant in top-k / k"
     },
     {
       "front": "What is nDCG, and when would you reach for it over recall@k or MRR?",
       "general": "Normalized Discounted Cumulative Gain rewards relevant results appearing earlier in the ranked list and can incorporate graded relevance rather than just binary relevant/not-relevant. DCG = Σ(relevance_i / log2(i+1)) summed over ranked positions, then normalized against the ideal ordering's DCG to get a 0-1 score. It's more information-rich than recall@k or MRR when relevance isn't binary, for example distinguishing a 'highly relevant' chunk from a 'tangentially relevant' one, at the cost of needing graded relevance labels in the golden set rather than simple yes/no judgments.",
-      "specific": "nDCG is a graded-relevance option beyond the binary recall@k/MRR that Hanna's Policy RAG harness currently uses; adopting it would mean adding graded labels to the golden set."
+      "specific": "nDCG is a graded-relevance option beyond the binary recall@k/MRR that my Policy RAG harness currently uses; adopting it would mean I'd add graded labels to the golden set."
     },
     {
       "front": "What does hit-rate tell you, and how does it compare to recall@k?",
       "general": "Hit-rate is a binary per-query metric: did at least one relevant document appear in the top-k, yes or no, aggregated as hit-rate@k = (number of queries with at least one relevant hit in top-k) / total queries. It's simpler and coarser than recall@k because it ignores how many relevant docs were found, just whether any showed up. It's useful as a fast sanity check before computing the more detailed metrics.",
-      "specific": "Hit-rate is a quick first-pass check that sits below the recall@k/MRR detail Hanna's Policy RAG harness reports.",
+      "specific": "Hit-rate is a quick first-pass check that sits below the recall@k/MRR detail my Policy RAG harness reports.",
       "hint": "did at least one relevant doc show up?"
     },
     {
       "front": "These retrieval metrics overlap a lot. What does each one actually catch that the others miss?",
       "general": "Each metric isolates a different failure mode. Recall@k catches 'we're missing relevant material entirely.' Precision@k catches 'we're burying signal in noise.' MRR catches 'the right answer is in there, but not near the top,' which matters most for RAG since most pipelines only pass the top few chunks to the LLM. nDCG adds graded-relevance nuance on top of MRR and recall. Hit-rate is the fastest, crudest first check. You pick the metric that maps to the failure you're most worried about.",
-      "specific": "In Hanna's Policy RAG harness, recall@k and MRR are the two that are actually computed, giving both a 'did we find it' and a 'how highly ranked' view over the held-out QA set."
+      "specific": "In my Policy RAG harness, recall@k and MRR are the two that I actually compute, giving both a 'did we find it' and a 'how highly ranked' view over the held-out QA set."
     },
     {
       "front": "How do you actually build a held-out QA set for a RAG eval harness?",
       "general": "Sample representative queries against the real corpus, ideally a mix of easy factual lookups and harder multi-hop or paraphrase queries. Then manually or semi-manually label which document chunks are the ground-truth relevant set for each query. Finally, hold that set out from any tuning or development work so it stays a fair offline benchmark rather than something the system was implicitly fit to. The result is a fixed set of queries with known-relevant chunks that you can score repeatably.",
-      "specific": "This is exactly the shape of the Policy RAG harness Hanna built at USAA: a held-out QA set with known-relevant chunks, scored via recall@k and MRR."
+      "specific": "This is exactly the shape of the Policy RAG harness I built at USAA: a held-out QA set with known-relevant chunks, scored via recall@k and MRR."
     },
     {
       "front": "What separates a golden eval set that's genuinely useful from one that's just a rubber-stamp?",
       "general": "A useful golden set has coverage of realistic query phrasing, not just the exact wording that would trivially match a chunk via keyword overlap. It has enough queries per relevance-difficulty tier to detect regressions statistically rather than by eyeballing single examples. And it gets periodically re-validated as the corpus or retrieval strategy changes, because a golden set built once and never revisited stops reflecting the live system.",
-      "specific": "These are the quality bars behind Hanna's Policy RAG held-out QA set; a set that only matched exact wording or was never revisited would give false confidence."
+      "specific": "These are the quality bars behind my Policy RAG held-out QA set; a set that only matched exact wording or was never revisited would give false confidence."
     },
     {
       "front": "What's the real distinction between offline and online evaluation of a RAG system?",
       "general": "Offline evaluation runs the retrieval/RAG pipeline against a fixed golden QA set with known ground truth, computing recall@k, MRR, precision@k. It's fast, repeatable, and catches regressions before deploy, but it's only as representative as the golden set's coverage. Online evaluation measures real-user signal in production such as click-through, thumbs up/down, follow-up-question rate, and session abandonment. It captures the real query distribution and real relevance judgments, but it's noisier, slower to accumulate, and can't cleanly isolate retrieval quality from generation quality without careful instrumentation.",
-      "specific": "Hanna's offline evaluation (recall@k/MRR over a held-out QA set) is real, shipped, true-today work on the Policy RAG service at USAA. Be honest that no online-evaluation signal (user feedback loops, production A/B) is evidenced anywhere in the portfolio; say so plainly rather than implying a feedback loop exists."
+      "specific": "My offline evaluation (recall@k/MRR over a held-out QA set) is real, shipped, true-today work on the Policy RAG service at USAA. I'm honest that I have no online-evaluation signal (user feedback loops, production A/B) evidenced anywhere in my portfolio; I say so plainly rather than implying a feedback loop exists."
     },
     {
       "front": "Across your work, where has eval actually been done versus where is it still roadmap?",
       "general": "It's important to separate shipped evaluation from planned evaluation when describing a portfolio. Offline retrieval evaluation over a held-out golden set is a concrete, verifiable deliverable. Online evaluation via production feedback loops or A/B testing is a distinct capability that requires production instrumentation and real traffic, and claiming it without evidence is a credibility risk.",
-      "specific": "Offline evaluation with recall@k/MRR over a held-out QA set is real, true-today work on the Policy RAG service at USAA, the only true-today eval-harness evidence in Hanna's portfolio. FedInsight's eval harness (recall@k, MRR) is roadmap only and not built at all, so never cite FedInsight eval numbers. No online-evaluation signal exists anywhere in the portfolio."
+      "specific": "My offline evaluation with recall@k/MRR over a held-out QA set is real, true-today work on the Policy RAG service at USAA, my only true-today eval-harness evidence in my portfolio. My FedInsight eval harness (recall@k, MRR) is roadmap only and not built at all, so I never cite FedInsight eval numbers. I have no online-evaluation signal anywhere in my portfolio."
     },
     {
       "front": "Walk me through your recursive chunking choice of 800-character chunks with 150-character overlap.",
       "general": "A recursive character splitter chunks text by trying a hierarchy of separators in order, splitting on paragraph breaks first, then line breaks, then sentence boundaries, then whitespace, and only falling back to a hard character cut as a last resort. Using an 800-character chunk size with 150-character overlap keeps chunks semantically coherent, so a chunk doesn't cut mid-sentence when a paragraph break is available nearby, while staying within the embedding model's context limits. The separator hierarchy is what preserves meaning; the size and overlap balance context against embedding specificity.",
-      "specific": "FedInsight uses LangChain's RecursiveCharacterTextSplitter at chunk_size 800 characters, overlap 150 characters, with the separator hierarchy [\"\\n\\n\", \"\\n\", \". \", \" \", \"\"]. This is described as recent engineering work on the public repo, not published eval evidence.",
+      "specific": "In my FedInsight pipeline I use LangChain's RecursiveCharacterTextSplitter at chunk_size 800 characters, overlap 150 characters, with the separator hierarchy [\"\\n\\n\", \"\\n\", \". \", \" \", \"\"]. This is recent engineering work on my public repo, not published eval evidence.",
       "hint": "paragraph → line → sentence → whitespace → hard cut"
     },
     {
       "front": "Why bother having overlap between chunks at all?",
       "general": "Overlap prevents a fact or argument that's split across a chunk boundary from becoming unretrievable in either half. The last portion of chunk N is repeated as the first portion of chunk N+1, so a query whose relevant answer straddles a boundary still has a good chance of matching one whole chunk cleanly rather than being split into two partial, weakly-matching halves.",
-      "specific": "In FedInsight the last ~150 characters of each chunk repeat as the first ~150 of the next, the overlap half of the 800/150 configuration.",
+      "specific": "In my FedInsight pipeline the last ~150 characters of each chunk repeat as the first ~150 of the next, the overlap half of my 800/150 configuration.",
       "hint": "answers that straddle a boundary"
     },
     {
       "front": "If retrieval quality regressed, what's the first thing you'd change?",
       "general": "Chunk size and overlap tuning is usually the first lever: too small loses context per chunk, too large dilutes the embedding's specificity and hurts precision. The second lever is fitting the separator hierarchy to the document's actual structure, since how a document is laid out determines where clean semantic split points are. Getting the upstream parsing right matters too, because chunking quality depends on the text it's handed.",
-      "specific": "For FedInsight, the separator hierarchy was driven by FOMC minutes' 2-column layout and paragraph structure, handled via PyMuPDF's column-aware parsing before chunking even runs, so fixing the parse of that 2-column layout is part of the retrieval-quality story."
+      "specific": "For FedInsight, I drove the separator hierarchy from the FOMC minutes' 2-column layout and paragraph structure, handled via PyMuPDF's column-aware parsing before chunking even runs, so fixing the parse of that 2-column layout is part of my retrieval-quality story."
     },
     {
       "front": "Why did you pick all-MiniLM-L6-v2 as your embedding model?",
       "general": "all-MiniLM-L6-v2 offers fast inference and a small footprint: its 384-dimension vectors keep index size and similarity-search cost low, and it's a ubiquitous, well-tested choice for a first production RAG pipeline. Choosing a lightweight, proven embedding model lets you ship quickly and cheaply, treating a later upgrade to a stronger model as a deliberate, scoped decision rather than a prerequisite.",
-      "specific": "FedInsight uses all-MiniLM-L6-v2 (384-dim). Its roadmap explicitly defers a bge/e5 upgrade because that swap couples with a full corpus re-embed and re-ingest, a real stated trade-off rather than an oversight.",
+      "specific": "In FedInsight I use all-MiniLM-L6-v2 (384-dim). I explicitly defer a bge/e5 upgrade on my roadmap because that swap couples with a full corpus re-embed and re-ingest, a real stated trade-off rather than an oversight.",
       "hint": "384-dim, fast, small, well-tested"
     },
     {
       "front": "What's the trade-off between MiniLM-L6-v2 and a larger embedding model like bge or e5-large?",
       "general": "Larger embedding models generally improve retrieval quality, especially on harder semantic-similarity or cross-domain queries, at the cost of slower encode time and larger vector storage per chunk. A small model like MiniLM-L6-v2 is often the right first choice to ship fast and cheaply. Upgrading later is a deliberate, scoped follow-on decision, not a 'should have used a better model' gap, particularly because the swap forces a full corpus re-embed and re-ingest.",
-      "specific": "For FedInsight, moving from MiniLM-L6-v2 to bge/e5-large is framed on the roadmap as a scoped follow-on that couples with re-embedding and re-ingesting the whole corpus."
+      "specific": "For FedInsight, I frame moving from MiniLM-L6-v2 to bge/e5-large on my roadmap as a scoped follow-on that couples with re-embedding and re-ingesting the whole corpus."
     },
     {
       "front": "What does dense retrieval capture well, and where does it fail?",
       "general": "Dense retrieval uses embedding-based cosine similarity search and captures semantic or paraphrase matches, so a query and a chunk can match even with zero shared vocabulary. Its weakness is that it can under-weight exact keyword or term matches that matter for domain-specific vocabulary, named entities, or exact figures, especially on rare terms the embedding model wasn't well-trained on. That's the gap that motivates pairing it with a sparse method.",
-      "specific": "In FedInsight's domain this shows up on FOMC terminology, named entities, and exact figures, which pure dense (cosine) matching can blur past, motivating the hybrid setup with BM25."
+      "specific": "In FedInsight's domain this shows up on FOMC terminology, named entities, and exact figures, which pure dense (cosine) matching can blur past, which is what motivated me to add the hybrid setup with BM25."
     },
     {
       "front": "Give me the intuition for BM25. What is it actually doing?",
       "general": "BM25 is a sparse, term-frequency-based ranking method. A document scores higher for a query term the more that term appears (term frequency), but with saturation, so the 10th occurrence of a term adds much less than the 2nd, giving diminishing returns rather than a linear increase. Terms are also weighted by inverse document frequency (IDF), so words common across the whole corpus contribute little while rare, distinctive words contribute more. BM25 complements embeddings precisely because it's exact-term-driven where embeddings are semantic-similarity-driven, catching exact figures, named entities, and rare terminology a dense match might blur past.",
-      "specific": "FedInsight uses BM25Okapi from rank-bm25 (pure Python, deterministic, no native build dependencies) with a simple lowercase [a-z0-9]+ tokenizer. Note the hybrid search and cross-encoder reranking are code-complete and tested locally only, not yet pushed to the public murai1998/FedInsight repo, so frame them as recent engineering work rather than published evidence.",
+      "specific": "In FedInsight I use BM25Okapi from rank-bm25 (pure Python, deterministic, no native build dependencies) with a simple lowercase [a-z0-9]+ tokenizer. Note my hybrid search and cross-encoder reranking are code-complete and tested locally only, not yet pushed to my public murai1998/FedInsight repo, so I frame them as recent engineering work rather than published evidence.",
       "hint": "TF with saturation, weighted by IDF"
     },
     {
       "front": "Why run hybrid retrieval instead of just picking dense or sparse?",
       "general": "Dense and sparse retrieval fail on different query types: dense misses exact-term and rare-vocabulary matches, while sparse misses paraphrase and semantic matches. Running both and fusing the rankings covers more of the query distribution than either alone. You retrieve a candidate pool from each method and then combine them, so the strengths of one compensate for the blind spots of the other.",
-      "specific": "FedInsight's default retrieval mode is hybrid: dense (cosine) plus sparse (BM25Okapi), each pulling a candidate pool of 50 (env HYBRID_CANDIDATES), fused via Reciprocal Rank Fusion. This is described as recent local engineering work, not yet pushed to the public repo."
+      "specific": "In FedInsight my default retrieval mode is hybrid: dense (cosine) plus sparse (BM25Okapi), each pulling a candidate pool of 50 (env HYBRID_CANDIDATES), fused via Reciprocal Rank Fusion. This is recent local engineering work of mine, not yet pushed to the public repo."
     },
     {
       "front": "What's the RRF formula, and why is it better than a weighted sum of scores?",
       "general": "Reciprocal Rank Fusion computes score = Σ over each ranker's list of 1 / (k + rank + 1), commonly using 0-based rank and k = 60. Rank-based fusion sidesteps the problem that cosine similarity (bounded, roughly 0-1) and BM25 scores (unbounded, corpus- and query-dependent in magnitude) live on incomparable scales. A weighted sum of raw scores needs careful, brittle tuning of the weight to keep one signal from dominating, whereas RRF only cares about rank position in each list, so it works out of the box with no weight tuning. It also rewards documents that rank well across multiple signals (consensus) over a document that only one method loves.",
-      "specific": "FedInsight's exact implementation uses 0-based rank and k = 60 to fuse the dense and BM25 rankings. Code-complete and tested locally, not yet pushed to the public repo.",
+      "specific": "My FedInsight implementation uses 0-based rank and k = 60 to fuse the dense and BM25 rankings. It's code-complete and tested locally, not yet pushed to the public repo.",
       "hint": "Σ 1/(k + rank + 1), k = 60"
     },
     {
       "front": "Where does metadata filtering fit into a hybrid retrieval pipeline?",
       "general": "Metadata filtering can be applied either before fusion (pre-filtering one arm's candidate pool) or after fusion. Applying it post-fusion, after the rank-fusion step has combined the dense and sparse rankings, preserves the ranking signal from both arms. Pre-filtering one arm's pool risks distorting the fusion by removing candidates before both rankings have had their say.",
-      "specific": "FedInsight applies metadata filters, for example a meeting-date range, post-fusion, after RRF has combined the dense and sparse rankings, specifically to preserve both arms' ranking signal rather than distorting the fusion."
+      "specific": "In FedInsight I apply metadata filters, for example a meeting-date range, post-fusion, after RRF has combined the dense and sparse rankings, specifically to preserve both arms' ranking signal rather than distorting the fusion."
     },
     {
       "front": "What happens if BM25 or the reranker isn't available at query time?",
       "general": "A well-designed pipeline degrades gracefully rather than hard-failing. If the sparse component can't build or isn't enabled, hybrid search falls back to dense-only retrieval. The same philosophy applies to reranking: a failure there falls back to the original ranked order rather than erroring out. The system always returns some ranked result instead of throwing.",
-      "specific": "In FedInsight, if BM25 fails to build or isn't enabled, hybrid search silently falls back to dense-only retrieval; a reranker failure falls back to the original ranked order. Both are lazy-loaded so there's no cost when disabled."
+      "specific": "In FedInsight, if BM25 fails to build or isn't enabled, my hybrid search silently falls back to dense-only retrieval; a reranker failure falls back to the original ranked order. I lazy-load both so there's no cost when disabled."
     },
     {
       "front": "What's the real difference between a bi-encoder retriever and a cross-encoder reranker?",
       "general": "A bi-encoder encodes the query and each document independently into vectors and compares them via cosine similarity. It's fast and scales to millions of documents via an approximate-nearest-neighbor index, but the model never sees the query and document together. A cross-encoder encodes the query and a candidate document jointly in one forward pass and outputs a direct relevance score. It's much more accurate at judging true relevance because it can do fine-grained token-level cross-attention between query and document, but it's too slow to run over the whole corpus, so it's used as a second-stage reranker applied only to a small candidate pool that a fast first-stage retriever already narrowed down.",
-      "specific": "FedInsight uses MiniLM-L6-v2 as the bi-encoder retriever and cross-encoder/ms-marco-MiniLM-L-6-v2 (~80 MB) as the second-stage reranker, applied to a candidate pool of max(k, 50). This reranking is code-complete and tested locally, not yet pushed to the public repo.",
+      "specific": "In FedInsight I use MiniLM-L6-v2 as the bi-encoder retriever and cross-encoder/ms-marco-MiniLM-L-6-v2 (~80 MB) as the second-stage reranker, applied to a candidate pool of max(k, 50). This reranking is code-complete and tested locally, not yet pushed to the public repo.",
       "hint": "independent encoding + ANN vs. joint encoding + cross-attention"
     },
     {
       "front": "Why is reranking turned off by default in FedInsight?",
       "general": "Cross-encoder reranking is an extra model load and extra inference cost per query, so leaving it off by default keeps a demo fast and snappy. Exposing it as an opt-in toggle lets a user turn it on when quality matters more than latency. Lazy-loading the reranker means there's zero cost when it's disabled.",
-      "specific": "FedInsight sets RERANK=false by default to keep the Hugging Face Space demo fast, exposes it as a Streamlit sidebar checkbox so it's opt-in, and lazy-loads it like BM25 so there's zero cost when disabled."
+      "specific": "In FedInsight I set RERANK=false by default to keep the Hugging Face Space demo fast, expose it as a Streamlit sidebar checkbox so it's opt-in, and lazy-load it like BM25 so there's zero cost when disabled."
     },
     {
       "front": "What's the actual mechanism for stopping hallucination in a RAG system?",
       "general": "The core mechanism is retrieval-first design plus a disciplined system prompt. You constrain the model to answer only from retrieved context, require inline citations (for example [n] mapped to source chunks) so every claim is traceable back to a source, and instruct the model to explicitly say 'I don't have enough information' rather than guess when the retrieved context doesn't cover the question. Grounding plus citation plus a permission to abstain is what keeps the model from inventing facts.",
-      "specific": "This is the actual system-prompt language used in both FedInsight and the Policy RAG service at USAA: answer only from retrieved context, cite [n] to source chunks, and abstain when context is insufficient. For FedInsight, grounding and citation are the hallucination-mitigation mechanism; it has no eval numbers of its own, since that harness isn't built."
+      "specific": "This is the actual system-prompt language I use in both FedInsight and the Policy RAG service at USAA: answer only from retrieved context, cite [n] to source chunks, and abstain when context is insufficient. For FedInsight, grounding and citation are my hallucination-mitigation mechanism; it has no eval numbers of its own, since I haven't built that harness."
     },
     {
       "front": "What's your fallback when no LLM is configured or available?",
       "general": "An extractive, no-LLM fallback: instead of generating free text, return the top-ranked retrieved chunk excerpts directly, typically capped to a snippet length, and cite them. Because nothing is generated, only excerpted and cited, this path structurally can't hallucinate. It degrades the experience from synthesized answers to raw evidence, but it stays trustworthy.",
-      "specific": "FedInsight's extractive fallback returns the top-ranked chunk excerpts directly, capped at 400 characters per snippet, instead of generating free text, so it structurally can't hallucinate.",
+      "specific": "My FedInsight extractive fallback returns the top-ranked chunk excerpts directly, capped at 400 characters per snippet, instead of generating free text, so it structurally can't hallucinate.",
       "hint": "return cited excerpts, generate nothing"
     },
     {
       "front": "Beyond prompt discipline, what's the retrieval-quality side of hallucination mitigation?",
       "general": "There are two distinct necessary pieces. Prompt discipline handles 'don't invent facts beyond the retrieved context.' But if retrieval quality itself is bad, meaning recall@k is low, no amount of prompt discipline saves the answer, because the correct grounding material was never in the context window at all. So an eval harness that measures retrieval quality handles 'make sure the right context actually got retrieved in the first place.' Both are necessary; grounding rules can't rescue a retrieval miss.",
-      "specific": "The retrieval-quality side is Hanna's recall@k/MRR harness on the Policy RAG service at USAA (true-today). It complements the grounding/citation prompt discipline used in both Policy RAG and FedInsight; FedInsight itself has no such eval numbers because that harness isn't built."
+      "specific": "The retrieval-quality side is my recall@k/MRR harness on the Policy RAG service at USAA (true-today). It complements the grounding/citation prompt discipline I use in both Policy RAG and FedInsight; FedInsight itself has no such eval numbers because I haven't built that harness."
     },
     {
       "front": "For pgvector, what's the trade-off between IVFFlat and HNSW indexes?",
       "general": "IVFFlat is an approximate-nearest-neighbor index that partitions vectors into a set number of clusters (lists) and searches only the nearest clusters; it's simple to set up within a standard PostgreSQL extension. Its known limitation is that the clustering can produce recall artifacts, where near-neighbors that fall in a different cluster get missed. HNSW's graph-based approach generally avoids those artifacts, at the cost of more memory and slower index builds. So the trade-off is setup simplicity and cheaper builds versus better recall.",
-      "specific": "FedInsight's pgvector backend uses IVFFlat with lists=100, chosen for setup simplicity. The recall-artifact limitation is stated honestly in the project's own plan, and switching to HNSW is named as explicit future work rather than an unrecognized gap.",
+      "specific": "In FedInsight my pgvector backend uses IVFFlat with lists=100, chosen for setup simplicity. I state the recall-artifact limitation honestly in my own plan, and I name switching to HNSW as explicit future work rather than an unrecognized gap.",
       "hint": "clusters (simple, recall artifacts) vs. graph (accurate, heavier)"
     },
     {
       "front": "Walk me through your pgvector schema and how similarity and metadata queries work.",
       "general": "A typical pgvector table stores an auto-incrementing id, the chunk content as text, the embedding as a fixed-dimension vector column, a metadata column, and a timestamp. Similarity search uses pgvector's cosine distance operator. Metadata filtering can use JSONB containment, backed by a GIN index on the metadata column for fast filtered lookups, letting you combine semantic search with structured filters like a date range.",
-      "specific": "FedInsight's pgvector schema is id BIGSERIAL, content TEXT, embedding VECTOR(384), metadata JSONB, created_at. Similarity search uses the cosine operator <=>; metadata filtering uses JSONB @> containment backed by a GIN index on the metadata column, for example filtering by meeting date.",
+      "specific": "My FedInsight pgvector schema is id BIGSERIAL, content TEXT, embedding VECTOR(384), metadata JSONB, created_at. Similarity search uses the cosine operator <=>; metadata filtering uses JSONB @> containment backed by a GIN index on the metadata column, for example filtering by meeting date.",
       "hint": "VECTOR(384), <=> cosine, JSONB @> with GIN"
     },
     {
       "front": "How does ChromaDB's indexing and scoring model work?",
       "general": "ChromaDB can run as an on-disk persistent collection, using an HNSW index with cosine space for similarity search. It supports scalar-only metadata filtering, which is less flexible than a JSONB-based store. It reports a similarity score as 1 minus distance, and it auto-batches writes for ingestion efficiency.",
-      "specific": "FedInsight uses ChromaDB's PersistentClient on-disk collection (fed_chunks), an HNSW index with cosine space, scalar-only metadata filtering (less flexible than pgvector's JSONB), a score reported as 1 − distance, and auto-batched writes at a default batch size of 5000.",
+      "specific": "In FedInsight I use ChromaDB's PersistentClient on-disk collection (fed_chunks), an HNSW index with cosine space, scalar-only metadata filtering (less flexible than pgvector's JSONB), a score reported as 1 − distance, and auto-batched writes at a default batch size of 5000.",
       "hint": "PersistentClient, HNSW cosine, 1 − distance"
     },
     {
       "front": "Why support both pgvector and ChromaDB instead of standardizing on one?",
       "general": "Different deployment contexts want different trade-offs. A Postgres-backed store fits a 'real' deployment where you want richer metadata filtering and existing database infrastructure. A file-based store fits a zero-infrastructure, ships-as-a-file deployment where you don't want to stand up a database. Supporting both behind a shared base interface and a factory selected by an environment variable means the RAG pipeline code doesn't have to care which backend is active; you swap storage without touching pipeline logic.",
-      "specific": "FedInsight uses pgvector for a real Postgres-backed deployment (Docker Compose locally, richer JSONB metadata filtering with GIN) and Chroma for a zero-infra, ships-as-a-file deployment (the Hugging Face Space default, prebuilt store shipped via Git LFS). A shared base interface (add_documents, similarity_search, clear_collection, count, get_all, close) plus a factory (get_vector_store(), env VECTOR_BACKEND) keeps the pipeline backend-agnostic."
+      "specific": "In FedInsight I use pgvector for a real Postgres-backed deployment (Docker Compose locally, richer JSONB metadata filtering with GIN) and Chroma for a zero-infra, ships-as-a-file deployment (the Hugging Face Space default, prebuilt store shipped via Git LFS). I built a shared base interface (add_documents, similarity_search, clear_collection, count, get_all, close) plus a factory (get_vector_store(), env VECTOR_BACKEND) to keep the pipeline backend-agnostic."
     },
     {
       "front": "What makes migrating between your two vector backends cheap?",
       "general": "Migration is cheap when the embedding model doesn't change, because the vectors themselves are portable as-is; only the storage and indexing layer changes. A migration script can copy chunks and their existing embeddings directly in batches, inferring the vector dimension from the data, with no re-embedding step. Re-embedding would only be required if the embedding model itself changed.",
-      "specific": "FedInsight's Chroma-to-pgvector migration script copies chunks plus embeddings directly (batch 1000, dimension inferred from the first row) with no re-embedding, since the embedding model didn't change, so the vectors are portable and only the storage/indexing layer changes.",
+      "specific": "My FedInsight Chroma-to-pgvector migration script copies chunks plus embeddings directly (batch 1000, dimension inferred from the first row) with no re-embedding, since the embedding model didn't change, so the vectors are portable and only the storage/indexing layer changes.",
       "hint": "same embedding model → vectors portable, no re-embed"
     }
   ]
