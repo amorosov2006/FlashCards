@@ -2,7 +2,9 @@
 
 ## Overview
 
-React 18 + Vite 5 PWA. Two study modes (Practice, Quiz), four bundled deck groups (NCA-GENL Prep, NCP-GENL Prep, Interview Prep, U.S. Citizenship), plus user-importable JSON decks. Hosted on GitHub Pages; installable as a PWA on iPhone and desktop.
+React 18 + Vite 5 PWA. Two study modes (Practice, Quiz), five bundled deck groups (NCA-GENL Prep, NCP-GENL Prep, Interview Prep, Interview Prep · Study, U.S. Citizenship), plus user-importable JSON decks. Hosted on GitHub Pages; installable as a PWA on iPhone and desktop.
+
+Decks can be **study-only** (`studyOnly: true`): they show only the flip-card Practice mode (no Quiz), and their cards can carry a two-part answer — a general/conceptual part and a personal role-specific part — rendered in different colors. Practice mode scales answer font size to the amount of text.
 
 ---
 
@@ -117,12 +119,16 @@ groups: [{ id, title, description, decks: [NormalizedDeck] }]
 }
 ```
 
+`NormalizedDeck` also carries `studyOnly: boolean` (default `false`). When true, `DeckPicker` shows a single "Study" button (no Quiz) and `Practice` hides the "Switch to Quiz" link.
+
 `NormalizedCard` shape:
 ```js
 {
   id: string,
   front: string,        // question shown in both modes
-  back: string,         // LONG answer shown in Practice after flip
+  back: string,         // LONG answer shown in Practice after flip (synthesized from general+specific if absent)
+  general: string,      // two-part answer: general/conceptual half (Practice, periwinkle)
+  specific: string,     // two-part answer: personal role/project half (Practice, amber)
   hint: string,         // optional, shown under front in Practice
   quizAnswer: string|null,  // SHORT answer shown in Quiz (≈15 words, matches distractor length)
   distractors: string[]|null, // pool of 5+ wrong answers
@@ -130,6 +136,8 @@ groups: [{ id, title, description, decks: [NormalizedDeck] }]
   answer: string|null,        // legacy correct answer text
 }
 ```
+
+When a card has `general`/`specific`, Practice renders them as two labeled, color-coded blocks ("In general" / "In my experience"). Answer font size auto-scales by text length via a `sz-*` class (`sizeClass()` in `Practice.jsx`); long answers scroll within the card.
 
 ---
 

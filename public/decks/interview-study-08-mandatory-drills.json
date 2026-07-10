@@ -1,0 +1,103 @@
+{
+  "title": "Interview · Mandatory Drills & Weak Claims",
+  "description": "Rehearsed answers for experience-gap, leveling, tenure, and weak-claim interview questions — stating honest boundaries plainly, then pivoting to real depth.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Kubernetes vs. OpenShift — walk me through your container experience. (All 8 reqs name containerization; several name Kubernetes/Helm.)",
+      "general": "When a required tech spans a platform layer and hands-on work, separate what the platform did for you from what you personally wrote and ran. Draw the line explicitly so the interviewer trusts the rest of your answer, and keep it tight enough to leave room for follow-ups.",
+      "specific": "Short version: state what you personally wrote/ran, then draw the line between OpenShift's platform layer and separate Kubernetes-native work, in under 90 seconds. Full drill card lives in 07-distributed-systems-and-observability.md.",
+      "hint": "Under 90 seconds; draw the platform-vs-native line explicitly."
+    },
+    {
+      "front": "Walk me through your multi-agent system's graph topology. (Headline version.)",
+      "general": "For an architecture question, narrate the topology and the reasoning behind each node, not just the wiring. When you reach a mechanism you are not 100% sure of, state the true behavior you do know rather than guessing at exact internals — a confident wrong detail is worse than an honest boundary.",
+      "specific": "LocalLLM's --multi flag: parallel researchers → analyst → critic, StateGraph fan-out/fan-in. In 60–90 seconds cover why parallel researchers (coverage/redundancy, not just speed), how the analyst reconciles outputs, what the critic checks, and what happens on rejection — state the true retry-vs-annotate behavior; don't guess if unsure of the exact mechanism. Deep version in 05-localllm-deep-dive.md.",
+      "hint": "60–90s; don't guess the exact retry-vs-annotate mechanism — state what's true."
+    },
+    {
+      "front": "Tell me about operating at scale — the 7M/day story.",
+      "general": "When telling a scale story, guard the number that is easy to misread. Pre-rehearse the one correcting sentence that keeps a latency or throughput figure from being heard as a claim about a different, more demanding path.",
+      "specific": "60-second scale narrative plus the ack-latency correction sentence, rehearsed verbatim: the 10–20s p99 is peak async event-processing latency, never the sync front-door ack path. Full card in 07-distributed-systems-and-observability.md.",
+      "hint": "The 10–20s p99 is async event-processing, not the sync ack path."
+    },
+    {
+      "front": "Why no SageMaker / MLflow / edge tooling (ONNX, TensorRT)? (JPM-DigitalAuth)",
+      "general": "When asked about tooling you haven't used, answer with a plain 'none' and pivot immediately to the real, adjacent capabilities that do the same job. Never claim unused tooling — not even by implying adjacency or 'exposure' — because a single follow-up will expose it.",
+      "specific": "Honest: none — no SageMaker, MLflow, ONNX/TensorRT. Pivot immediately to what's real: Terraform-provisioned AWS infra, containerized serving (the LocalLLM/FastAPI pattern), Kafka streaming. Never claim unused tooling, even adjacently.",
+      "hint": "Say 'none' first, then pivot to Terraform, containerized serving, Kafka."
+    },
+    {
+      "front": "You've got 8+ years of experience — walk me through it. (JPM-BBAO)",
+      "general": "For an experience-gap question, state the true number plainly with no rounding up and no defensiveness, then let a concrete, verifiable body of work carry the weight the years don't. Naming the gap first buys credibility for everything you say after it.",
+      "specific": "JD asks 8+ years hands-on; actual is ~5.8 years (5 yr 10 mo, computed, no gaps). Rehearse: hold an M.S. in Data Science (UT Austin, conferred May 2026) plus a shipped, code-verified portfolio (LocalLLM, FedInsight, FrostByte, Policy RAG) — state the gap plainly, then let the portfolio carry it. No defensiveness, no rounding up years.",
+      "hint": "State ~5.8 years plainly, then let the portfolio carry it — never round up."
+    },
+    {
+      "front": "This role is posted at a senior/lead level (SWES05). What level and comp are you targeting? (JPM-Senior Lead AI, JPM-PublicCloud)",
+      "general": "Decide your accept-level and comp floor before the first recruiter screen so it isn't decided live under pressure. Signal openness to a leveling conversation, lead with owned scope as your stretch case, state your floor once, and hold it. Where you lack a formal title, be specific about scope rather than apologizing for the title.",
+      "specific": "Decide the accept-level and comp floor before the first recruiter screen — don't let it get decided live. Posture: open to a leveling conversation, lead with owned scope (notification rebuild, Policy RAG proposal-to-production) as the stretch case, state the Lead/SWES04 floor once ($152–215K) and hold it. No formal management title — be specific about scope instead.",
+      "hint": "State the $152–215K floor once and hold it; lead with owned scope."
+    },
+    {
+      "front": "Tell me about your experience managing and mentoring. (JPM-Lead ai-ml)",
+      "general": "When you lack a formal management title, open by naming that plainly and reframing toward influence, then give concrete, named examples of how you changed team practice. Specific instances beat an inflated title claim, which a follow-up would puncture.",
+      "specific": "Open with: \"I haven't held a formal management title, so let me be specific about the influence I've had.\" Then three concrete, named examples, no title inflation: (1) code-review ownership on the USAA team — what changed in team practice; (2) onboarding via the Project Overview VS Code extension; (3) Ironhack-era peer tutoring.",
+      "hint": "Open by disclaiming the formal title, then give the three named examples."
+    },
+    {
+      "front": "Walk me through a load or chaos test you've run. (JPM-FullStack-ai — binding-constraint role, extra weight.)",
+      "general": "When you lack direct evidence for a named requirement, say so cleanly and pivot to the closest real operational discipline you've actually practiced — the adjacent depth that shows the same skill under a different label.",
+      "specific": "Honest: no JMeter/Blazemeter/Chaos Monkey evidence; pivot to Kafka consumer-lag observability and SQS/Lambda backpressure at USAA. Full card in 07-distributed-systems-and-observability.md.",
+      "hint": "No load-test tooling evidence — pivot to Kafka lag and SQS/Lambda backpressure."
+    },
+    {
+      "front": "Several of our reqs ask for 5+ years of GenAI/LLM work. How much do you have?",
+      "general": "For a tenure gap in a specialty, give the honest focused count and immediately frame it as sitting on top of a longer engineering foundation — position the depth of the base as the reason your specialty work is production-grade, not as an excuse for the shorter count.",
+      "specific": "Several reqs ask 5+ years GenAI/LLM; honest count is ~2 years focused GenAI (LocalLLM, FedInsight, Policy RAG, MS coursework) on top of 5.8 years production engineering. Rehearsed line: \"My focused GenAI/LLM work is about two years, but it sits on nearly six years of production engineering — the RAG systems I've shipped are production-grade because of that foundation.\"",
+      "hint": "~2 years focused GenAI on ~6 years production engineering — that base is why it's production-grade."
+    },
+    {
+      "front": "Why is a Software Engineer II applying for a Lead / Senior-Lead role?",
+      "general": "When your title lags your scope, explain that ownership grew faster than the title, cite the concrete scope that proves it, and stay open to a leveling conversation rather than insisting on a title match. Openness reads as confidence; insistence reads as defensiveness.",
+      "specific": "Rehearse: scope/ownership (notification rebuild, Policy RAG) grew faster than title; M.S. is now conferred (May 2026); open to a leveling conversation, not insisting on title match.",
+      "hint": "Scope outgrew the title; open to leveling, not insisting on a match."
+    },
+    {
+      "front": "Tell me about the hybrid search / reranking you built in FedInsight. (Guardrail card.)",
+      "general": "For work that is real but unpublished, hold a firm boundary: it's fair to mention as recent engineering, but do not claim it's published or cite numbers from it unless specifically pushed. Know exactly where the line is before you're in the room so you don't drift over it under enthusiasm.",
+      "specific": "Code-complete and tested locally only — not pushed to the public repo, not on any resume. If retrieval depth comes up, it's fair to mention as recent engineering work; do NOT claim it's published or cite numbers from it unless pushed on the point. Deep technical version of what's actually built lives in 06-fedinsight-deep-dive.md.",
+      "hint": "Local-only, not published — mention as recent work, no numbers unless pushed."
+    },
+    {
+      "front": "What QPS / user count does your production RAG service at USAA handle?",
+      "general": "When you lack real traffic numbers, don't manufacture or imply them. Soften the framing to what's true — that it was adopted and running in production — and avoid any phrasing that suggests external-scale traffic you can't back up.",
+      "specific": "If pressed on QPS/user count, soften to \"an internally adopted production service\" — real numbers aren't in the dossier; don't imply external-scale traffic.",
+      "hint": "\"Internally adopted production service\" — no invented QPS, no external-scale implication."
+    },
+    {
+      "front": "Push again on your Kubernetes-distinct work — where exactly did that happen?",
+      "general": "A claim that survives one telling but collapses on the second follow-up is worse than a narrower claim you can defend indefinitely. Rehearse the deeper layer so the distinction holds under repeated probing.",
+      "specific": "The Kubernetes-distinct-work claim must not collapse under a second follow-up — see the full drill in 07-distributed-systems-and-observability.md.",
+      "hint": "Must survive the second follow-up, not just the first."
+    },
+    {
+      "front": "Describe your observability and multi-cloud stack (Dynatrace, Azure/GCP). (Firmwide gap 7.3a)",
+      "general": "For a multi-cloud/tooling requirement you only partly meet, never claim the tools or cloud depth you lack. Volunteer your true-today stack unprompted, framing it as the same discipline over a narrower footprint — proactively naming the boundary early in a screen is stronger than being caught by it later.",
+      "specific": "Never claim Dynatrace, or Azure/GCP hands-on depth. Rehearsed pivot: OpenTelemetry + Prometheus + Kafka event-lifecycle state tracking + CloudWatch monitoring + DLQ/retry handling on the USAA notification-platform rebuild is the true-today observability stack — same discipline (turning raw signal into actionable state), narrower cloud footprint (AWS-only). Say this unprompted if the multi-cloud or observability-stack requirement comes up early in a screen.",
+      "hint": "No Dynatrace/Azure/GCP claim; volunteer the AWS-only OTel/Prometheus/CloudWatch stack unprompted."
+    },
+    {
+      "front": "How much multi-cloud (Azure/GCP) experience do you have?",
+      "general": "When one cloud is deep and others aren't, answer at the level of portable architectural primitives that transfer across clouds rather than claiming hands-on fluency you don't have. Never upgrade 'exposure' into 'expertise.'",
+      "specific": "AWS is deep and production-proven; Azure/GCP are not. Answer at the level of portable architectural primitives (structured logging, correlation IDs, common event schemas) that would transfer across clouds, rather than claiming hands-on Azure/GCP fluency. Never overclaim \"exposure\" as \"expertise.\"",
+      "hint": "AWS deep; Azure/GCP via portable primitives only — never 'exposure' as 'expertise.'"
+    },
+    {
+      "front": "Do you have ServiceNow / Jira Service Management and config-management (Ansible/Chef/Puppet) experience?",
+      "general": "For a structural tooling gap, honesty informs strategy rather than needing a defensive drill: acknowledge the gap plainly and pivot to the genuinely adjacent skill, naming it as a fast ramp-up rather than papering over a hidden gap.",
+      "specific": "No ServiceNow/Jira Service Management integration evidenced; no Ansible/Chef/Puppet config-management evidence. Pivot to webhook/API integration experience (FastMCP tool exposure, LangGraph tool-calling) as the adjacent skill, named as a fast ramp-up rather than a hidden gap.",
+      "hint": "Acknowledge the gap; pivot to webhook/API integration (FastMCP, LangGraph) as a fast ramp-up."
+    }
+  ]
+}

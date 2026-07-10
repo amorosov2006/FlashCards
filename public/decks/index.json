@@ -49,6 +49,21 @@
       ]
     },
     {
+      "id": "interview-study",
+      "title": "Interview Prep · Study",
+      "description": "Study-only two-part cards (general concept + my role/project experience) — no quiz. From the interview-prep topic files.",
+      "decks": [
+        "interview-study-02-system-design.json",
+        "interview-study-03-genai-llm-core.json",
+        "interview-study-04-rag-and-evals.json",
+        "interview-study-05-localllm-deep-dive.json",
+        "interview-study-06-fedinsight-deep-dive.json",
+        "interview-study-07-distributed-and-observability.json",
+        "interview-study-08-mandatory-drills.json",
+        "interview-study-09-behavioral-star.json"
+      ]
+    },
+    {
       "id": "citizenship",
       "title": "U.S. Citizenship",
       "description": "Naturalization civics test prep — all topics from the 2026 (128-question) USCIS test, by section.",

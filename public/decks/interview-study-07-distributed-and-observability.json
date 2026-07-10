@@ -1,0 +1,107 @@
+{
+  "title": "Interview · Distributed Systems & Observability",
+  "description": "Event-driven architecture, Kafka, observability (OpenTelemetry/Prometheus), Kubernetes/OpenShift, and Terraform — paired with Hanna Murai's USAA notification-platform experience and its honest-scope caveats.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Walk me through the notification-platform rebuild in about 60 seconds.",
+      "general": "A common architecture-narrative question tests whether you can compress a large system into a clear before/after story. The strong pattern is to name the starting point (a legacy monolith), the target (a distributed, fault-tolerant, event-driven system), and the shape of the solution: a synchronous front door that answers callers fast, a queue that decouples upstream from downstream, asynchronous processing stages that do the real work, and an event stream that publishes lifecycle events for observability. Calling out your own role and a design principle (extensibility without touching the core) signals ownership. The goal is to show that each layer exists for a reason, not just to list technologies.",
+      "specific": "Hanna rebuilt USAA's legacy notification monolith into a distributed, fault-tolerant, event-driven AWS system spanning email, SMS, push, and postal channels. She was principal developer and owned service-boundary design so new channels ship without touching the core. A synchronous front door hands off to SQS; asynchronous Lambda stages do the actual work; Kafka publishes lifecycle events for observability.",
+      "hint": "Monolith to event-driven; front door to SQS to async Lambda; Kafka for observability."
+    },
+    {
+      "front": "Why would you split a synchronous front door from an asynchronous pipeline?",
+      "general": "This probes your grasp of decoupling and latency isolation. A synchronous front door does the fast, caller-facing work — rule evaluation, routing, preference resolution — and returns an acknowledgment immediately rather than waiting on slow downstream processing. Handing work to a queue means upstream callers are fully decoupled from downstream stages, so a slow or failing consumer never blocks or backs up the caller. The design lets the two halves scale and fail independently, which is the core benefit of an async, queue-backed architecture.",
+      "specific": "In Hanna's design, the front door does per-client, per-template, and per-user rule evaluation — channel resolution and preference management — and needs to answer the caller fast, so it returns an acknowledgment immediately and hands work to SQS. This decouples upstream callers from downstream processing entirely; a slow or failing downstream stage never blocks the caller."
+    },
+    {
+      "front": "What are the async pipeline's stages, and why split them into separate stages?",
+      "general": "This checks whether you understand fault isolation and independent scalability. Breaking a pipeline into discrete stages — rather than one monolithic worker — means each stage can be scaled on its own load profile and a failure in one stage doesn't cascade into the others. The interviewer wants to hear that the boundaries were chosen deliberately: distinct responsibilities, independent scaling, and fault isolation between them.",
+      "specific": "Hanna's Lambda consumers handle multi-artifact/multi-recipient packaging, delivery-window scheduling, and external-provider integration as separate, independently scalable stages. Each stage is fault-isolated — a failure in provider integration doesn't back up packaging — and each stage scales independently based on its own load profile."
+    },
+    {
+      "front": "How do you handle failure in the async pipeline — dead-letter queues, retries, idempotency?",
+      "general": "Fault-tolerance questions want the three classic mechanisms and how they fit together. Dead-letter queues capture messages that fail repeated processing attempts so they aren't silently lost. Retry logic absorbs transient failures. Idempotency guarantees mean a message that gets redelivered doesn't cause a duplicate side effect (like sending the same notification twice). Together they form the backbone that lets an at-least-once delivery system stay correct and lossless under failure.",
+      "specific": "Hanna describes dead-letter queues catching messages that fail repeated processing attempts so they're not silently dropped, retry logic handling transient failures, and idempotency guarantees ensuring a redelivered message doesn't produce a duplicate send. Together these are the fault-tolerance backbone of the rebuild.",
+      "hint": "DLQ catches, retry absorbs transient, idempotency prevents duplicates."
+    },
+    {
+      "front": "What is delivery-window scheduling and why does it matter?",
+      "general": "This tests whether you can explain a domain-specific stage in terms of design value, not just mechanics. Delivery-window scheduling means dispatching work within a defined time window rather than firing immediately on every event. Beyond the business reason (send at appropriate times), it matters architecturally because it makes that stage an independently managed unit rather than folding everything into a single undifferentiated fire-and-forget path.",
+      "specific": "Hanna frames delivery-window scheduling as one of the async pipeline's stages — scheduling notification delivery within a defined time window rather than firing immediately on every event. It's part of what makes each stage independently manageable rather than a single undifferentiated fire-and-forget path."
+    },
+    {
+      "front": "Walk me through the Kafka lifecycle-event model.",
+      "general": "Event-streaming questions check whether you understand the difference between an observability event stream and a processing dependency. Publishing per-entity lifecycle events (a progression of state transitions) lets downstream consumers track state in near real time without being coupled into the critical processing path. The key distinction to articulate: this is an observability layer that consumers subscribe to, not a synchronous dependency that internal services must wait on.",
+      "specific": "Hanna's Kafka publishes per-notification lifecycle events: generation-started, then packaged, then sent, then delivery-confirmed. Downstream consumers track notification state in near real time without coupling to internal services — she stresses it's an observability layer, not a processing dependency.",
+      "hint": "generation-started to packaged to sent to delivery-confirmed."
+    },
+    {
+      "front": "Tell me the roughly-7-million-messages-a-day story in about 60 seconds.",
+      "general": "Scale questions are a trap if you quote a latency number without saying which latency it is. The discipline is to state the throughput, the specific latency you're citing, and which path it belongs to — proactively, so you never let an interviewer conflate processing latency with a caller-facing acknowledgment latency. Volunteering that distinction unprompted signals rigor and prevents accidentally overclaiming that a synchronous path is slow.",
+      "specific": "Hanna cites the Snowflake notification-events platform (what her FrostByte project queries) processing roughly 7 million messages a day, with peak event-processing p99 latency of 10 to 20 seconds. She stresses that this is the async pipeline's processing latency, and says so unprompted whenever scale comes up — because the synchronous front-door acknowledgment latency is a separate, unstated number, and she never wants to imply the ack path takes 10 to 20 seconds.",
+      "hint": "~7M/day; 10-20s p99 is event-processing latency, NOT the ack path."
+    },
+    {
+      "front": "What observability stack do you run at USAA?",
+      "general": "This asks you to name your tooling and how the pieces complement each other rather than compete. A mature answer covers metrics and traces (OpenTelemetry, Prometheus), an event-based signal (lifecycle events), and cloud-native monitoring (CloudWatch), framed as collecting service-health signal across the platform. The point is that these are layered collection mechanisms feeding a single picture of platform health, not redundant tools.",
+      "specific": "Hanna runs OpenTelemetry and Prometheus for metrics and traces, alongside Kafka lifecycle events and CloudWatch, collecting service-health signal across the notification platform. OpenTelemetry and Prometheus were added to her working stack alongside the existing CloudWatch monitoring (added to her Skillset 2026-07-09); she states extensive hands-on experience with both."
+    },
+    {
+      "front": "OpenTelemetry basics — what's a trace versus a span versus a metric, in your own words?",
+      "general": "A fundamentals check that separates people who instrument systems from people who only name tools. A trace represents one logical request's full journey through the system. A span is one unit of work within that trace — a single service call or processing step. A metric is an aggregated numeric signal (rate, latency percentile, error count) sampled over time and not tied to any single request. OpenTelemetry's value is that it standardizes how all three are collected and exported regardless of the backend you send them to.",
+      "specific": "Hanna explains a trace as one logical request's journey through the system, a span as one unit of work within that trace (one service call, one processing step), and a metric as an aggregated numeric signal (rate, latency percentile, error count) sampled over time, not tied to a single request. She notes OTel standardizes how all three are collected and exported regardless of backend."
+    },
+    {
+      "front": "Prometheus basics — explain the scrape model and alerting in your own words.",
+      "general": "This tests conceptual accuracy about Prometheus's pull-based design. Prometheus scrapes (pulls) metrics from instrumented services on an interval rather than having services push to it; it stores them as time-series data, and Alertmanager fires on rules defined against that data, such as an error-rate threshold breach. A candidate showing good judgment describes the model at this level and doesn't overclaim deep query-language authorship unless specifically asked.",
+      "specific": "Hanna explains that Prometheus pulls (scrapes) metrics from instrumented services on an interval rather than services pushing to it, stores them as time-series, and Alertmanager fires on rules defined against that data (for example error-rate threshold breaches). She deliberately describes the model at this level rather than claim deep PromQL authorship until asked directly.",
+      "hint": "Pull/scrape on an interval; Alertmanager fires on rules. Don't overclaim PromQL."
+    },
+    {
+      "front": "How did you actually use OpenTelemetry and Prometheus on the notification platform?",
+      "general": "Beyond definitions, interviewers want the concrete application. The honest, useful answer ties the tools to a purpose — service-health monitoring and metrics/traces collection — and connects them to the same discipline as your other observability signals, noting they're a different collection mechanism serving the same goal of turning raw signal into actionable state. It's important to stay at the level actually practiced rather than improvising deeper operational claims.",
+      "specific": "Hanna used them for service-health monitoring and metrics/traces collection alongside Kafka lifecycle events and CloudWatch — turning raw signal into actionable state for the platform, the same discipline as the Kafka observability layer, just a different collection mechanism. Honest-scope caveat she flags: collector topology, PromQL query fluency, and alerting-rule authorship depth are not yet stated anywhere in her Skillset — if asked for specifics beyond what/why, she answers at the level above and does not improvise deeper claims. Dynatrace remains unevidenced and she never claims it.",
+      "hint": "Service-health + metrics/traces. Don't claim collector topology, PromQL depth, or Dynatrace."
+    },
+    {
+      "front": "What Kubernetes work did you actually do, distinct from OpenShift?",
+      "general": "This is a precision question because OpenShift is itself Kubernetes-based under the hood, so a sloppy answer double-counts the same work. A rigorous candidate distinguishes what they personally wrote or ran (manifests, Helm charts, named services) from where the platform layer already provided the underlying orchestration. The disciplined framing is to claim container orchestration across both for repeatable deployments and horizontal scalability, then be specific about the personal-work boundary rather than blurring it.",
+      "specific": "Hanna is precise because OpenShift is Kubernetes-based under the hood: she owned container orchestration across both for the notification-platform rebuild, enabling repeatable deployments and horizontal scalability across environments. Under 90 seconds she distinguishes what she personally wrote/ran (manifests, Helm charts, naming the services) from where OpenShift's platform layer already provided the underlying orchestration versus where she did separate Kubernetes-native work."
+    },
+    {
+      "front": "If pressed a second time on the Kubernetes-versus-OpenShift distinction, what's your fallback?",
+      "general": "Follow-up pressure tests whether you'll inflate under a second question. The correct move is to hold the same modest, precise scope rather than invent depth. A modest, accurately-scoped claim survives repeated follow-ups; an inflated one collapses when the interviewer digs. The principle: restate the honest claim exactly and refuse to manufacture cluster-admin or low-level specifics that aren't part of your real experience.",
+      "specific": "Hanna's fallback is to not inflate and to stay at the same modest, precise scope. \"Container orchestration with Kubernetes and OpenShift\" is the honest claim as stated in her Skillset — she holds that line rather than invent cluster-admin depth or raw manifest/kubectl specifics that aren't recorded. She notes a modest, precise answer survives follow-ups while an inflated one collapses under a second question."
+    },
+    {
+      "front": "Walk me through your Terraform usage at USAA.",
+      "general": "Infrastructure-as-code questions want the concrete resource set you managed and an honest note on evidence. A strong answer names the specific AWS resources provisioned as code and frames it as real production experience. When the work is internal with no public repository, saying so plainly — internal, narrative-only evidence — is more credible than vaguely implying something shareable exists.",
+      "specific": "Hanna managed production AWS serverless infrastructure as code — Lambda, API Gateway, IAM, CloudWatch, S3, and DynamoDB — for the notification-platform rebuild. She flags this as real production experience with no public repo attached, the same evidentiary posture as FrostByte and Policy RAG: internal, narrative-only.",
+      "hint": "Lambda, API Gateway, IAM, CloudWatch, S3, DynamoDB — internal/narrative-only, no public repo."
+    },
+    {
+      "front": "What does your Terraform module structure and state management look like?",
+      "general": "This drills into IaC maturity — modules, remote state, locking. The honest approach is to speak to what's actually evidenced: how infrastructure was organized into modules for reproducible multi-environment deployment. If asked for state-backend specifics you haven't documented (remote state backends, state locking), the credible move is to say plainly that that depth isn't documented and pivot to what you can speak to concretely — the resource list and the reproducibility goal.",
+      "specific": "Hanna speaks to what's evidenced: infrastructure provisioned as Terraform modules for the Policy RAG service (Postgres, IAM, networking) for reproducible multi-environment deployment, and separately for the notification platform's serverless resources. If asked for state-backend specifics (remote state, locking) beyond this, she says plainly that depth isn't something she's documented and pivots to what she can speak to concretely — the resource list and the reproducibility goal."
+    },
+    {
+      "front": "Do you have a public Terraform repo to point to?",
+      "general": "A verification-style question where the only safe answer is the true one. If no public repository exists, you say no and don't imply otherwise — a work-in-progress that never shipped is not claimable in any form. It's worth separating the real internal work experience (which stands on its own as narrative evidence) from the dead public-repo item, so the honest 'no' doesn't undercut the genuine experience.",
+      "specific": "Hanna's answer is no, and she does not imply one exists. A standalone public Terraform repo was a prior work-in-progress item that never shipped and isn't claimable in any form. She keeps the real work-Terraform experience separate from that dead item and states it as internal, narrative-only evidence.",
+      "hint": "No public repo — the WIP one never shipped. Work experience is real but internal/narrative-only."
+    },
+    {
+      "front": "What's your Kafka experience — producers, consumers, or the full ecosystem including Streams and Connect?",
+      "general": "This tests whether you'll claim ecosystem breadth you don't have. Kafka producers and consumers are the core client work; Kafka Streams (stream processing) and Kafka Connect (integration connectors) are separate capabilities. An honest candidate names exactly what they've done — producers, consumers, lifecycle-event publishing — and explicitly declines Streams and Connect if those aren't part of their experience, rather than letting 'Kafka experience' imply the whole ecosystem.",
+      "specific": "Hanna claims producers and consumers plus lifecycle-event observability — publishing per-stage notification events (generation-started, packaged, sent, delivery-confirmed) so downstream consumers track state in near real time. She does not claim Kafka Streams or Kafka Connect experience — neither is evidenced anywhere in her Skillset — and she says so plainly if asked directly rather than implying broader ecosystem depth.",
+      "hint": "Producers + consumers + lifecycle events only. Explicitly NOT Streams or Connect."
+    },
+    {
+      "front": "How do you monitor consumer lag and backpressure?",
+      "general": "This can drift toward load/chaos-testing claims, so the discipline is to answer with what you genuinely observe. Consumer lag (how far behind a consumer is on a partition) and backpressure handling in queue-and-worker systems are the real, day-to-day signals. If you don't have formal load- or chaos-testing tooling experience, the honest pivot is to your actual observability of lag and backpressure rather than claiming tools you haven't used.",
+      "specific": "Hanna's closest true-today evidence is Kafka consumer-lag observability and SQS/Lambda backpressure handling at USAA, used as the honest pivot when asked about load or chaos testing. She flags that no JMeter, Blazemeter, or Chaos Monkey evidence exists, so she doesn't claim it.",
+      "hint": "Kafka consumer-lag + SQS/Lambda backpressure. No JMeter/Blazemeter/Chaos Monkey."
+    }
+  ]
+}

@@ -1,6 +1,17 @@
 import { useEffect, useMemo, useState, useCallback } from 'react'
 import { shuffle } from '../lib/quiz.js'
 
+// Pick a font-size tier from how much text a face has to show, so short cards
+// stay large and long (two-part) answers shrink to fit instead of overflowing.
+function sizeClass(text) {
+  const n = (text || '').length
+  if (n <= 90) return 'sz-xl'
+  if (n <= 200) return 'sz-l'
+  if (n <= 380) return 'sz-m'
+  if (n <= 650) return 'sz-s'
+  return 'sz-xs'
+}
+
 export default function Practice({ deck, onExit, onQuiz }) {
   const [order, setOrder] = useState(() => deck.cards.map((_, i) => i))
   const [pos, setPos] = useState(0)
@@ -62,9 +73,13 @@ export default function Practice({ deck, onExit, onQuiz }) {
       <div className="mode-head">
         <div>
           <h1>{deck.title}</h1>
-          <p className="muted">Practice · tap card to flip</p>
+          <p className="muted">
+            {deck.studyOnly ? 'Study · tap card to flip' : 'Practice · tap card to flip'}
+          </p>
         </div>
-        <button className="btn ghost" onClick={onQuiz}>Switch to Quiz →</button>
+        {!deck.studyOnly && (
+          <button className="btn ghost" onClick={onQuiz}>Switch to Quiz →</button>
+        )}
       </div>
 
       <div className="progress">
@@ -80,13 +95,30 @@ export default function Practice({ deck, onExit, onQuiz }) {
         <div className="flashcard-inner">
           <div className="flashcard-face front">
             <span className="face-label">Question</span>
-            <div className="face-content">{card.front}</div>
+            <div className={`face-content ${sizeClass(card.front)}`}>{card.front}</div>
             {card.hint && <div className="hint">💡 {card.hint}</div>}
             <span className="flip-hint">tap / space to flip</span>
           </div>
           <div className="flashcard-face back">
             <span className="face-label">Answer</span>
-            <div className="face-content">{card.back}</div>
+            {card.general || card.specific ? (
+              <div className={`face-content two-part ${sizeClass(card.general + card.specific)}`}>
+                {card.general && (
+                  <div className="answer-part general">
+                    <span className="part-label">In general</span>
+                    <p>{card.general}</p>
+                  </div>
+                )}
+                {card.specific && (
+                  <div className="answer-part specific">
+                    <span className="part-label">In my experience</span>
+                    <p>{card.specific}</p>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className={`face-content ${sizeClass(card.back)}`}>{card.back}</div>
+            )}
             <span className="flip-hint">tap / space to flip</span>
           </div>
         </div>

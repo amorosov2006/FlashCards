@@ -1,0 +1,135 @@
+{
+  "title": "Interview · GenAI & LLM Core",
+  "description": "Transformer internals, PEFT (LoRA/QLoRA), CoT and VLM SFT, quantization, prompt/context engineering, and agent patterns — mapped to Hanna Murai's UT Austin M.S. coursework and applied LLM systems.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Give me the 5-minute derivation of scaled dot-product attention.",
+      "general": "Start from three learned linear projections of the input embeddings — query, key, and value (each mapping d_model to d_k). Compute raw scores as Q times K-transpose, then scale by 1/sqrt(d_k) to keep the pre-softmax variance stable, since unscaled dot products grow in magnitude with d_k and push the softmax into saturated, low-gradient regions. Apply softmax over the scaled scores to get attention weights, then take a weighted sum over V. Multi-head attention runs h of these in parallel over smaller d_k = d_model/h slices, concatenates the outputs, and projects back with W_O — which lets different heads specialize (syntax, position, long-range coreference) instead of one head having to average everything together.",
+      "specific": "I built this from scratch in PyTorch in my UT Austin M.S. Advanced Deep Learning coursework, so I can derive each step — the projections, the scaling rationale, and the multi-head concatenation — rather than just recite it.",
+      "hint": "Q, K, V projections → scaled scores → softmax → weighted sum over V → multi-head."
+    },
+    {
+      "front": "Why do you need positional encoding in a Transformer at all?",
+      "general": "Self-attention is permutation-invariant: on its own it treats a sequence as an unordered set and has no notion of token order, so it cannot distinguish 'dog bites man' from 'man bites dog'. You inject order either with fixed sinusoidal encodings — sin/cos patterns per position and dimension chosen so relative offsets are a linear function the model can learn to exploit, which also helps it generalize to unseen lengths — or with learned positional embeddings. Either signal is added to the token embeddings before the first attention layer.",
+      "specific": "I built both variants from scratch in PyTorch in my UT Austin coursework — sinusoidal encoding alongside learned positional embeddings as the alternative — so I can explain why the sinusoid's relative-offset linearity matters rather than just citing it."
+    },
+    {
+      "front": "Encoder self-attention versus decoder attention — what's actually different?",
+      "general": "Encoder self-attention is fully bidirectional: every token can attend to every other token in the sequence. Decoder self-attention is causally masked, so a token can only attend to itself and earlier tokens — this keeps training and autoregressive generation consistent, since at generation time future tokens don't exist yet. In encoder-decoder architectures there's also cross-attention, where decoder queries attend over the encoder's key/value pairs, letting the decoder condition on the encoded source.",
+      "specific": "I built and trained encoder/decoder variants from scratch this way in my UT Austin coursework — bidirectional encoder self-attention, causally masked decoder self-attention, and decoder-to-encoder cross-attention — so the distinction comes from having implemented all three."
+    },
+    {
+      "front": "What actually breaks if you drop the 1/sqrt(d_k) scaling factor in attention?",
+      "general": "The magnitude of the dot-product scores grows with d_k, so without the scaling those large-magnitude scores push the softmax toward a near-one-hot distribution very early in training. That saturates the softmax and starves gradients flowing back through the attention weights, which slows or stalls learning. That's precisely why 'scaled' is in the name of scaled dot-product attention — the 1/sqrt(d_k) term normalizes the variance so gradients stay healthy.",
+      "specific": "This is the same numerical-stability reasoning behind the scaling step I implemented in the from-scratch attention in my UT Austin Advanced Deep Learning coursework.",
+      "hint": "Variance grows with d_k → softmax saturates → gradients die."
+    },
+    {
+      "front": "Full fine-tuning versus LoRA — what's the actual trade-off?",
+      "general": "Full fine-tuning updates every parameter, which gives the best quality ceiling but requires a full optimizer-state copy — roughly 2-3x the model size in memory — plus full compute per step. LoRA instead freezes the base weights and injects small trainable low-rank matrices (A and B, of rank r) into target projections, typically the attention q_proj and v_proj. That trains only a tiny fraction of parameters at a modest quality gap versus full fine-tuning for most task-adaptation use cases, which is why it's the default choice when memory or compute is the binding constraint.",
+      "specific": "In my UT Austin coursework I used LoRA/QLoRA for applied SFT work rather than full fine-tuning, because the parameter-efficient path was the right trade-off for task adaptation at the compute I had."
+    },
+    {
+      "front": "What do rank (r) and alpha actually control in LoRA?",
+      "general": "The update takes the form W + (alpha/r) * B @ A. Here r is the bottleneck dimension of the low-rank update — a higher r gives more expressive capacity but more trainable parameters and memory. Alpha is a scaling factor on the LoRA update relative to the frozen base weight, so it effectively behaves like a learning-rate multiplier on the adapter. As a practical rule, a low r (around 4-8) is enough for narrow style or format adaptation, while a higher r (roughly 16-64) is needed for broader knowledge or behavior shifts.",
+      "specific": "That r-versus-scope trade-off is exactly what I drilled in my UT Austin coursework — low rank for narrow style/format changes, higher rank for broader behavior shifts — while doing LoRA/QLoRA SFT.",
+      "hint": "r = capacity/bottleneck; alpha = scaling ~ adapter learning rate."
+    },
+    {
+      "front": "QLoRA versus LoRA — what's the actual addition?",
+      "general": "QLoRA keeps LoRA's structure of a frozen base plus trainable low-rank adapters, but it quantizes the frozen base weights to 4-bit (NF4) during training while the LoRA adapters are still trained in higher precision. That lets you fine-tune much larger base models within the same GPU memory budget. The cost is some added complexity — double quantization and paged optimizers to manage memory spikes — and a small additional quality hit versus full-precision LoRA.",
+      "specific": "I worked with both LoRA and QLoRA in my UT Austin coursework, so I've handled the 4-bit-frozen-base plus higher-precision-adapter setup, not just the standard LoRA case."
+    },
+    {
+      "front": "When would you actually choose full fine-tuning over LoRA?",
+      "general": "When the task requires shifting the model's fundamental behavior broadly — not just adding a narrow style or domain adapter — and compute and memory aren't the binding constraint. LoRA's frozen base is a real ceiling on how far the model's core representations can move, so for a deep behavior change full fine-tuning is warranted. But for most applied SFT work, the parameter-efficient route is the correct trade-off.",
+      "specific": "For the applied SFT I did in my UT Austin coursework, including both the LLM and the VLM SFT, LoRA/QLoRA was the right call — I'd only reach for full fine-tuning when the goal was a broad shift in core behavior and compute wasn't the constraint."
+    },
+    {
+      "front": "What does chain-of-thought training actually change about the model?",
+      "general": "CoT training fine-tunes the model to emit intermediate reasoning steps before its final answer, rather than jumping straight to the answer token. Those intermediate steps do two things: they improve final-answer accuracy on multi-step problems, and they make the model's reasoning inspectable and debuggable — which matters a lot for trust in production settings where you need to see why the model concluded what it did.",
+      "specific": "I trained CoT as part of my UT Austin coursework, alongside the LoRA/QLoRA SFT work, so I've actually baked the reasoning-then-answer pattern into a model rather than only prompting for it."
+    },
+    {
+      "front": "CoT training versus CoT prompting — what's the difference?",
+      "general": "CoT prompting ('think step by step') elicits reasoning at inference time from a model that was never specifically trained to reason that way — it often works but inconsistently, since nothing in the weights guarantees the behavior. CoT training instead bakes the reasoning-then-answer pattern into the weights through supervised examples that include explicit reasoning traces, which gives more reliable, structured output because the behavior is learned rather than coaxed.",
+      "specific": "I practiced the training version in my UT Austin coursework — supervised examples with explicit reasoning traces — so I can speak to why it's more consistent than just prompting a model to think step by step."
+    },
+    {
+      "front": "Walk me through your VLM supervised fine-tuning project.",
+      "general": "The project supervised-fine-tunes a vision-language model on image-text example pairs. To keep it parameter-efficient it applies LoRA for the adaptation rather than updating the full model. A key detail is a recalibration step on the synthesized data that corrects for distribution drift between the synthetic training examples and the target-domain examples, so the adapted model isn't skewed by artifacts of how the data was generated.",
+      "specific": "This was my UT Austin coursework, current and true-today: VLM SFT on synthesized image-text pairs, LoRA for parameter-efficient adaptation, plus a LoRA recalibration step on the synthesized data to correct for the synthetic-to-target distribution gap."
+    },
+    {
+      "front": "Why use synthesized data for the VLM SFT rather than a scraped dataset?",
+      "general": "Synthesized image-text pairs give you controlled coverage of exactly the target scenarios you care about, without the licensing and scraping overhead of collecting real-world data. The cost is a domain gap: synthetic images differ from real-world ones in subtle ways. That's precisely why a recalibration step exists in the pipeline — it corrects for that synthetic-to-real gap before any deployment-style evaluation, so the controlled coverage doesn't come at the price of a model that only works on synthetic-looking inputs.",
+      "specific": "In my UT Austin VLM SFT coursework I used synthesized pairs for that controlled coverage, and the LoRA recalibration step on the synthesized data is there specifically to close the domain gap before evaluation."
+    },
+    {
+      "front": "What does a quantization label like Q6_K or Q5_K actually mean?",
+      "general": "These are GGUF 'K-quant' schemes, and the key point is they're not a flat N-bits-per-weight quantization. K-quant groups weights into blocks and uses a mix of bit-widths across sub-blocks, with per-block scale factors — so a type like Q6_K stores most weights at roughly 6 bits, and Q5_K at roughly 5 bits, but with that block structure it balances size and speed against accuracy loss more finely than a single global bit-width would.",
+      "specific": "I used these directly in LocalLLM: Q6_K as the quality-first default and Q5_K_M as the low-VRAM profile, so I've made the size-versus-quality call at the K-quant level rather than in the abstract.",
+      "hint": "K-quant = per-block mixed bit-widths with scale factors, not flat N-bit."
+    },
+    {
+      "front": "What degrades first as you push a model to lower bit-widths?",
+      "general": "Perplexity and coherence degrade gradually through the 6-bit and 5-bit K-quants, which are usually still perfectly usable for chat and instruction-following. Below roughly 4 bits the degradation accelerates, and the first casualties are typically rare-token precision, numeric reasoning, and long-context coherence — those go well before the model becomes obviously incoherent on simple prompts. So a model can look fine on easy questions while already having lost precision on the hard, long, or numeric cases.",
+      "specific": "This maps to the size-versus-quality choices I made in LocalLLM, where Q6_K was the quality-first default and Q5_K_M the low-VRAM fallback — both above the point where degradation really accelerates.",
+      "hint": "Rare tokens, numeric reasoning, long-context coherence go first — below ~4-bit."
+    },
+    {
+      "front": "GGUF versus GPTQ or AWQ — how do you frame the difference?",
+      "general": "GGUF, used by llama.cpp, is a self-contained file format that bundles weights, metadata, and K-quant blocks, optimized for CPU, Metal, or single-GPU local inference with a single binary and no server dependencies. GPTQ and AWQ are post-training quantization methods — calibration-based and typically 4-bit — that are more common in GPU-serving stacks like vLLM or TGI tuned for throughput at scale. The honest framing is that they solve different problems: GGUF is about simple single-node local serving, while GPTQ/AWQ target multi-GPU batch throughput.",
+      "specific": "For LocalLLM I chose llama.cpp/GGUF for single-node local serving simplicity and the exact -ngl layer-offload control it gives — not because GPTQ or AWQ are inferior, but because they're built for a different problem, multi-GPU batch throughput at scale."
+    },
+    {
+      "front": "Why did you pick Q6_K over Q5_K as LocalLLM's default?",
+      "general": "It's a quality-first choice tied to the hardware target. When the higher-quality quant already fits comfortably in the available VRAM for your target model, there's no reason to trade quality for size — you only step down a bit-width when memory forces you to. So the default should be the best quant that fits, with a smaller profile held in reserve for constrained cases.",
+      "specific": "In LocalLLM, Q6_K fits comfortably in 8-12 GB VRAM for the Gemma 4 12B target model, so there was no need to trade quality for size at that hardware tier. Q5_K_M is the explicit fallback profile for when VRAM is more constrained."
+    },
+    {
+      "front": "What's the actual distinction between prompt engineering and context engineering?",
+      "general": "Prompt engineering optimizes the instruction and wording given to the model for a single turn — phrasing, few-shot examples, output-format constraints. Context engineering is the broader discipline of everything that surrounds the prompt at inference time: retrieved documents from RAG, tool outputs, conversation history, and system-prompt discipline. In other words, prompt engineering tunes the words; context engineering tunes what information actually reaches the model's context window.",
+      "specific": "The FedInsight/Policy RAG system prompts I worked on — 'use ONLY the provided context, cite [n], and say you don't have enough information rather than guessing' — are context engineering, not just prompt wording: they govern how retrieved context is used, not merely how the request is phrased."
+    },
+    {
+      "front": "Give me a concrete example of context engineering from your own systems.",
+      "general": "A strong example is a RAG system prompt that constrains the model to only the retrieved chunk set and forces an explicit citation format. The prompt wording itself is a small, stable piece; what actually controls output quality is which chunks got retrieved and how they're formatted into the context window. That's the tell that it's context engineering rather than prompt engineering — the leverage is in the surrounding information, not the sentence you wrote.",
+      "specific": "FedInsight's RAG system prompt is exactly this: it constrains the model to the retrieved chunks and requires explicit citations, but the real driver of quality is the retrieval and formatting of those chunks — the prompt is the stable small piece around them."
+    },
+    {
+      "front": "ReAct — what's the actual loop, and why not just use one big prompt?",
+      "general": "ReAct stands for Reason-then-Act: the agent alternates between emitting a reasoning trace, calling a tool, observing the result, and repeating, until it can answer without needing more tools. The reason a single big prompt can't replace this is that a static prompt can't incorporate information it doesn't have yet — search results, file contents, live data. The loop structure is exactly what lets the model gather that information mid-reasoning instead of guessing. A recursion cap guards against runaway loops.",
+      "specific": "I implemented this in LocalLLM as agent → conditional route → tools → agent, ending when there are no more tool calls, with a recursion cap of 12 for the single-agent case as the runaway-loop guard.",
+      "hint": "Reason → act → observe → repeat until no tool calls; recursion cap = 12."
+    },
+    {
+      "front": "In tool calling, what actually has to be handled robustly?",
+      "general": "The hard part is parsing the model's tool-call output reliably even when it doesn't perfectly follow the expected format — you can never assume the output is guaranteed clean. A robust approach is a fallback chain: try the model-native tool-call format first, then fall back to scanning the raw text for balanced JSON, then fall back to markdown code fences. You also want a dedup mechanism so a model that repeats itself doesn't accidentally fire the same tool twice.",
+      "specific": "LocalLLM's fallback chain does exactly this: it tries Gemma's native <|tool_call|> tags first, falls back to a balanced-JSON scan of the raw text, then to markdown code fences, plus a seen-set dedup so a repeating model doesn't double-fire a tool."
+    },
+    {
+      "front": "Structured outputs — why do they matter for agent reliability?",
+      "general": "Constraining a model's output to a schema — JSON mode or function-calling schemas — turns free-text generation into something a program can parse deterministically. That's critical anywhere an agent's output feeds directly into another system step, like a tool call or a database write, rather than being read by a human who can tolerate loose formatting. Without a schema, you're one malformed field away from a broken downstream step; with one, the boundary between the model and the rest of the pipeline is reliable.",
+      "specific": "FrostByte's @mcp.tool-decorated workflows return structured JSON responses for exactly this reason — the output feeds directly into downstream system steps, so it has to be deterministically parseable rather than free text."
+    },
+    {
+      "front": "MCP — what problem does the Model Context Protocol actually solve?",
+      "general": "MCP standardizes how a model or agent discovers and calls external tools. Instead of every integration inventing its own ad-hoc tool schema, MCP provides a common, typed tool-catalogue contract, so tools are described and invoked in a consistent way. Just as important as the protocol is the security model: tools are typed and scoped, and credentials should be injected at runtime rather than living in code.",
+      "specific": "FrostByte is a FastMCP Python server I built that exposes USAA's Snowflake notification-events warehouse — around 7 million messages a day — as a typed AI tool catalogue, with secure runtime credential injection (zero hard-coded secrets, shell-script-driven env vars) and a markdown-driven schema loader. The security model mattered as much as the protocol: tools are typed and scoped, and credentials never live in code."
+    },
+    {
+      "front": "How do you handle a question about distributed training — multi-node, DeepSpeed, vLLM — that's outside your experience?",
+      "general": "The right move is honesty, not bluffing. State the boundary plainly, then pivot to the adjacent depth you genuinely have. Overclaiming distributed-training experience is easy for an interviewer to catch and destroys credibility; naming the gap and showing exactly how you'd close it — reading up, getting a mentor or teammate depth-check before shipping — reads as senior judgment rather than weakness.",
+      "specific": "I'd say plainly: 'I don't have hands-on multi-node distributed-training experience — my depth is in single-node serving (llama.cpp/GGUF quantized inference) and parameter-efficient fine-tuning (LoRA/QLoRA) at the scale one GPU supports. If a role needed DeepSpeed-style multi-node training or vLLM-style multi-GPU batch serving, that's the first thing I'd read up on and want a mentor or teammate depth-check on before shipping.' Never bluff depth here — state the boundary, then pivot to the true-today depth in quantized single-node serving and PEFT.",
+      "hint": "State the boundary, don't bluff; pivot to single-node serving + PEFT."
+    },
+    {
+      "front": "Why LangGraph over a simple prompt loop, and how do you stop a runaway agent?",
+      "general": "LangGraph gives you an explicit state graph — nodes, edges, and conditional routing — instead of an implicit while-loop. That makes the state inspectable, makes multi-agent fan-out/fan-in a first-class graph shape rather than manual thread orchestration, and makes recursion limits a graph-level safety mechanism rather than an ad-hoc counter buried in a loop. So you get both clearer structure and a principled way to bound execution.",
+      "specific": "In LocalLLM I used LangGraph for exactly these reasons: the multi-agent shape (parallel researchers → analyst → critic) is a first-class graph rather than hand-rolled threads, and recursion limits are graph-level guards — 12 for single-agent ReAct and 36, three times that, for the multi-agent team.",
+      "hint": "Explicit state graph + first-class multi-agent shape; recursion caps 12 / 36."
+    }
+  ]
+}

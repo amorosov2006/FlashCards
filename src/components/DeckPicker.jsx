@@ -40,13 +40,20 @@ export default function DeckPicker({ group, onStart, onDelete, onBack }) {
 
               <div className="deck-meta">
                 <span className="chip">{deck.cardCount} cards</span>
+                {deck.studyOnly && <span className="chip chip-study">Study only</span>}
                 {deck.source === 'imported' && <span className="chip chip-mine">Yours</span>}
-                {s && <span className="chip chip-score">Best {s.bestPct}%</span>}
+                {s && !deck.studyOnly && <span className="chip chip-score">Best {s.bestPct}%</span>}
               </div>
 
               <div className="deck-actions">
-                <button className="btn" onClick={() => onStart(deck.id, 'practice')}>Practice</button>
-                <button className="btn primary" onClick={() => onStart(deck.id, 'quiz')}>Quiz</button>
+                {deck.studyOnly ? (
+                  <button className="btn primary" onClick={() => onStart(deck.id, 'practice')}>Study</button>
+                ) : (
+                  <>
+                    <button className="btn" onClick={() => onStart(deck.id, 'practice')}>Practice</button>
+                    <button className="btn primary" onClick={() => onStart(deck.id, 'quiz')}>Quiz</button>
+                  </>
+                )}
               </div>
             </div>
           )

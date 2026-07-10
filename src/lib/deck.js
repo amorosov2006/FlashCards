@@ -41,7 +41,18 @@ export function normalizeCard(raw, index) {
   }
   // Be forgiving about common alternate key names.
   const front = raw.front ?? raw.question ?? raw.q ?? raw.term ?? raw.prompt
-  const back = raw.back ?? raw.answer ?? raw.a ?? raw.definition ?? raw.response
+  let back = raw.back ?? raw.answer ?? raw.a ?? raw.definition ?? raw.response
+
+  // Two-part answer (study decks): a general/conceptual part and a personal
+  // role-specific part, shown in different colors in Practice mode.
+  const general = raw.general != null ? asText(raw.general) : ''
+  const specific = raw.specific != null ? asText(raw.specific) : ''
+
+  // If a card has no explicit back but does have a two-part answer, synthesize
+  // one so the "back is required" invariant (and any quiz fallback) still holds.
+  if ((back == null || asText(back).trim() === '') && (general || specific)) {
+    back = [general, specific].filter(Boolean).join('\n\n')
+  }
 
   if (front == null || asText(front).trim() === '') {
     throw new Error(`Card #${index + 1} is missing a "front" (or "question"/"term").`)
@@ -85,6 +96,8 @@ export function normalizeCard(raw, index) {
     id: raw.id ? String(raw.id) : uid('c'),
     front: asText(front),
     back: asText(back),
+    general,
+    specific,
     hint: raw.hint != null ? asText(raw.hint) : '',
     options,
     answer: answerText,
@@ -112,6 +125,9 @@ export function normalizeDeck(raw, { id, source = 'imported' } = {}) {
     throw new Error('Deck has no cards.')
   }
 
+  // Study-only decks have no multiple-choice test; the quiz option is hidden.
+  const studyOnly = !Array.isArray(raw) && !!raw.studyOnly
+
   const cards = cardsRaw.map((c, i) => normalizeCard(c, i))
 
   return {
@@ -119,6 +135,7 @@ export function normalizeDeck(raw, { id, source = 'imported' } = {}) {
     title,
     description,
     source, // 'builtin' | 'imported'
+    studyOnly,
     cardCount: cards.length,
     cards,
   }
