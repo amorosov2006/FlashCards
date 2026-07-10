@@ -1,6 +1,20 @@
 {
   "groups": [
     {
+      "id": "first-interview",
+      "title": "First Interview study",
+      "description": "Focused prep for the two live JPMC interviews — 210750779 (AWM Fullstack Lead) and 210767095 (Firmwide AI/ML Deployment Platform). Concise answer-style cards; only topics on these two resumes.",
+      "decks": [
+        "first-01-role-briefs.json",
+        "first-02-system-design.json",
+        "first-03-llm-vlm-transformers.json",
+        "first-04-rag-design-and-evals.json",
+        "first-05-nn-pytorch.json",
+        "first-06-projects-deep-dive.json",
+        "first-07-drills-and-behavioral.json"
+      ]
+    },
+    {
       "id": "nca-genl",
       "title": "NCA-GENL Prep",
       "description": "NVIDIA Certified Associate: Generative AI & LLMs — decks by exam domain.",

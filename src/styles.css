@@ -268,12 +268,16 @@ body {
   min-height: 0;
   overflow-y: auto;
 }
-/* Length-based font tiers: less text → bigger, more text → smaller (auto-fit). */
-.face-content.sz-xl { font-size: clamp(20px, 5vw, 30px); }
-.face-content.sz-l  { font-size: clamp(18px, 4.2vw, 24px); }
-.face-content.sz-m  { font-size: clamp(16px, 3.4vw, 19px); }
-.face-content.sz-s  { font-size: clamp(14px, 2.8vw, 16px); }
-.face-content.sz-xs { font-size: clamp(12.5px, 2.4vw, 14px); }
+/* Length-based font tiers: less text → bigger, more text → smaller (auto-fit).
+   Retuned 2026-07: the old scale left mid-length answers at ~16px inside a
+   540px card (a sea of empty space). Cards are vertically centered and
+   overflow-y handles the rare very long card, so every tier can afford to be
+   substantially larger — the card should feel filled, not padded. */
+.face-content.sz-xl { font-size: clamp(24px, 5.4vw, 34px); }
+.face-content.sz-l  { font-size: clamp(21px, 4.6vw, 28px); }
+.face-content.sz-m  { font-size: clamp(19px, 3.9vw, 24px); }
+.face-content.sz-s  { font-size: clamp(17px, 3.3vw, 21px); }
+.face-content.sz-xs { font-size: clamp(15px, 2.8vw, 18px); }
 
 /* Two-part answers (study decks): a general part and a role-specific part,
    each with its own label + color so they read as distinct. */
@@ -298,7 +302,7 @@ body {
 .answer-part.specific p { color: #fcd34d; }
 .hint {
   margin-top: 14px;
-  font-size: 14px;
+  font-size: 15px;
   color: var(--warn);
 }
 .flip-hint {

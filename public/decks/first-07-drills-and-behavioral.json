@@ -1,0 +1,103 @@
+{
+  "title": "First Interview · Drills & Behavioral",
+  "description": "Rehearsed drills for the two JPMC roles — K8s-vs-OpenShift, the 7M/day p99 correction, SWE II→Lead scope, multi-cloud and tooling honesty, the AI-assisted-engineering story, why-this-team answers — plus condensed STAR cards, including the two known gaps (mentoring, failure) with honest best-available material.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Walk me through your container-orchestration experience — Kubernetes vs. OpenShift specifically.",
+      "general": "When a required tech spans a platform layer and hands-on work, draw the line explicitly between what the platform provided and what you personally wrote and ran, in under 90 seconds, and don't inflate the claim under a second follow-up.",
+      "specific": "I owned container orchestration across both Kubernetes and OpenShift for the USAA notification-platform rebuild, enabling repeatable deployments and horizontal scalability across environments. OpenShift is itself Kubernetes-based under the hood, so I state that plainly rather than claim separate deep cluster-admin or raw kubectl depth I haven't documented.",
+      "hint": "OpenShift is Kubernetes-based under the hood — state the line plainly, don't inflate on a second push."
+    },
+    {
+      "front": "Tell me about operating at scale — the 7M-messages-a-day story.",
+      "general": "When a scale number could be misread as describing a different, more demanding path, pre-rehearse the one correcting sentence that keeps the two paths distinct, and say it unprompted.",
+      "specific": "The notification-events platform FrostByte queries processes about 7 million messages a day, with peak p99 event-processing latency of 10-20 seconds on the async pipeline. I say unprompted that this is the async processing path, never the synchronous front-door ack, which returns immediately.",
+      "hint": "7M/day, 10-20s p99 = async event-processing, never the sync ack."
+    },
+    {
+      "front": "Why is a Software Engineer II applying for a Lead-level role?",
+      "general": "When title lags scope, explain that ownership grew faster than title, cite the concrete scope that proves it, and stay open to a leveling conversation rather than insisting on a title match.",
+      "specific": "My scope — principal developer on the USAA notification rebuild, sole proposer and builder of the Policy RAG service — grew faster than my title; my M.S. is now conferred, as of May 2026. I'm open to a leveling conversation, not insisting on a title match.",
+      "hint": "Ownership outgrew title; M.S. now conferred; open to leveling."
+    },
+    {
+      "front": "How much multi-cloud experience do you actually have?",
+      "general": "When one cloud is deep and others aren't, answer at the level of portable architectural primitives that transfer across clouds, and never upgrade 'exposure' into 'expertise.'",
+      "specific": "My AWS experience is deep and production-proven — Lambda, SQS, DynamoDB, S3, IAM, API Gateway, CloudWatch, all Terraform-managed. My Azure/GCP experience is not hands-on; I don't claim depth there, and I answer multi-cloud questions at the level of portable primitives — structured logging, correlation IDs, common event schemas — rather than claiming fluency I don't have.",
+      "hint": "AWS deep; Azure/GCP via portable primitives only, never 'exposure' as 'expertise.'"
+    },
+    {
+      "front": "Tell me about your experience with AI-assisted engineering practices and driving adoption.",
+      "general": "Give the honest version — individual daily practice plus concrete tools that teammates independently adopted — rather than claiming a formal leadership or coaching role you didn't hold.",
+      "specific": "I use Cursor, Claude Opus, and GitHub Copilot daily in my own design, code-review, and refactoring workflow. I don't claim I formally led team adoption — what's true is that I built FrostByte and a Project Overview onboarding tool that teammates adopted on their own, and my code-review comments set informal norms for when to trust generated code versus verify it line by line.",
+      "hint": "Individual daily practice + tools teammates adopted, not a formal leadership claim."
+    },
+    {
+      "front": "Why AWM, and why this advisory-platform team specifically?",
+      "general": "Tie the answer to the team's stated stage and technical mix rather than a generic 'I like finance' answer.",
+      "specific": "I want prototype-pace work on a small, high-ownership team where I help define the abstractions myself — the same posture I already take building FrostByte and LocalLLM — and AWM's problem of translating financial data into LLM-usable context for advisory professionals is the same shape of problem I solved building FrostByte over our Snowflake warehouse.",
+      "hint": "Prototype pace, self-defined abstractions, same problem shape as FrostByte."
+    },
+    {
+      "front": "Why the Firmwide AI/ML Deployment Platform team specifically?",
+      "general": "Connect your own daily AI-tool habit to the team's mandate, and lead with your strongest structurally-matching evidence — observability, Snowflake scale — before naming the honest gaps.",
+      "specific": "I already use AI tools daily in my own engineering practice and own the design of tools teammates adopted — this team's mandate to drive responsible AI-assisted engineering adoption firmwide is a scaled version of what I already do. My Kafka-lifecycle-event and OTel/Prometheus observability work at USAA is the closest real match to turning telemetry into actionable insight, even though my cloud depth is AWS-only today.",
+      "hint": "Daily AI-tool habit scales to the mandate; observability work is the closest real match."
+    },
+    {
+      "front": "Do you have ServiceNow/Jira Service Management or config-management (Ansible/Chef/Puppet) experience?",
+      "general": "For a structural tooling gap, acknowledge it plainly and pivot to the genuinely adjacent skill, naming it as a fast ramp-up rather than papering over a hidden gap.",
+      "specific": "I have no ServiceNow/Jira Service Management integration experience and no Ansible/Chef/Puppet config-management experience — I say so plainly, then pivot to my webhook/API integration experience (FastMCP tool exposure, LangGraph tool-calling) as the adjacent skill, naming it as a fast ramp-up rather than a hidden gap.",
+      "hint": "No ServiceNow/config-mgmt; pivot to FastMCP/LangGraph webhook-API integration."
+    },
+    {
+      "front": "Several of these req areas touch 5+ years of GenAI/LLM work. How much do you have?",
+      "general": "For a tenure gap in a specialty, give the honest focused count and immediately frame it as sitting on top of a longer engineering foundation — position the depth of the base as the reason your specialty work is production-grade.",
+      "specific": "My focused GenAI/LLM work is about two years — LocalLLM, FedInsight, Policy RAG, and my M.S. coursework — but it sits on nearly six years of production engineering. The RAG systems I've shipped are production-grade because of that foundation, not despite the shorter GenAI-specific count.",
+      "hint": "~2 years focused GenAI on ~6 years production engineering — the base is why it's production-grade."
+    },
+    {
+      "front": "Tell me about a time you drove adoption of a new practice or tool on your team.",
+      "general": "Situation → Action → Result, three lines: what gap existed, what you specifically built or did, what changed as a result.",
+      "specific": "Situation: the USAA team relied on ad-hoc SQL requests and had no shared norms on AI-tool use. Action: I built FrostByte and started using Cursor/Claude Opus daily, setting informal review norms on when to trust generated code. Result: FrostByte and my Project Overview onboarding tool were adopted independently by teammates, without a formal mandate.",
+      "hint": "S: no shared AI norms. A: built FrostByte + daily AI-tool use. R: teammates adopted both tools independently."
+    },
+    {
+      "front": "Tell me about a time you owned a risky migration or critical piece of infrastructure.",
+      "general": "Situation → Action → Result: name the risk, your specific design decision, and the measurable outcome.",
+      "specific": "Situation: USAA's notification system was a legacy monolith serving multiple channels with no clean service boundaries. Action: as principal developer, I designed the service-boundary split — a synchronous front door plus an independently-scalable async Lambda/Kafka pipeline. Result: the platform now handles ~7M messages/day across four channels with DLQ/retry/idempotency fault tolerance, and new channels ship without touching the core.",
+      "hint": "S: legacy monolith. A: designed sync/async boundary split. R: 7M/day, fault-tolerant, extensible."
+    },
+    {
+      "front": "Tell me about a technical disagreement or trade-off you had to navigate.",
+      "general": "Situation → Action → Result: name the competing pressures, the trade-off you chose, and why it held up.",
+      "specific": "Situation: analysts kept escalating routine Snowflake queries to engineers, and the team needed self-service without exposing raw database access. Action: I proposed and built FrostByte as a typed MCP tool catalogue instead of a raw query interface — schema-grounded, credential-injected, trading some flexibility for safety and groundedness. Result: teammates adopted it for routine investigation, replacing ad-hoc analyst-to-engineer escalation.",
+      "hint": "S: analyst escalation overhead. A: typed MCP catalogue over raw query access. R: adopted, reduced escalation."
+    },
+    {
+      "front": "Tell me about something you built end-to-end, on your own.",
+      "general": "Situation → Action → Result: the motivation, the scope you owned solo, and the concrete, verifiable outcome.",
+      "specific": "Situation: I wanted to demonstrate production-grade agentic AI patterns beyond my day job's internal-only tools. Action: I designed and shipped LocalLLM solo — a FastAPI gateway serving a quantized local LLM, a LangGraph ReAct agent plus an optional multi-agent team, and three real-time streaming transports with a React/TypeScript UI. Result: a public GitHub repo and a live Hugging Face Spaces demo, fully tested with no GPU required in CI.",
+      "hint": "S: wanted public proof of agentic patterns. A: solo full-stack build. R: public repo + live demo, GPU-free tests."
+    },
+    {
+      "front": "Tell me about a hard architectural trade-off you made.",
+      "general": "Situation → Action → Result: the competing constraint, the decision, and why it was the right call.",
+      "specific": "Situation: the notification platform's front door needed to answer callers fast while the actual notification work could take much longer and fail independently. Action: I designed the front door to return an acknowledgment immediately and hand off to SQS, fully decoupling caller-facing latency from downstream processing. Result: upstream callers never wait on or get blocked by a slow or failing downstream stage, and each async stage now scales independently.",
+      "hint": "S: fast callers vs. slow processing. A: sync ack + async hand-off. R: callers never blocked, stages scale independently."
+    },
+    {
+      "front": "Tell me about a time you mentored or influenced others without a formal title.",
+      "general": "When you lack a formal management title, open by naming that plainly, then give concrete, named examples of influence rather than an inflated title claim.",
+      "specific": "I haven't held a formal management title, so I'm specific about the influence I've had: my code-review comments at USAA set informal norms on when to trust AI-generated code versus verify it line by line; I built the Project Overview VS Code extension that teammates use for onboarding; and during my Ironhack bootcamp I did peer tutoring for classmates on Java fundamentals. No single story is a big formal mentoring program — these are the concrete, named instances I actually have.",
+      "hint": "No formal title — three named instances: code-review norms, Project Overview, Ironhack tutoring."
+    },
+    {
+      "front": "Tell me about a time you failed or a mistake you learned from.",
+      "general": "A small, real failure story with a clear 'what I'd do differently' beats an invented large one — pick the smallest honest example you actually have, and be candid if it isn't fully sharpened yet.",
+      "specific": "I don't have a single fully rehearsed failure story finalized yet. My honest candidate areas, still to sharpen before a live loop: whether any notification-pipeline stage ever needed a hotfix or rollback I was involved in, whether a chunking or embedding choice on Policy RAG or FedInsight had to be redone after it underperformed, or whether an EnergyBot forecasting model needed retraining after a validation surprise. I'd pick the smallest, most concrete one of these and state plainly what I'd do differently.",
+      "hint": "Open gap — name candidate areas honestly rather than inventing a polished story."
+    }
+  ]
+}

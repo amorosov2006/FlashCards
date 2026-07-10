@@ -1,0 +1,127 @@
+{
+  "title": "First Interview · My Projects",
+  "description": "Deep-dive cards on every project that appears on the two send-ready resumes for these interviews: the USAA notification platform (with OpenTelemetry/Prometheus observability), LocalLLM, FrostByte, the Policy & Compliance RAG service, and FedInsight Phase 1 — real numbers, real trade-offs, no invented metrics.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Walk me through the USAA notification-platform rebuild, 60 seconds.",
+      "general": "State the before/after shape (monolith to distributed event-driven system), your role, and the two or three architectural decisions that carried the weight — sync front door, async pipeline, observability layer.",
+      "specific": "Legacy monolith to distributed, fault-tolerant, event-driven AWS system across email/SMS/push/postal channels. I was principal developer, owning service-boundary design so new channels ship without touching the core. A synchronous front door hands off to SQS; async Lambda stages do the actual work; Kafka publishes lifecycle events for observability.",
+      "hint": "Monolith → distributed event-driven; sync front door + async Lambda + Kafka."
+    },
+    {
+      "front": "Walk me through the Kafka lifecycle-event model on this platform.",
+      "general": "Lifecycle events give visibility into asynchronous processing without adding coupling to the actual work — each significant state transition is published independently of whether downstream consumers exist yet.",
+      "specific": "Kafka publishes per-notification lifecycle events — generation-started, packaged, sent, delivery-confirmed — so downstream consumers track notification state in near real time without coupling to internal services; it's an observability layer, not a processing dependency.",
+      "hint": "generation-started → packaged → sent → delivery-confirmed; observability, not a dependency."
+    },
+    {
+      "front": "What observability stack do you run on this platform, and how did you actually use it?",
+      "general": "When claiming an observability stack, define each layer in your own words and state exactly how you used it operationally, not just name the tools.",
+      "specific": "OpenTelemetry and Prometheus for metrics and traces, alongside Kafka lifecycle events and CloudWatch, for service-health monitoring across the notification platform — the same discipline as the Kafka layer, turning raw signal into actionable state, just a different collection mechanism.",
+      "hint": "OTel + Prometheus (metrics/traces) alongside Kafka events + CloudWatch."
+    },
+    {
+      "front": "What did you actually manage with Terraform on this platform?",
+      "general": "Speak to the resource list you actually provisioned, and be upfront if there's no public repo attached — internal, narrative-only evidence is still real evidence.",
+      "specific": "Production AWS serverless infrastructure as code — Lambda, API Gateway, IAM, CloudWatch, S3, and DynamoDB — for the notification-platform rebuild. This is internal work with no public repo attached, same evidentiary posture as FrostByte and Policy RAG.",
+      "hint": "Lambda/API Gateway/IAM/CloudWatch/S3/DynamoDB via Terraform; internal only, no public repo."
+    },
+    {
+      "front": "Why max_concurrent_requests = 2, exactly, on your LocalLLM gateway?",
+      "general": "When a concurrency number looks arbitrary, explain the actual resource constraint that produced it — a single resource means serialized work, and the slot count should map to a real usage pattern, not a round number.",
+      "specific": "One resident model behind a singleton llama-server process means inference is inherently serialized; 2 slots specifically let STT for the next segment run in parallel with MT/TTS for the current segment in the live voice pipeline. Requests beyond that wait on an asyncio.Semaphore with a 30-second queue timeout, returning 503 if no slot frees up.",
+      "hint": "One resident model, 2 slots = STT(N+1) parallel to MT/TTS(N), not arbitrary."
+    },
+    {
+      "front": "What model are you serving on LocalLLM, and why Q6_K over Q5_K?",
+      "general": "Name the model, the serving engine, and the quantization trade-off — quality-first by default, with a lower-precision fallback stated explicitly for constrained hardware.",
+      "specific": "Gemma 4 12B via llama.cpp, default quant Q6_K, which fits comfortably in the 8-12 GB VRAM tier I target; Q5_K_M exists specifically as the low-VRAM fallback profile, not a general recommendation. I chose llama.cpp over vLLM because it's a single binary with no server dependencies, native Metal support, and exact layer-offload control — vLLM targets multi-GPU batch serving, a different problem than single-node local serving.",
+      "hint": "Gemma 4 12B, llama.cpp, Q6_K default / Q5_K_M fallback; llama.cpp vs vLLM is a fit choice, not 'better.'"
+    },
+    {
+      "front": "Walk me through your multi-agent system's exact topology.",
+      "general": "For an architecture question, narrate the topology and the reasoning behind each node — why parallel branches exist, what each downstream role does — not just the wiring.",
+      "specific": "START → prepare → researcher_primary parallel with researcher_contrarian (StateGraph fan-out) → analyst → critic → END. The contrarian role is deliberately prompted to surface what the primary role's framing might miss — coverage and redundancy, not just speed. Findings merge via operator.add on a shared findings list; recursion limit is 36, three times the single-agent limit. Exposed via a --multi CLI flag and a web UI toggle.",
+      "hint": "researcher_primary ∥ researcher_contrarian → analyst → critic; operator.add merge; recursion 36."
+    },
+    {
+      "front": "Walk me through your live voice-translation pipeline's VAD and latency numbers.",
+      "general": "Give the actual thresholds and the pipelining explanation for why steady-state lag is shorter than the sum of each stage's time — overlap, not magic.",
+      "specific": "Energy-based adaptive VAD: 600 ms hangover after energy drops below threshold before a segment ends, 300 ms pre-roll before the detected onset, 12-second hard cut per segment. Three asyncio workers (STT, MT, TTS) run as a pipeline rather than a strict chain, so TTS for segment N overlaps with STT for segment N+1 — steady-state lag is 5-8 seconds, driven by the TTS stage, not the sum of all three stages.",
+      "hint": "600ms hangover / 300ms pre-roll / 12s max segment; 5-8s lag via pipelining overlap."
+    },
+    {
+      "front": "How do you sandbox your agent's tools, and how do you test this without a GPU?",
+      "general": "Cover both the security boundary (file-system sandboxing, SSRF protection with DNS-resolved IP checks) and the testing strategy (dependency injection so orchestration logic is tested independently of model inference).",
+      "specific": "File access is restricted to the project root with blocked paths (.git, secrets, .env files) and writes limited to an outputs/ directory. SSRF protection blocks private IP ranges and cloud-metadata hosts by resolving DNS and checking the resolved IP, not just the hostname. For testing, the pipeline takes stt_fn/mt_fn/tts_fn as injected parameters, so the pytest suite runs with no GPU and no model weights, validating routing, guardrails, concurrency, and protocol correctness instead of model quality.",
+      "hint": "Sandbox + DNS-resolved SSRF check; dependency-injected tests, no GPU needed in CI."
+    },
+    {
+      "front": "Walk me through FrostByte's architecture.",
+      "general": "Describe it as a typed tool layer over a real data source, not a generic chatbot — name the underlying scale and the mechanism that exposes each workflow as a callable tool.",
+      "specific": "An MCP server (FastMCP) exposing our Snowflake notification-events warehouse — about 7 million messages a day, peak event-processing p99 of 10-20 seconds — as a typed tool catalogue. Each reporting workflow is exposed via the @mcp.tool decorator with typed JSON-schema responses, so an AI assistant can query it in plain English instead of ad-hoc SQL.",
+      "hint": "MCP/FastMCP over Snowflake, ~7M msgs/day, @mcp.tool typed workflows."
+    },
+    {
+      "front": "How does FrostByte ground its SQL queries and handle credentials?",
+      "general": "Two separate concerns: correctness grounding (the AI needs real schema context, not hallucinated column names) and security (credentials should never be hardcoded, especially in a tool an LLM can invoke).",
+      "specific": "A markdown-driven schema loader grounds queries in real column definitions and business rules, so the AI isn't guessing at schema. Credential injection happens at runtime with zero hardcoded secrets anywhere in the tool code.",
+      "hint": "Markdown schema loader grounds queries; zero-hardcoded-secret runtime credential injection."
+    },
+    {
+      "front": "What problem did FrostByte actually solve for the team?",
+      "general": "Name the concrete before/after workflow change, not an abstract benefit — who used to do what manually, and what changed.",
+      "specific": "It replaced ad-hoc analyst-to-engineer SQL requests with plain-English queries over the Snowflake warehouse — reducing escalation for routine production investigation, and it was internally adopted by the team without a formal mandate.",
+      "hint": "Ad-hoc analyst SQL requests → plain-English queries; internally adopted."
+    },
+    {
+      "front": "Walk me through the Policy & Compliance RAG service you built at USAA.",
+      "general": "Describe the full pipeline shape and your role in proposing it, not just building it — proposal-to-production is the stronger story than implementation alone.",
+      "specific": "I proposed, designed, and shipped a production RAG service over our policy/compliance corpus — chunking, Hugging Face embeddings, pgvector persistence, LLM-grounded answers with source citation — with backing infrastructure provisioned as Terraform modules.",
+      "hint": "Proposed + built end-to-end: chunking, HF embeddings, pgvector, cited grounded answers."
+    },
+    {
+      "front": "Tell me about the evaluation harness you built for this RAG service.",
+      "general": "A retrieval-quality eval harness needs a held-out labeled query set and metrics that measure whether the right document was retrieved, not just whether an answer looked plausible — recall@k measures whether a relevant doc appears in the top k results, MRR measures how high the first relevant result ranks on average.",
+      "specific": "I built a recall@k and MRR evaluation harness over a held-out QA set for the Policy RAG service at USAA — this is the one true eval-harness proof point in my portfolio; I don't have equivalent numbers for FedInsight, since that harness isn't built there.",
+      "hint": "recall@k + MRR over held-out QA set — Policy RAG only, not FedInsight."
+    },
+    {
+      "front": "How was the Policy RAG service's infrastructure provisioned?",
+      "general": "Name the actual resources and the reproducibility goal — this is internal, narrative-only evidence, same posture as the rest of the work-Terraform experience.",
+      "specific": "Postgres, IAM, and networking were provisioned as Terraform modules for reproducible deployment across environments. No public repo — internal experience only, same as the notification-platform Terraform work.",
+      "hint": "Postgres/IAM/networking as Terraform modules; internal only."
+    },
+    {
+      "front": "Why did you propose a RAG service instead of keeping keyword search for policy documents?",
+      "general": "Keyword search misses semantically related but differently-worded content; embedding-based retrieval finds relevant passages even when exact terms don't match, and grounding the LLM's answer in retrieved passages with citation reduces the risk of an unsupported answer.",
+      "specific": "I proposed replacing keyword-only document search with a production RAG service — chunking, embeddings, pgvector persistence, and LLM-grounded answers with source citation — because the policy corpus had enough vocabulary mismatch that keyword search was missing relevant compliance passages.",
+      "hint": "Vocabulary mismatch problem; citation-grounded generation reduces unsupported answers."
+    },
+    {
+      "front": "Walk me through FedInsight's pipeline architecture.",
+      "general": "Name each stage and its real configuration — scraper, parser, chunker, embedder, vector store — this is public, code-verified work, so specifics are fair game.",
+      "specific": "A scraper pulls FOMC minutes from federalreserve.gov; PyMuPDF does column-aware PDF parsing; a RecursiveCharacterTextSplitter chunks at 800 characters with 150-character overlap; sentence-transformers/all-MiniLM-L6-v2 produces 384-dimensional embeddings; dual vector backends (pgvector and ChromaDB) sit behind a shared interface, with source-attributed answers in a Streamlit UI.",
+      "hint": "Scraper → PyMuPDF → 800/150 chunking → MiniLM-L6-v2 (384-dim) → pgvector/Chroma."
+    },
+    {
+      "front": "Why PyMuPDF over pdfplumber for parsing FOMC documents?",
+      "general": "Choose a parser based on the actual document layout you're dealing with — a column-naive parser will interleave text incorrectly on a multi-column layout.",
+      "specific": "FOMC minutes are laid out in two columns; PyMuPDF respects that layout and extracts text in correct reading order, whereas a column-naive parser interleaves left- and right-column text incorrectly. It also handles de-hyphenation and Unicode normalization.",
+      "hint": "Two-column FOMC layout needs PyMuPDF's reading-order awareness."
+    },
+    {
+      "front": "Why did you build FedInsight with two vector-store backends?",
+      "general": "A shared interface behind a factory function lets the storage layer be swapped without touching the retrieval or generation code above it — useful when your deployment target has different constraints than your local dev environment.",
+      "specific": "FedInsight has a shared vector-store interface with a factory reading an environment variable — pgvector by default, ChromaDB for the Hugging Face Space deployment, which ships a prebuilt ~4,000-chunk Chroma store via Git LFS so the demo doesn't need a live Postgres instance.",
+      "hint": "Factory pattern: pgvector default, Chroma for the HF Space demo (no live Postgres needed)."
+    },
+    {
+      "front": "Tell me about the hybrid search and reranking in FedInsight.",
+      "general": "For work that's real but unpublished, it's fair to describe it as recent engineering work, but don't imply it's published or cite numbers from it unless specifically pushed.",
+      "specific": "I've built and locally tested dense plus BM25 hybrid retrieval with Reciprocal Rank Fusion, plus a cross-encoder reranking stage — both code-complete and tested, but not yet pushed to the public repo, so I describe them as recent work, not as something live on GitHub.",
+      "hint": "Code-complete, locally tested, not pushed — 'recent work,' not published."
+    }
+  ]
+}

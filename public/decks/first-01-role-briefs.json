@@ -1,0 +1,109 @@
+{
+  "title": "First Interview · The Two Roles",
+  "description": "Per-role briefing for the two live JPMC loops: Lead SWE Fullstack (AWM Portfolio Construction, Job ID 210750779) and Lead SWE, Firmwide AI/ML Deployment Platform (Job ID 210767095) — what each team does, the top requirements to speak to, the elevator pitch, why-this-team answer, likely probes, the title/level framing, and questions to ask back.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "VP-FullStack: What does this team do, and where do you fit in?",
+      "general": "Describe the team's mission, its size and stage, and the specific gap you'd fill — pull directly from the posting rather than a generic description of the department.",
+      "specific": "This is a small, high-ownership team inside Asset & Wealth Management building a next-generation AI-powered advisory platform — a polyglot stack of Java microservices, a Python AI agent, and a React frontend — helping financial professionals work faster. I'd sit across all three layers: backend APIs, agent orchestration, and frontend UI.",
+      "hint": "Small, high-ownership AWM team; Java + Python agent + React."
+    },
+    {
+      "front": "VP-FullStack: How do you match the JD's top requirements?",
+      "general": "Match the handful of requirements that carry the most hiring weight to concrete, evidenced experience rather than a blanket 'yes I can do that.'",
+      "specific": "Java + Spring Boot REST APIs — my USAA notification-platform front door. TypeScript + React — production UI on LocalLLM. Agentic AI (tool calling, structured output, context management) — FrostByte's MCP tool catalogue and LangGraph ReAct agent. Distributed systems (WebSocket/SSE/REST) — LocalLLM's three transports. Architecture instincts and service boundaries — I owned that design on the USAA rebuild.",
+      "hint": "Java/Spring, React/TS, agentic tool-calling, WS/SSE/REST, service boundaries."
+    },
+    {
+      "front": "VP-FullStack: Give me your 60-second pitch for this role.",
+      "general": "State title and years of experience, the one or two most relevant projects, and land on why this specific team's problem excites you — cold, in under a minute.",
+      "specific": "I'm a Software Engineer II with 5.8 years building Java/Spring Boot microservices and React/TypeScript front ends in regulated financial services, plus hands-on production agentic AI. At USAA I was principal developer rebuilding a legacy monolithic notification platform into a distributed, event-driven AWS system, and I built FrostByte, an MCP server exposing our Snowflake warehouse as a typed AI tool catalogue. I've also shipped LocalLLM, a public full-stack platform with a LangGraph ReAct agent, WebSocket/SSE streaming, and a multi-agent researcher-analyst-critic pipeline. This role's mix of Java microservices, a Python AI agent, and a React frontend is exactly the polyglot, full-stack-plus-agentic work I already do, and AWM's advisory-platform problem is a natural extension of the LLM-tool-integration work I do daily.",
+      "hint": "SWE II, 5.8 yrs, USAA rebuild + FrostByte + LocalLLM, polyglot fit."
+    },
+    {
+      "front": "VP-FullStack: Why this team, why AWM?",
+      "general": "Tie the answer to the team's stated stage — small, high-ownership, prototype-pace — and the specific technical mix, not a generic 'I like finance' answer.",
+      "specific": "I want prototype-pace work on a small, high-ownership team where the abstractions are still crystallizing — the same posture I take on my own projects, where I designed the tool boundaries myself rather than inheriting them. AWM's problem of translating financial data into LLM-usable context for advisory professionals is the same shape of problem I solved building FrostByte over our Snowflake warehouse.",
+      "hint": "Prototype pace, self-defined boundaries, same problem shape as FrostByte."
+    },
+    {
+      "front": "VP-FullStack: What are you most likely to get probed on in this loop?",
+      "general": "Know your own weak spots before the interviewer finds them — rehearse the honest, concise answer for each rather than hoping it doesn't come up.",
+      "specific": "Three areas I expect deep probing on: real-time transport choice (WebSocket vs. SSE vs. REST, and why), the agent-tool boundary problem (where the Java service ends and the Python agent begins), and my Kubernetes/OpenShift ownership depth — I keep that last one under 90 seconds and don't inflate it under a second follow-up.",
+      "hint": "Transport choice, agent-tool boundary, K8s/OpenShift depth."
+    },
+    {
+      "front": "VP-FullStack: You're a Software Engineer II — this posting is for a Lead role. How do you frame that?",
+      "general": "Name the title gap plainly, then let scope of ownership carry the argument; stay open to a leveling conversation instead of insisting on a title match.",
+      "specific": "My scope grew faster than my title — principal developer on the USAA notification rebuild, and I proposed and shipped the Policy RAG service end to end. I'm open to a leveling conversation rather than insisting my title already matches; my M.S. in Data Science is also now conferred, as of May 2026.",
+      "hint": "Scope outgrew title; open to leveling, not insisting on a match."
+    },
+    {
+      "front": "VP-FullStack: What's the first technical risk you'd want to de-risk in the first 90 days here?",
+      "general": "Show you can reason about a prototype-stage team's real risk — ambiguous boundaries, unclear ownership — rather than jumping straight to code; this signals the 'ask before guessing' trait the JD explicitly wants.",
+      "specific": "At prototype pace with patterns still crystallizing, I'd want to nail down the service boundary between the Java microservices and the Python AI agent early — exactly the kind of boundary-design work I did on the USAA rebuild and on FrostByte's tool catalogue — before more code accumulates on either side of an ambiguous line.",
+      "hint": "Nail the Java-service/Python-agent boundary early."
+    },
+    {
+      "front": "VP-FullStack: The JD says stale docs are treated as bugs. How do you work in that kind of culture?",
+      "general": "Answer with a concrete practice, not a platitude — describe how you already treat documentation and design communication as first-class work.",
+      "specific": "On the USAA rebuild I kept design-review notes and service-boundary docs current as I built, and on FrostByte the markdown-driven schema loader is itself documentation the AI queries against — treating docs as functional infrastructure, not an afterthought, is a habit I already have.",
+      "hint": "Docs as functional infra: FrostByte's schema loader is a live example."
+    },
+    {
+      "front": "VP-FullStack: What questions will you ask the interviewer?",
+      "general": "Ask questions that show you've read the JD closely and are already thinking about the team's real trade-offs, not generic culture questions.",
+      "specific": "(1) How are responsibilities currently split between the Java services and the Python agent, and how settled is that boundary? (2) What does 'prototype pace' look like day to day? (3) Which LLM tool-integration patterns are you using today — raw function calling, MCP, or something else? (4) How is the team validating agent output before it reaches a financial professional? (5) What does the review process look like for architectural changes before a feature ships? (6) How many engineers, and how is ownership split across the stack?",
+      "hint": "Boundary maturity, prototype cadence, tool pattern, output validation, review process, team size."
+    },
+    {
+      "front": "Firmwide: What does this team do?",
+      "general": "Describe the team's mission at the level stated in the JD — cross-cloud observability correlation, closed-loop remediation, and where AI/ML fits into IT operations.",
+      "specific": "The team builds an AI-driven observability platform that unifies telemetry — metrics, logs, traces — across AWS, Azure, and GCP, correlates it into troubleshooting recommendations and automations, and aims to reduce ticket volume and MTTR through self-service remediation and predictive alerting.",
+      "hint": "Cross-cloud telemetry correlation, ticket-volume/MTTR reduction, self-service remediation."
+    },
+    {
+      "front": "Firmwide: How do you match this JD's top requirements?",
+      "general": "Match the requirements you can evidence directly, and be upfront about the ones you can only partially meet rather than implying full coverage.",
+      "specific": "Observability (OpenTelemetry, Prometheus) — I run both at USAA alongside Kafka lifecycle events. Big-data pipelines (Snowflake) — FrostByte's MCP server sits over our ~7M-events/day Snowflake warehouse. Agentic AI concepts (MCP, RAG) — FrostByte and Policy RAG. Time-series forecasting — 3+ years of regression/GBT/ARIMA-family models at EnergyBot. Multi-cloud and Dynatrace/ServiceNow — I'm upfront that my production depth is AWS-only; I don't claim tools I haven't used.",
+      "hint": "OTel/Prometheus, Snowflake via FrostByte, forecasting from EnergyBot, honest on multi-cloud/Dynatrace."
+    },
+    {
+      "front": "Firmwide: Give me your 60-second pitch for this role.",
+      "general": "Lead with the observability and Snowflake-scale evidence since that's the strongest overlap, then name the honest gaps before being asked.",
+      "specific": "I'm a Software Engineer II with 5.8 years in regulated financial services building event-driven distributed systems and applied AI/ML. At USAA I architected the Kafka observability layer for a notification-platform rebuild — lifecycle events, DLQ handling, retry logic, idempotency — plus OpenTelemetry and Prometheus for metrics and traces. I built FrostByte, an MCP server letting non-engineers investigate incidents in plain English over a Snowflake warehouse processing about 7 million events a day. At EnergyBot I owned time-series forecasting pipelines end-to-end — ingest, train, validate, deploy, monitor. My production cloud depth is AWS, not multi-cloud, and I don't have ServiceNow or Dynatrace experience — I say that plainly, because the observability and Snowflake-scale work is the closer match, and the ramp-up on the rest is fast.",
+      "hint": "Kafka/OTel/Prometheus, FrostByte@Snowflake, EnergyBot forecasting, honest AWS-only gap."
+    },
+    {
+      "front": "Firmwide: Why this team specifically?",
+      "general": "Connect your own daily habit of using AI tools in engineering work to the team's mandate of driving AI-assisted engineering adoption — this is the single most-asked competency across the JD.",
+      "specific": "I already use Cursor, Claude Opus, and GitHub Copilot daily in my own workflow and own the design of three internally adopted AI tools — this team's mandate to drive responsible AI-assisted engineering adoption firmwide is a scaled version of what I already do individually, and turning raw telemetry into actionable state is exactly what I did with Kafka lifecycle events at USAA.",
+      "hint": "Daily AI-tool practice scales to the team's adoption mandate."
+    },
+    {
+      "front": "Firmwide: What will this loop probe hardest?",
+      "general": "This JD carries two structural gaps and one deep-strength area — know all three cold.",
+      "specific": "Multi-cloud honesty (I'm AWS-deep, Azure/GCP exposure only), the ServiceNow/Jira and config-management tooling gap (I have none — I pivot to webhook/API integration), and the OTel/Prometheus/Dynatrace observability stack (I run OTel and Prometheus, never claim Dynatrace).",
+      "hint": "Multi-cloud, ServiceNow/config-mgmt, OTel/Prometheus-not-Dynatrace."
+    },
+    {
+      "front": "Firmwide: This is a Lead-level posting and you're a Software Engineer II — how do you address that?",
+      "general": "Same framing as any title-gap question: name it, then let ownership evidence and degree status carry it, staying open to a leveling conversation.",
+      "specific": "I hold the Software Engineer II title today, but my scope — principal developer on the notification rebuild, sole designer of FrostByte and the Policy RAG service — reflects Lead-level ownership. I'm open to a leveling conversation rather than insisting on a title match; the JD's own posted band is roughly where I'd expect to land.",
+      "hint": "Title gap named; scope carries the argument; open to leveling."
+    },
+    {
+      "front": "Firmwide: The JD wants closed-loop, auto-remediating playbooks — do you have that experience?",
+      "general": "Be honest that full unsupervised closed-loop automation is new territory, then pivot to the closest real analog you do have.",
+      "specific": "I haven't built a fully closed-loop, unsupervised auto-remediation system. My closest real analog is Terraform-provisioned AWS infrastructure-as-code — Lambda, API Gateway, IAM, CloudWatch, S3, DynamoDB — plus event-driven Lambda automation at USAA. I'd say that plainly rather than imply I've built full auto-remediation.",
+      "hint": "No closed-loop auto-remediation; pivot to Terraform IaC + Lambda automation."
+    },
+    {
+      "front": "Firmwide: What questions will you ask the interviewer?",
+      "general": "Ask questions that probe the two honest gaps you already know about — this signals you've read the JD carefully, not that you're avoiding the topic.",
+      "specific": "(1) How mature is the multi-cloud correlation today — is Azure/GCP telemetry already flowing, or is AWS the current center of gravity? (2) What does 'closed-loop automation' look like in practice — fully automated, or human-approved remediation? (3) Which ticketing system is actually integrated today, and how deep is that integration? (4) How is the team measuring the platform's impact on MTTR? (5) What does driving AI-assisted-engineering adoption look like day to day — is a formal validation standard already in place? (6) How is the observability stack split across OpenTelemetry, Prometheus, and Dynatrace today?",
+      "hint": "Multi-cloud maturity, automation scope, ticketing depth, MTTR measurement, AI-adoption process, stack split."
+    }
+  ]
+}

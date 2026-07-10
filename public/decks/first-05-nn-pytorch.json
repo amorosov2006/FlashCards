@@ -1,0 +1,99 @@
+{
+  "title": "First Interview · NN & PyTorch",
+  "description": "Core neural-net training mechanics (optimizers, schedules, regularization, gradient issues) and the PyTorch API surface (autograd, nn.Module, training loop, DataLoader, mixed precision) plus statistical-validation basics — expanded theory coverage for follow-up questions in the JPMC Lead-SWE loops.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Give the one-breath version of backpropagation.",
+      "general": "Run the forward pass to get a loss, then walk backward through the computational graph via the chain rule, layer by layer, computing each parameter's gradient of the loss with respect to that parameter (dL/dw) and accumulating it in that parameter's .grad attribute. An optimizer then uses those accumulated gradients to update every parameter in the direction that reduces the loss."
+    },
+    {
+      "front": "Gradient descent vs. SGD vs. Adam/AdamW — what's actually different?",
+      "general": "Batch gradient descent computes the gradient over the entire dataset every step — stable but expensive and slow to iterate. SGD (mini-batch) computes the gradient over a small random subset each step — much cheaper per step, noisier, and that noise can actually help escape shallow local minima. Adam adds per-parameter adaptive learning rates from running estimates of the gradient's first moment (momentum) and second moment (variance), which converges faster than plain SGD on most deep-learning problems. AdamW is the standard variant that decouples weight decay from the adaptive gradient scaling rather than folding it into the update, giving more predictable regularization — it's the near-universal default for training and fine-tuning transformers.",
+      "hint": "AdamW = Adam + decoupled weight decay; the default for transformer training/fine-tuning."
+    },
+    {
+      "front": "Learning-rate schedules and warmup — why do them at all?",
+      "general": "Early in training, a fresh model's weights and (for Adam) moment estimates haven't stabilized yet, so large learning-rate updates at that point can destabilize training; a warmup period ramps the learning rate up gradually to avoid that. Later in training, decaying the learning rate (linear or cosine) shrinks updates to small refinements rather than large swings, which helps the model settle into a good minimum instead of oscillating around it.",
+      "specific": "Warmup and decay schedules are standard on both the from-scratch transformer training and the LoRA/QLoRA SFT runs I've done in my UT Austin coursework."
+    },
+    {
+      "front": "Why cross-entropy loss for language modeling specifically?",
+      "general": "Language modeling is next-token classification over the entire vocabulary at every position, and cross-entropy loss is exactly the negative log-likelihood of the true next token under the model's predicted softmax distribution — it directly rewards the model for assigning more probability mass to the correct token and penalizes confident wrong predictions more than uncertain ones. It's the natural loss for any softmax-output classification problem, and language modeling is just classification with a huge, per-position vocabulary as the label space."
+    },
+    {
+      "front": "How do you diagnose overfitting, and what are the actual remedies?",
+      "general": "Diagnose by watching train loss versus validation loss over training: overfitting shows up as train loss continuing to improve while validation loss flattens or starts getting worse. Remedies include getting more or better-quality training data, stronger regularization (dropout, weight decay), early stopping once validation loss stops improving, reducing model or LoRA-rank capacity, and data augmentation."
+    },
+    {
+      "front": "Dropout, weight decay, and layer norm — what does each one actually regularize?",
+      "general": "Dropout randomly zeroes a fraction of activations during training, which prevents neurons from co-adapting and forces the network to learn redundant, more robust representations. Weight decay penalizes large weights directly in the optimizer update (an L2-style shrinkage), discouraging the model from fitting noise with unnecessarily large parameter values. Layer norm normalizes the distribution of activations at each layer — its primary purpose is training stability at depth, not regularization, but it incidentally helps generalization too by keeping the optimization landscape better behaved.",
+      "specific": "Dropout, weight decay, and layer norm are exactly the regularization set I list on my applied deep-learning work — this is the concrete mechanism behind each one, not just the name."
+    },
+    {
+      "front": "Vanishing/exploding gradients — what causes them, and what does clipping actually do?",
+      "general": "In deep networks, repeated multiplication of gradients through many layers can shrink them toward zero (vanishing, historically common with saturating activations before residual connections and layer norm became standard) or blow them up (exploding, more common with recurrent architectures or an unstable learning rate). Gradient clipping caps the norm of the gradient vector at a fixed threshold before the optimizer step, so an occasional huge gradient can't destabilize training with one bad update — a standard safeguard in both from-scratch transformer training and LoRA/QLoRA fine-tuning runs."
+    },
+    {
+      "front": "What are the actual effects of batch size, and what do you do when memory is the constraint?",
+      "general": "Larger batches give lower-variance gradient estimates and better hardware utilization/throughput, but the learning rate usually needs to scale up correspondingly and can generalize slightly worse than smaller batches; smaller batches are noisier — which can help escape sharp minima — but use hardware less efficiently and take longer per epoch in wall-clock terms. In practice, GPU memory is usually the binding constraint on batch size, which is exactly why gradient accumulation exists: run several smaller forward/backward passes and accumulate gradients across them before a single optimizer step, simulating a larger effective batch size without the memory cost."
+    },
+    {
+      "front": "Train/val/test discipline and early stopping — what's the actual protocol?",
+      "general": "The train set fits the parameters. The validation set is watched during training to tune hyperparameters and, via early stopping, to halt training once validation loss stops improving — protecting against overfitting to the training set. The test set stays completely untouched until the very end, for one final, unbiased estimate of generalization; using test performance to make any decisions during development quietly turns it into a second validation set and invalidates that final estimate."
+    },
+    {
+      "front": "PyTorch tensors and autograd — what does requires_grad and .backward() actually do?",
+      "general": "A tensor with requires_grad=True is tracked by PyTorch's autograd engine, which builds a dynamic computational graph as operations are applied to it. Calling .backward() on a scalar loss walks that graph in reverse via the chain rule, computing dLoss/dParam for every tracked tensor and accumulating the result into each tensor's .grad attribute, ready for an optimizer step."
+    },
+    {
+      "front": "What's the anatomy of an nn.Module subclass?",
+      "general": "Subclass nn.Module, define the learnable layers and sub-modules in __init__ so PyTorch's parameter tracking can discover them automatically, and define the actual computation in forward(). Because parameters are registered this way, model.parameters() automatically finds every trainable tensor across nested submodules for the optimizer, and submodules compose recursively so a full architecture builds up from smaller reusable modules."
+    },
+    {
+      "front": "What are the canonical steps of a PyTorch training loop, in order?",
+      "general": "optimizer.zero_grad() clears gradients left over from the previous step, since PyTorch accumulates gradients by default; a forward pass produces predictions; the loss function compares predictions to targets; loss.backward() runs autograd to populate every parameter's .grad; optimizer.step() applies the update using those gradients. Forgetting zero_grad() is a classic bug — it silently adds gradients across steps instead of replacing them.",
+      "hint": "zero_grad → forward → loss → backward → step."
+    },
+    {
+      "front": "Dataset vs. DataLoader — what does each one actually handle?",
+      "general": "A Dataset defines how to fetch one example (__getitem__) and how many examples exist (__len__). A DataLoader wraps a Dataset and handles batching, shuffling, and parallel loading (via num_workers), so training code just iterates over ready-made batches instead of manually indexing, shuffling, and stacking examples itself."
+    },
+    {
+      "front": "model.train() vs. model.eval(), and what does torch.no_grad() add on top?",
+      "general": "model.train() and model.eval() toggle the behavior of layers that act differently at train versus inference time — dropout is active in train mode and disabled in eval mode, and batch norm uses batch statistics in train mode but running statistics in eval mode. torch.no_grad() is a separate step layered on top for inference: it disables autograd's graph-building entirely, saving memory and compute since no backward pass is needed."
+    },
+    {
+      "front": "What actually goes wrong with device movement (.to(device)), and why does it matter?",
+      "general": "A tensor and the model operating on it must live on the same device (CPU or GPU) to interact; .to(device) moves a tensor or model there explicitly. A common bug is a mismatched device between the model and a freshly loaded input batch that forgot the move — the error surfaces as a device-mismatch exception at the first operation combining the two, not something silent."
+    },
+    {
+      "front": "How do you save and load a model in PyTorch, and why state_dict rather than the whole object?",
+      "general": "state_dict is an ordered dictionary mapping each parameter and buffer name to its tensor. The idiomatic save/load pattern is torch.save(model.state_dict(), path) to persist, then instantiate the same architecture and call model.load_state_dict(torch.load(path)) to restore. Saving just the weights this way is more robust across code and library-version changes than pickling the whole model object directly, which can break if the class definition changes later."
+    },
+    {
+      "front": "Mixed precision training — what's the actual mechanism?",
+      "general": "Mixed precision runs most operations in fp16/bf16 for speed and memory savings, while keeping a few precision-sensitive parts — like a master fp32 weight copy and loss scaling — in higher precision, since some operations (small gradient values, certain reductions) lose too much precision in pure fp16. PyTorch's autocast handles the fp16/fp32 switching automatically per operation, and loss scaling multiplies the loss up before backward() so small gradients don't underflow to zero in fp16, then unscales before the optimizer step."
+    },
+    {
+      "front": "You're staring at a NaN loss. What do you actually check, in order?",
+      "general": "Check, roughly in order: is the learning rate too high, causing divergence; is gradient clipping missing; is there a numerically unstable operation somewhere (log of zero, division by a near-zero denominator); is the loss unscaled in a mixed-precision setup; and is the input data itself bad or unnormalized. The fastest diagnostic is usually adding assertions or logging that check for NaN in the inputs and in intermediate activations, to localize where the NaN first appears rather than only seeing it at the loss."
+    },
+    {
+      "front": "Walk through implementing attention in PyTorch — what are the actual tensor shapes at each step?",
+      "general": "Q, K, V start as (batch, seq_len, d_model) after their linear projections, then get reshaped to (batch, heads, seq_len, d_head) for multi-head attention. Scores = Q @ K.transpose(-2, -1) gives (batch, heads, seq_len, seq_len), scaled by 1/sqrt(d_head), with a causal mask added as negative infinity at future positions before softmax over the last dimension. The output = scores @ V gives back (batch, heads, seq_len, d_head), which is reshaped and concatenated across heads to (batch, seq_len, d_model) and passed through the final output projection.",
+      "specific": "This is the actual shape bookkeeping I worked through implementing attention from scratch in PyTorch in my UT Austin coursework.",
+      "hint": "Q,K,V: (b,h,s,d_head) → scores (b,h,s,s) → softmax → @V → (b,h,s,d_head) → concat → (b,s,d_model)."
+    },
+    {
+      "front": "What does a confidence interval actually tell you, and how would you construct one for a model's evaluation metric?",
+      "general": "A confidence interval gives a range around a point estimate — like a model's mean accuracy on an eval set — that would contain the true value a stated percentage of the time (typically 95%) under repeated sampling. It's computed from the estimate's standard error, or via bootstrap resampling when you don't want to assume a particular underlying distribution; a narrow interval means the estimate is precise, a wide one means you shouldn't trust small differences against it.",
+      "specific": "My UT Austin stats coursework covered CI construction and hypothesis testing as the rigor layer underneath model validation, beyond just reporting a single point-estimate accuracy number."
+    },
+    {
+      "front": "How do you tell whether a 2-point difference between two model configs is real or noise?",
+      "general": "Treat it as a hypothesis test rather than eyeballing a single number: compute a confidence interval (or run a paired significance test) around the metric difference between the two configurations, ideally on the same held-out queries so the comparison is paired rather than independent. If the confidence interval around the difference includes zero, or the p-value doesn't clear your significance threshold, the 2-point gap is plausibly noise from the particular sample of queries rather than a real improvement.",
+      "specific": "This is the statistical-rigor mindset from my stats coursework applied directly to eval-harness work — treating a recall@k or MRR delta as a claim that needs a significance check, not just a number to report."
+    }
+  ]
+}

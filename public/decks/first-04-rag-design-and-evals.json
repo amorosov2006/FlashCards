@@ -1,0 +1,134 @@
+{
+  "title": "First Interview · RAG Design & Evals",
+  "description": "RAG pipeline design end to end — chunking, embeddings, dense/sparse/hybrid retrieval, reranking — plus retrieval-eval metrics (recall@k, MRR, precision@k, nDCG), golden-set construction, grounding/citation, vector store trade-offs, and common failure modes.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Why use RAG instead of just fine-tuning the model on your documents?",
+      "general": "RAG injects external knowledge at inference time via retrieval, so updating what the system knows only requires re-indexing documents, not retraining a model — critical for corpora that change frequently. It also keeps knowledge separate from the model's parametric weights, which gives traceability: you can cite the exact source chunk behind an answer, something fine-tuned parametric knowledge can't do. Fine-tuning is better suited to changing behavior, style, or format, not to keeping up with a fast-changing factual corpus.",
+      "specific": "This is exactly the shape of the RAG systems I've built — FOMC minutes and policy documents that update on a real cadence, where re-embedding new documents is far cheaper than retraining a model."
+    },
+    {
+      "front": "Walk through the stages of a RAG pipeline end to end.",
+      "general": "Offline: ingest source documents, parse them into clean text, chunk that text, embed each chunk, and store the embeddings plus metadata in a vector store. Online, per query: retrieve candidate chunks (dense, sparse, or hybrid), optionally rerank the candidate pool with a cross-encoder, assemble the selected chunks into a context block with citation markers, and generate an answer constrained to that context. A held-out eval harness (recall@k, MRR) sits alongside this to catch regressions before they reach users.",
+      "specific": "This is the exact pipeline shape I built: scraper, PyMuPDF parser, recursive chunker, MiniLM embedder, pgvector/Chroma store, hybrid retrieval, citation-constrained generation."
+    },
+    {
+      "front": "Walk through your chunking strategy — why 800 characters with 150 overlap?",
+      "general": "Recursive character splitting tries a separator hierarchy in order — paragraph breaks, then line breaks, then sentence boundaries, then whitespace, only falling back to a hard character cut as a last resort — so a chunk boundary lands on a natural break whenever one is nearby, keeping chunks semantically coherent. 800 characters stays within embedding-model context limits while holding enough content to be a self-contained unit of meaning; 150-character overlap prevents a fact that straddles a boundary from becoming unretrievable in either half.",
+      "specific": "This is my exact configuration: LangChain's RecursiveCharacterTextSplitter, chunk_size 800, overlap 150, separator hierarchy of paragraph, line, sentence, whitespace, then hard-cut — tuned to the source documents' layout via column-aware parsing before chunking runs.",
+      "hint": "Recursive splitter: paragraph → line → sentence → whitespace → hard cut."
+    },
+    {
+      "front": "Why have chunk overlap at all — what does it actually buy you?",
+      "general": "Without overlap, a fact or argument that happens to fall right at a chunk boundary can end up split across two chunks, with neither half containing the whole fact — making it unretrievable by a query that needs the complete statement. Overlap repeats the tail of one chunk as the head of the next, so a query whose answer straddles a boundary still has a good chance of matching one complete chunk."
+    },
+    {
+      "front": "Why all-MiniLM-L6-v2 (384-dim) as the embedding model, and what's the trade-off vs. bge/e5-large?",
+      "general": "MiniLM-L6-v2 is fast at inference, has a small footprint (384-dim vectors keep index size and similarity-search cost low), and is a ubiquitous, well-tested choice for a first production RAG pipeline. Larger embedding models (bge, e5-large) generally improve retrieval quality, especially on harder semantic-similarity or cross-domain queries, but cost slower encode time and larger per-chunk vector storage.",
+      "specific": "My own roadmap explicitly defers a bge/e5 upgrade because that swap couples with a full corpus re-embed and re-ingest — a stated, deliberate trade-off rather than an oversight."
+    },
+    {
+      "front": "When would you actually upgrade the embedding model, and what does that cost?",
+      "general": "Upgrade when retrieval-quality metrics (recall@k, MRR on the golden set) show the current embedding model is the bottleneck, not chunking or retrieval strategy — swapping embedding models changes the vector space, so every existing chunk has to be re-embedded and the whole index rebuilt; you can't mix vectors from two different embedding models in one index. That makes it a scoped, deliberate migration, not a drop-in config change."
+    },
+    {
+      "front": "Dense retrieval — what does it capture, and where does it fail?",
+      "general": "Embedding-based cosine similarity search captures semantic and paraphrase matches — a query and a chunk can match even with zero shared vocabulary. It can under-weight exact keyword or term matches that matter for domain-specific vocabulary, named entities, or exact figures, especially on rare terms the embedding model wasn't well-trained on."
+    },
+    {
+      "front": "BM25 — what is it actually doing, mechanically?",
+      "general": "BM25 is a sparse, term-frequency-based ranking function: a document scores higher for a query term the more that term appears in it, but with saturation — the 10th occurrence of a term adds much less score than the 2nd, not a linear amount. Terms are also weighted by inverse document frequency, so common words across the whole corpus contribute little while rare, distinctive terms contribute more. It complements dense embeddings precisely because it's exact-term-driven where embeddings are semantic-similarity-driven.",
+      "specific": "My hybrid pipeline uses BM25Okapi from rank-bm25 (pure Python, deterministic, no native build dependencies) with a simple lowercase alphanumeric tokenizer.",
+      "hint": "TF with saturation (diminishing returns per repeat) x IDF (rare terms weighted higher)."
+    },
+    {
+      "front": "Why hybrid search instead of just picking dense or sparse, and how does RRF actually fuse the two rankings?",
+      "general": "Dense and sparse retrieval fail on different query types — dense misses exact-term and rare-vocabulary matches, sparse misses paraphrase and semantic matches — so running both and fusing the rankings covers more of the query distribution than either alone. Reciprocal Rank Fusion computes score = sum over each ranker's list of 1/(k + rank + 1), using 0-based rank and k=60, and only cares about rank position, not raw score. That sidesteps the problem that cosine similarity (bounded, roughly 0-1) and BM25 scores (unbounded, corpus-dependent magnitude) are on incomparable scales — a weighted-sum of raw scores needs brittle, hand-tuned weighting, while RRF works out of the box and rewards documents that rank well across multiple signals.",
+      "specific": "This is my default retrieval mode: dense (cosine) plus sparse (BM25Okapi), each pulling a candidate pool of 50, fused via RRF with k=60 — recent engineering work, code-complete and tested locally, not yet pushed to the public repo.",
+      "hint": "score = sum of 1/(k+rank+1), k=60, 0-based rank; rank-based, so scale-agnostic."
+    },
+    {
+      "front": "Cross-encoder reranking vs. bi-encoder retrieval — why do you need a second stage?",
+      "general": "A bi-encoder encodes the query and each document independently into vectors and compares via cosine similarity — fast, scales to millions of documents through an ANN index, but the model never sees the query and document together. A cross-encoder encodes the query and a candidate document jointly in one forward pass and outputs a direct relevance score, which is much more accurate because it can do fine-grained token-level cross-attention between query and document — but it's too slow to run over an entire corpus, so it's used as a second-stage reranker over only the small candidate pool a fast first-stage retriever already narrowed down.",
+      "specific": "My pipeline uses cross-encoder/ms-marco-MiniLM-L-6-v2 (~80 MB) as an optional second-stage reranker over the top-50 candidate pool — code-complete and tested locally, not yet pushed to the public repo, so I frame it as recent engineering work rather than published evidence."
+    },
+    {
+      "front": "Recall@k — definition, formula, and a worked example.",
+      "general": "Recall@k = (number of relevant documents appearing in the top-k) divided by (total number of relevant documents that exist for the query). Worked example: a query has 4 relevant chunks in the corpus; the top-5 retrieved results contain 3 of them, so recall@5 = 3/4 = 0.75. It answers 'are we finding the right material at all,' independent of ranking order within the top-k.",
+      "specific": "This is the primary metric on the recall@k/MRR eval harness I built for an internal policy-and-compliance RAG service, scored over a held-out golden QA set.",
+      "hint": "recall@k = relevant-in-top-k / total-relevant."
+    },
+    {
+      "front": "MRR (Mean Reciprocal Rank) — definition, formula, and a worked example.",
+      "general": "For each query, reciprocal rank = 1 / (rank of the first relevant result); MRR is the mean of that value across all queries: MRR = (1/N) * sum(1/rank_i). Worked example: query A's first relevant hit is at rank 1 (RR=1.0), query B's first relevant hit is at rank 3 (RR=1/3≈0.33), query C has no relevant hit at all (RR=0); MRR = (1.0+0.33+0)/3 ≈ 0.44. It answers 'how quickly does the first good answer show up' — the metric that matters most when only the top chunk or two actually reach the LLM.",
+      "specific": "This was the other half of the eval harness I built on the internal policy RAG service — recall@k and MRR together, over a held-out golden QA set.",
+      "hint": "MRR = mean of 1/rank-of-first-relevant-hit across queries."
+    },
+    {
+      "front": "Precision@k — definition, formula, and a worked example.",
+      "general": "Precision@k = (number of relevant documents in the top-k) divided by k. Worked example: top-5 results, 3 relevant, so precision@5 = 3/5 = 0.6. Recall@k and precision@k are a trade-off pair — recall asks whether you found everything relevant, precision asks whether what you returned is mostly useful — and both matter, since a system that retrieves everything relevant plus a pile of noise still confuses the LLM's grounding step.",
+      "hint": "precision@k = relevant-in-top-k / k."
+    },
+    {
+      "front": "Hit rate — what does it measure, and how is it different from recall@k?",
+      "general": "Hit rate is a binary per-query metric: did at least one relevant document appear in the top-k, yes or no — hit-rate@k = (queries with ≥1 relevant hit in top-k) / total queries. It's simpler and coarser than recall@k, since it ignores how many relevant documents were found and only asks whether any showed up at all; useful as a fast sanity check before computing the more detailed metrics."
+    },
+    {
+      "front": "nDCG — what does it add over recall@k and MRR?",
+      "general": "nDCG rewards relevant results appearing earlier in the ranked list and can incorporate graded relevance rather than just binary relevant/not-relevant: DCG = sum(relevance_i / log2(i+1)) over ranked positions, normalized against the ideal ordering's DCG to get a 0-1 score. It's more information-rich than recall@k/MRR when relevance isn't binary — a chunk that's 'highly relevant' versus 'tangentially relevant' — at the cost of needing graded relevance labels in the golden set rather than simple yes/no judgments."
+    },
+    {
+      "front": "Recall@k, precision@k, MRR, and nDCG — what would each actually catch that the others miss?",
+      "general": "Recall@k catches 'we're missing relevant material entirely.' Precision@k catches 'we're burying signal in noise.' MRR catches 'the right answer is in there, but not near the top' — the one that matters most for RAG since most pipelines only pass the top few chunks to the LLM. nDCG adds graded-relevance nuance on top of MRR/recall when not all relevant chunks are equally useful. Hit-rate is the fastest, crudest first check before running the rest."
+    },
+    {
+      "front": "How do you actually build a golden QA set for a RAG eval harness?",
+      "general": "Sample representative queries against the real corpus — a mix of easy factual lookups and harder multi-hop or paraphrase queries — then manually or semi-manually label which document chunks are the ground-truth relevant set for each query, and hold that set out from any tuning or development work so it stays a fair offline benchmark. A useful golden set also needs enough queries per difficulty tier to detect regressions statistically rather than by eyeballing single examples, and periodic re-validation as the corpus or retrieval strategy changes.",
+      "specific": "This is exactly the shape of the harness I built on an internal policy RAG service — a held-out QA set with known-relevant chunks, scored via recall@k and MRR — real, shipped work; this is distinct from the FedInsight project, whose own eval harness is roadmap only and has not been built."
+    },
+    {
+      "front": "Offline vs. online evaluation for a RAG system — what's the actual distinction?",
+      "general": "Offline evaluation runs the pipeline against a fixed golden QA set with known ground truth (recall@k, MRR, precision@k) — fast, repeatable, catches regressions before deploy, but only as representative as the golden set's coverage. Online evaluation measures real-user signal in production — click-through, thumbs up/down, follow-up-question rate, session abandonment — capturing the real query distribution and real relevance judgments, but is noisier, slower to accumulate, and harder to cleanly attribute to retrieval versus generation quality.",
+      "specific": "My true-today evidence is offline evaluation only — the recall@k/MRR harness on an internal policy RAG service. I have no online-evaluation signal (user feedback loops, production A/B testing) evidenced anywhere in my work, and I'd say so plainly rather than imply a feedback loop exists."
+    },
+    {
+      "front": "How do you actually choose k for retrieval?",
+      "general": "Larger k improves recall — more chance the relevant chunk is somewhere in the returned set — but it dilutes the context-window budget with more chunks and can introduce noise that hurts the generation step's grounding and precision. In practice k is tuned against the golden set's recall@k curve, balanced against how many chunks the LLM's context budget and prompt discipline can actually use well; a common practical default is a small k (around 3-8) that a reranker can then refine further if enabled.",
+      "specific": "My pipeline exposes this directly as a UI slider (k from 1 to 15, default 5), so the retrieval-quality/context-budget trade-off is a tunable, visible knob rather than a hardcoded assumption."
+    },
+    {
+      "front": "How do you actually enforce grounding and citation in a RAG system's answers?",
+      "general": "A disciplined system prompt constrains the model to answer only from the retrieved context and requires inline citations — a marker like [n] mapped to the specific source chunk — so every claim is traceable back to a specific piece of retrieved evidence rather than the model's parametric memory.",
+      "specific": "This is the actual system-prompt language I've used: 'use ONLY the provided context, cite [n], and say you don't have enough information rather than guessing' — used across the RAG systems I've built."
+    },
+    {
+      "front": "What's the actual mechanism for an abstain / no-answer path in RAG, and why does it matter?",
+      "general": "The system prompt explicitly instructs the model to say it doesn't have enough information when the retrieved context doesn't cover the question, rather than generating a plausible-sounding guess. This matters because a RAG system's core value proposition is grounded answers — silently guessing when retrieval came up empty or off-topic is worse than admitting the gap, since a confident-sounding wrong answer is harder for a user to catch than an honest 'I don't know.'"
+    },
+    {
+      "front": "What's the actual, complete mechanism for reducing hallucination in a RAG system — not just the prompt?",
+      "general": "Two separate levers, both necessary. First, prompt discipline: constrain the model to the retrieved context, require citations, and instruct it to abstain rather than guess — this handles 'don't invent facts beyond what was retrieved.' Second, retrieval quality itself, measured by the recall@k/MRR eval harness — if recall@k is low, no amount of prompt discipline saves the answer, because the correct grounding material was never in the context window to begin with. A fully no-LLM extractive fallback (returning top-ranked chunk excerpts directly instead of generating free text) is a structural third option that can't hallucinate at all, since nothing is generated.",
+      "specific": "My extractive, no-LLM fallback caps excerpts at 400 characters per chunk for exactly this reason, and the recall@k/MRR harness measuring the retrieval-quality side is the one I actually built and ran, on an internal policy RAG service."
+    },
+    {
+      "front": "pgvector — IVFFlat vs. HNSW, and what does the cosine operator actually do?",
+      "general": "IVFFlat is an approximate-nearest-neighbor index that partitions vectors into clusters ('lists') and searches only the nearest clusters, chosen for simplicity of setup within a standard PostgreSQL extension. Its known limitation is that near-neighbors that happen to land in a different cluster than the query can get missed — a recall artifact that HNSW's graph-based approach generally avoids, at the cost of more memory and slower index builds. Cosine similarity search itself uses pgvector's <=> operator, comparing the normalized angle between two vectors rather than their raw magnitude.",
+      "specific": "My pgvector backend uses IVFFlat with lists=100; the recall-artifact limitation is named explicitly in the project's own plan as future work — switching to HNSW is on the roadmap, not an unrecognized gap.",
+      "hint": "IVFFlat = cluster-and-search (fast, simple, recall artifacts); HNSW = graph-based (fewer misses, more memory)."
+    },
+    {
+      "front": "How does metadata filtering work in a vector store, and where should it happen relative to fusion?",
+      "general": "Metadata filtering restricts retrieval to chunks matching structured criteria (a date range, a document type) alongside the vector similarity search — in Postgres/pgvector this is typically a JSONB column with containment queries (the @> operator) backed by a GIN index for fast filtered lookups. In a hybrid pipeline, the filter should be applied after rank fusion rather than before, so it doesn't distort either individual ranking arm's candidate pool before they're combined.",
+      "specific": "My pipeline applies metadata filters (e.g., a date range) post-fusion for exactly this reason, and stores metadata as JSONB with a GIN index for filtered-lookup performance."
+    },
+    {
+      "front": "How do you budget the context window for retrieved chunks in a RAG system?",
+      "general": "The retrieved chunks, the system prompt, conversation history, and room for the generated answer all compete for the same token budget, so the number and size of chunks actually passed to the LLM has to be sized deliberately, not just set to 'however many the retriever returned.' More chunks improve coverage but dilute the model's attention and increase the chance of irrelevant material crowding out the useful context; fewer, well-ranked chunks (ideally after reranking) tend to produce better-grounded answers than a larger, noisier set."
+    },
+    {
+      "front": "What are the most common RAG failure modes in practice, beyond a wrong final answer?",
+      "general": "Bad chunk boundaries — a fact split mid-sentence or mid-argument becomes unretrievable in either half, which is exactly what chunk overlap and separator-aware splitting address. Stale index — the corpus updates but chunks aren't re-embedded and re-ingested, so the system confidently answers from outdated material. Query-document vocabulary mismatch — a user's phrasing doesn't share vocabulary with the corpus's terminology, which dense embeddings can miss on rare terms and which is exactly the gap hybrid (BM25 plus dense) retrieval is designed to close."
+    }
+  ]
+}

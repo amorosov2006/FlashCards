@@ -1,0 +1,133 @@
+{
+  "title": "First Interview · System Design",
+  "description": "System-design scenarios likely for the two JPMC loops — notification-platform walkthrough, real-time transport trade-offs, agentic assistant with guardrails, AI/ML deployment + AIOps design, and LLM serving under cost constraints. Each scenario: a skeleton answer followed by crisp follow-ups.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Design a notification platform that sends ~7M messages/day across email, SMS, push, and postal channels.",
+      "general": "A clean six-step answer: (1) clarify multi-channel scope, ack semantics, and scale; (2) sketch the high-level flow — a synchronous front door, an async fan-out via a queue, and independent delivery-channel workers; (3) deep-dive the front door's decoupling design and per-stage isolation; (4) define the data model — per-client/per-template/per-user preference rules; (5) add fault tolerance — dead-letter queues, retry logic, idempotency; (6) state failure modes and scale numbers, correcting any latency figure that could be misread.",
+      "specific": "This is USAA's notification-platform rebuild, where I was principal developer: a synchronous Java/Spring Boot front door does channel-resolution and preference evaluation, returns an ack immediately, and hands off to SQS; Lambda consumers handle packaging, delivery-window scheduling, and provider integration as independently scalable stages; Kafka publishes lifecycle events (generation-started through delivery-confirmed) for observability.",
+      "hint": "Sync front door + SQS hand-off, per-stage Lambda, Kafka lifecycle events."
+    },
+    {
+      "front": "Why split a synchronous front door from an async pipeline?",
+      "general": "The front door has to answer the caller fast, so it does the cheap decision work and returns immediately, handing the actually slow work to a queue — a slow or failing downstream stage never blocks the caller, and downstream capacity scales independently of inbound request rate.",
+      "specific": "My front door evaluates per-client/per-template/per-user delivery rules and returns an acknowledgment immediately, handing work to SQS — this fully decouples upstream callers from downstream document generation and provider calls.",
+      "hint": "Fast ack now, slow work later, fully decoupled."
+    },
+    {
+      "front": "How do you guarantee no duplicate or lost messages in the async pipeline?",
+      "general": "Three mechanisms working together: dead-letter queues catch messages that fail repeated processing so they aren't silently dropped, retry logic handles transient failures, and idempotency guarantees mean a redelivered message doesn't produce a duplicate send.",
+      "specific": "That's the exact fault-tolerance backbone of the USAA rebuild — DLQs, retry logic, and idempotency across the Lambda consumer stages.",
+      "hint": "DLQ + retry + idempotency, together."
+    },
+    {
+      "front": "What's your p99 latency at that scale, and what does that number actually cover?",
+      "general": "Always state precisely which path a latency figure describes before giving the number — a scale story loses credibility fast if a listener assumes an async processing figure describes the synchronous response path.",
+      "specific": "Peak p99 event-processing latency on the async pipeline is 10-20 seconds — that's the Snowflake-tracked event-processing path FrostByte queries, never the synchronous front-door ack, which returns immediately. I state this distinction unprompted whenever scale comes up.",
+      "hint": "10-20s p99 is async event-processing, never the sync ack path — say it unprompted."
+    },
+    {
+      "front": "Design the real-time transport layer for a system needing live bidirectional streaming, token-by-token completions, and simple streaming chat.",
+      "general": "Six-step answer: (1) clarify which interaction is truly bidirectional vs. one-way push vs. simple streaming; (2) map each need to a transport — WebSocket for bidirectional, SSE for one-way token push, NDJSON-over-chunked-HTTP for the simplest case; (3) deep-dive each transport's protocol mechanics; (4) cover client-side handling — reconnect logic, stream readers; (5) note infra friction — proxies and firewalls; (6) state the trade-offs plainly rather than picking one as universally best.",
+      "specific": "On LocalLLM I built exactly this mix: a WebSocket endpoint for live voice-to-voice translation, SSE for token-streamed completions on the OpenAI-compatible gateway, and NDJSON-over-chunked-HTTP for the web UI's chat streaming.",
+      "hint": "WebSocket=bidirectional voice, SSE=token push, NDJSON=simple chat streaming."
+    },
+    {
+      "front": "When would you choose WebSocket over SSE?",
+      "general": "WebSocket when you need true bidirectional, stateful communication — the client is sending data continuously, not just receiving. SSE when the server only needs to push one-way and you want built-in browser reconnect handling with less protocol overhead.",
+      "specific": "My live voice-translation pipeline needs WebSocket because the client streams binary audio frames continuously while the server pushes back transcript/translation/audio events — a true bidirectional stream. My token-streaming completions only need one-way push, so I used SSE there instead.",
+      "hint": "Bidirectional + stateful → WebSocket; one-way push → SSE."
+    },
+    {
+      "front": "What breaks first at scale or behind corporate infrastructure with each of these transports?",
+      "general": "WebSocket is the most likely to get blocked or mishandled by corporate proxies and firewalls since it's a protocol upgrade from HTTP. SSE and NDJSON both ride over plain HTTP so they're more robust to that class of infra restriction, though SSE has native browser reconnect while NDJSON has none — the client must handle stream interruption itself.",
+      "specific": "I'd flag proxy/firewall friction on WebSocket first if asked about production infra concerns, since it's the actual failure mode I'd expect before scale becomes the bottleneck.",
+      "hint": "WebSocket = proxy/firewall risk; SSE has native reconnect; NDJSON has none."
+    },
+    {
+      "front": "How does your NDJSON client actually consume the stream?",
+      "general": "A simple fetch call plus a native streaming reader, decoding bytes to text and splitting on newlines, with each line parsed as one JSON event — no special library or protocol beyond standard chunked HTTP.",
+      "specific": "My web UI does a fetch(), then Response.body.getReader(), a TextDecoder accumulator to parse JSON-per-line events (Chunk/Result/Error types), and dispatches each to an onEvent callback.",
+      "hint": "fetch() + getReader() + TextDecoder, one JSON event per line."
+    },
+    {
+      "front": "Design an agentic assistant that can call tools against sensitive systems, with guardrails against misuse.",
+      "general": "Six-step answer: (1) clarify autonomy level and human-in-the-loop requirement; (2) high-level: a typed tool catalogue plus an orchestration layer; (3) deep-dive the tool catalogue's schema and credential handling; (4) cover guardrails — sandboxing, least privilege, SSRF-style protections; (5) define what happens on tool failure or a low-confidence output; (6) state honestly whether this is a shipped system or an architectural extrapolation.",
+      "specific": "FrostByte is my direct precedent: an MCP server exposing typed @mcp.tool-decorated workflows over Snowflake, with zero-hardcoded-secret credential injection and a markdown-driven schema loader that grounds queries in real column definitions. LocalLLM's LangGraph ReAct agent and multi-agent team add the orchestration layer, sandboxed tools, and SSRF protection on top.",
+      "hint": "Typed MCP tool catalogue + orchestration layer + sandboxing/SSRF."
+    },
+    {
+      "front": "How do you scope tool access so an agent can't do something destructive?",
+      "general": "Least-privilege tool scoping — each tool exposes a narrow, typed capability rather than a raw command channel — combined with sandboxing at the execution boundary, so even a misbehaving agent is constrained by what the tool itself is allowed to touch.",
+      "specific": "On LocalLLM, file-tool access is restricted to the project root with explicitly blocked paths (.git, secrets, .env files) and a file-suffix whitelist; writes are restricted to an outputs/ directory only. On FrostByte, credentials are injected at runtime with zero hardcoded secrets, and the AI only ever sees typed, schema-defined tool responses, not raw database access.",
+      "hint": "Narrow typed tools + sandbox boundary + runtime credential injection."
+    },
+    {
+      "front": "What happens when your critic agent rejects the analyst's output?",
+      "general": "State the actual implemented behavior rather than guessing at a more sophisticated retry loop that isn't confirmed — a modest, precise answer holds up better under a second follow-up than an invented one.",
+      "specific": "In my multi-agent graph, the critic reviews the analyst's synthesis before the graph reaches END; I state the true behavior as implemented — an annotate/pass-through step bounded by the recursion-36 cap — rather than claiming an automatic retry loop I haven't verified in the code.",
+      "hint": "Annotate/pass-through, bounded by recursion cap — don't guess a retry loop."
+    },
+    {
+      "front": "How do you protect an agent's web-fetch tool from SSRF?",
+      "general": "Block private IP ranges and cloud-metadata hosts, and — critically — enforce this by resolving the DNS name and checking the resolved IP, not just pattern-matching the hostname, since hostname-only checks are bypassable via DNS rebinding.",
+      "specific": "My SSRF protection blocks 10/8, 192.168/16, 172.16/12, 127/8, and IPv6 equivalents, plus localhost and cloud-metadata hosts, enforced by DNS-resolving the request target and checking the resolved IP; I also cap fetch size at 500 KB and extracted text at 12 KB with a 30-second timeout.",
+      "hint": "Resolve-then-check-IP, not hostname pattern match; 500KB/12KB/30s caps."
+    },
+    {
+      "front": "Design an AI/ML model deployment platform with observability-first rollout — canary, rollback, model registry.",
+      "general": "Six-step answer, honestly scoped: (1) clarify what's being deployed and rollout risk tolerance; (2) high-level pipeline — train/validate offline, register the artifact, deploy behind a gate, monitor; (3) deep-dive: a model registry as a versioned artifact store with metadata; (4) rollout strategy — canary a new model against a small traffic slice, compare live metrics against baseline; (5) rollback trigger — an automatic revert when canary metrics regress past a threshold; (6) instrument the whole pipeline observability-first, not bolted on after incidents.",
+      "specific": "I haven't built a model registry or canary/rollback pipeline myself — I'd design it honestly at this conceptual depth, and ground the observability layer in what I've actually run: OpenTelemetry traces and Prometheus metrics on the USAA notification platform, the same instrument-everything discipline I'd apply here.",
+      "hint": "Honest conceptual design; observability layer grounded in real OTel/Prometheus work."
+    },
+    {
+      "front": "What would you actually put in a model registry entry?",
+      "general": "A versioned model artifact plus its lineage — training data snapshot or reference, evaluation metrics, the approval/promotion state, and the deployment environment it's cleared for — enough that any rollback can point at a known-good prior version.",
+      "specific": "I'd design this at the conceptual level since I haven't built a registry myself — my closest evidenced analog is the recall@k/MRR evaluation harness I built for the Policy RAG service, the same idea of gating a change behind a measured quality bar before it ships.",
+      "hint": "Artifact + lineage + metrics + approval state; analog: Policy RAG's eval harness."
+    },
+    {
+      "front": "How would you decide when a canary has failed and should roll back?",
+      "general": "Define the guardrail metrics up front — error rate, latency percentile, and a task-specific quality signal — and set an explicit threshold and observation window before the canary starts, so the rollback decision is mechanical, not a judgment call, at incident time.",
+      "specific": "I'd reuse the DLQ/retry/idempotency discipline from the USAA pipeline as the model: define the failure condition and the safe fallback path before anything ships, not after a live incident forces the decision.",
+      "hint": "Pre-defined thresholds; mechanical decision, not live judgment call."
+    },
+    {
+      "front": "How would you build the observability layer for a multi-cloud AI/ML deployment platform?",
+      "general": "Normalize on portable primitives — structured logs, correlation IDs, a common event schema — so telemetry from different clouds can be correlated without per-cloud custom tooling; instrument with OpenTelemetry for traces and Prometheus for metrics from day one.",
+      "specific": "My production depth is AWS-only — I run OpenTelemetry and Prometheus for metrics and traces alongside Kafka lifecycle events at USAA. For a true multi-cloud design I'd extend that same instrumentation across Azure and GCP rather than adopting a different tool per cloud, but I'd say plainly that Azure/GCP hands-on depth itself is a ramp-up item for me, not existing experience.",
+      "hint": "Portable primitives across clouds; honest that Azure/GCP depth is a ramp-up item."
+    },
+    {
+      "front": "How would you use a Snowflake warehouse and time-series models to power predictive health monitoring across this platform?",
+      "general": "Land telemetry into a warehouse for aggregation and historical analysis, then apply a forecasting or anomaly-detection model against the aggregated series — start with a threshold-based or simple statistical baseline before reaching for a learned model, and name the human-in-the-loop gate before any auto-remediation fires.",
+      "specific": "FrostByte is my direct precedent for the query layer — an MCP server exposing a ~7M-events/day Snowflake warehouse as a typed tool catalogue. For forecasting, I'd reframe my EnergyBot demand-forecasting techniques — regression, gradient-boosted trees, ARIMA-family models, 3+ years in production — against operational metrics like CPU, latency, and error-rate series instead of energy demand, starting with threshold-based anomaly detection as the honestly-scoped first version.",
+      "hint": "FrostByte for query layer; EnergyBot's forecasting techniques re-pointed at ops metrics."
+    },
+    {
+      "front": "Design an LLM-serving system that has to operate under tight cost and VRAM constraints.",
+      "general": "Six-step answer: (1) clarify latency budget, concurrency expectations, and the VRAM/compute ceiling; (2) high-level: quantized model serving behind an API gateway with a provider fallback; (3) deep-dive the quantization trade-off and the concurrency/queueing design; (4) cover the config layer that lets you switch serving targets; (5) note the cost/latency trade-off of falling back to a hosted provider; (6) state the failure mode plainly — what happens when you run out of headroom.",
+      "specific": "LocalLLM serves Gemma 4 12B via llama.cpp behind a FastAPI OpenAI-compatible gateway, with a provider-abstraction layer so the same client code can target the local model or a hosted OpenAI/Azure/Anthropic API through one config switch.",
+      "hint": "Quantized local serving + gateway + one-switch provider fallback."
+    },
+    {
+      "front": "How do you decide between a smaller quantization and a bigger one under a VRAM ceiling?",
+      "general": "Pick the highest-quality quantization that comfortably fits your target hardware tier by default, and keep a lower-precision profile as an explicit fallback for constrained hardware rather than as the default — quality-first, with a stated escape hatch.",
+      "specific": "I default to Q6_K, which fits comfortably in the 8-12 GB VRAM tier I target, and keep a Q5_K_M profile specifically for memory-constrained hardware — not a general recommendation, an explicit fallback.",
+      "hint": "Q6_K default (quality-first), Q5_K_M explicit low-VRAM fallback."
+    },
+    {
+      "front": "How do you handle concurrency when you only have one model instance to serve requests?",
+      "general": "Serialize inference behind a bounded semaphore sized to your actual concurrency need, not an arbitrary number, and fail fast with a clear error once the queue backs up past a reasonable wait rather than letting requests pile up silently.",
+      "specific": "My gateway uses an asyncio.Semaphore capped at 2 concurrent slots — sized to let one voice-pipeline stage run in parallel with the next, not an arbitrary throughput number — with a 30-second queue timeout returning a 503 if no slot frees up.",
+      "hint": "Semaphore=2, sized to pipeline overlap; 30s timeout → 503."
+    },
+    {
+      "front": "What's the actual cost/latency trade-off when you fall back from local to a hosted provider?",
+      "general": "A hosted provider trades a per-token cost and network round-trip for essentially unbounded concurrency and no local hardware ceiling — the right call when local capacity is the binding constraint, not when latency to a hosted endpoint would itself violate the budget.",
+      "specific": "My provider abstraction makes that trade-off a single config switch — a base_url swap to OpenAI, Azure, or Anthropic with no client-code changes — so falling back under local capacity pressure doesn't require a redesign, just a settings change.",
+      "hint": "Per-token cost + latency vs. unbounded concurrency; one config switch to fall back."
+    }
+  ]
+}

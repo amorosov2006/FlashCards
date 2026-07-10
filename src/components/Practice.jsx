@@ -5,10 +5,10 @@ import { shuffle } from '../lib/quiz.js'
 // stay large and long (two-part) answers shrink to fit instead of overflowing.
 function sizeClass(text) {
   const n = (text || '').length
-  if (n <= 90) return 'sz-xl'
-  if (n <= 200) return 'sz-l'
-  if (n <= 380) return 'sz-m'
-  if (n <= 650) return 'sz-s'
+  if (n <= 100) return 'sz-xl'
+  if (n <= 230) return 'sz-l'
+  if (n <= 430) return 'sz-m'
+  if (n <= 720) return 'sz-s'
   return 'sz-xs'
 }
 

@@ -1,0 +1,145 @@
+{
+  "title": "First Interview · LLM, VLM & Transformers",
+  "description": "Transformer internals (attention, positions, masking, KV cache), tokenization and embeddings, sampling and context windows, LoRA/QLoRA and PEFT trade-offs, SFT/RLHF/CoT, VLM architecture, and quantization theory — expanded theory coverage for follow-up questions in the JPMC Lead-SWE loops.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Give the 5-minute derivation of scaled dot-product attention.",
+      "general": "Start from three learned linear projections of the input embeddings — query, key, and value (each d_model to d_k). Compute raw scores as Q times K-transpose, scaled by 1/sqrt(d_k) to keep the pre-softmax variance stable, since unscaled dot products grow with d_k and push softmax into a saturated, low-gradient regime. Softmax over the scaled scores gives attention weights, then take a weighted sum over V. Multi-head attention runs h of these in parallel over smaller d_k = d_model/h slices, concatenates, and projects back with W_O.",
+      "specific": "I built this from scratch in PyTorch in my UT Austin M.S. Advanced Deep Learning coursework, including the multi-head concatenation and output projection.",
+      "hint": "Q,K,V projections → scaled scores → softmax → weighted sum over V → multi-head."
+    },
+    {
+      "front": "What do Q, K, and V conceptually represent, independent of the matrix formula?",
+      "general": "Query is 'what this token is looking for'; Key is 'what this token offers as a match signal'; Value is 'what this token actually contributes if attended to'. Attention compares each token's query against every token's key to decide how much of each token's value to pull in — the query/key comparison sets the weighting, the value is what actually flows through."
+    },
+    {
+      "front": "Why multiple attention heads instead of one large attention operation?",
+      "general": "One large attention head can only compute a single weighted average per token, so it has to blend every kind of relationship (syntax, position, coreference, semantics) into one pattern. Splitting into h heads over smaller d_k = d_model/h slices lets each head specialize in a different relationship type in parallel, and concatenating them before the output projection recombines that specialized information without a large increase in total parameter count.",
+      "specific": "In my from-scratch PyTorch transformer coursework, splitting into heads was the concrete design choice that let the model represent multiple relationship types instead of one averaged pattern."
+    },
+    {
+      "front": "Sinusoidal positional encoding — how does it work and why that specific form?",
+      "general": "Fixed sin/cos values are computed per position and per embedding dimension using different frequencies across dimensions, then added to the token embeddings before the first attention layer. That specific sin/cos form is chosen because it makes relative positional offsets a linear, learnable function — the encoding for position p+k can be expressed as a linear transform of the encoding for position p — and because it generalizes reasonably to sequence lengths beyond a fixed lookup table.",
+      "specific": "I implemented sinusoidal positional encoding from scratch in PyTorch in my UT Austin coursework, alongside learned positional embeddings as the alternative."
+    },
+    {
+      "front": "Learned positional embeddings — how do they differ from sinusoidal, and what do you give up?",
+      "general": "Instead of a fixed formula, a learned positional embedding is just an embedding table indexed by position, trained jointly with the rest of the model like a token embedding. It can fit whatever positional pattern the data actually needs, but it has no built-in extrapolation: positions beyond the maximum length seen during training have no trained embedding, so the model cannot generalize to longer sequences without further training.",
+      "specific": "I implemented this as the alternative to sinusoidal encoding in the same from-scratch PyTorch coursework project."
+    },
+    {
+      "front": "RoPE (rotary positional embedding) — what's the core idea, and why do most current LLMs use it?",
+      "general": "RoPE encodes position by rotating each pair of query/key dimensions by an angle proportional to the token's position, rather than adding a separate positional vector. Because it's a rotation applied directly inside the attention dot product, the resulting Q·K score depends only on the relative distance between two positions, not their absolute positions — which gives better long-context and length-extrapolation behavior than sinusoidal or learned absolute embeddings, and is why most modern decoder-only LLMs use it.",
+      "hint": "Rotates Q/K by a position-dependent angle; the resulting score depends only on relative distance."
+    },
+    {
+      "front": "Encoder-only, decoder-only, or encoder-decoder — which shape do most LLMs use, and why?",
+      "general": "Modern general-purpose LLMs are decoder-only: causally masked self-attention that predicts the next token autoregressively, which is exactly what you need for open-ended generation and keeps training (teacher-forced) and inference (autoregressive) consistent. Encoder-only architectures are bidirectional and better suited to representation/classification tasks, not generation. Encoder-decoder architectures fit sequence-to-sequence tasks with a clear source/target split, like translation or summarization of a fixed input document.",
+      "specific": "I built and trained encoder-only, decoder-only, and encoder-decoder variants from scratch in my UT Austin coursework, so I've felt the difference in what each shape is actually good at, not just read about it."
+    },
+    {
+      "front": "What does causal masking actually do, mechanically?",
+      "general": "Before the softmax in decoder self-attention, an upper-triangular mask sets the scores for 'future' positions (any key position after the current query position) to negative infinity, so after softmax those positions get essentially zero attention weight. This forces a token to only attend to itself and earlier tokens, which is what keeps teacher-forced training and autoregressive generation consistent with each other.",
+      "specific": "This is the exact masking mechanism I implemented in the decoder self-attention of my from-scratch PyTorch transformer."
+    },
+    {
+      "front": "KV cache — what is it, why does it exist, and what does it cost?",
+      "general": "During autoregressive decoding, each new token only needs to attend to the keys and values of all previous tokens — without caching, you'd recompute K and V for the entire prefix at every generation step, which is wasteful. The KV cache stores the K and V tensors for all previous tokens so each new step only computes K/V for the new token and reuses the rest. The cost is memory that grows linearly with sequence length (proportional to layers x heads x d_head x sequence length x batch), which is a major reason context length is a real memory/VRAM budget item, not just a compute one.",
+      "specific": "This is exactly why context length is a first-class config knob in LocalLLM, my quantized local-serving platform — the context window is set to 16384 tokens as part of the memory budget for a single resident model on one GPU.",
+      "hint": "Caches K/V per step so you don't recompute the whole prefix; memory scales with context length."
+    },
+    {
+      "front": "Why subword tokenization (BPE) instead of whole words or raw characters?",
+      "general": "Whole-word tokenization needs a huge vocabulary and still hits out-of-vocabulary words it's never seen (rare words, typos, new terms) with no way to represent them. Character-level tokenization has a tiny vocabulary but produces very long sequences, which is more expensive to model over long contexts. Byte-Pair Encoding builds a vocabulary by iteratively merging the most frequent adjacent symbol pairs, starting from characters, so common words stay as single tokens, rare words decompose into meaningful subword pieces, and there's no true out-of-vocabulary problem since any string can be built from the base vocabulary.",
+      "hint": "BPE = iterative frequent-pair merging; a middle ground between words (OOV) and chars (too long)."
+    },
+    {
+      "front": "What does the embedding layer actually do, and is it just a lookup table?",
+      "general": "Yes — the embedding layer is a learned lookup table mapping each token ID to a dense vector, trained jointly with the rest of the model via backprop like any other parameter. Many architectures tie the input embedding table with the output projection (the layer mapping hidden states back to vocabulary logits), which halves that parameter count and ties the input and output token representations together."
+    },
+    {
+      "front": "Pre-LN vs. post-LN — what's the difference and why does it matter?",
+      "general": "Post-LN (the original Transformer) applies layer norm after the residual addition (output = LayerNorm(x + Sublayer(x))); pre-LN applies it before the sublayer instead (output = x + Sublayer(LayerNorm(x))). Pre-LN keeps a clean, unnormalized residual path all the way through the network, which makes gradients flow more stably at depth and generally removes the need for the careful learning-rate warmup that post-LN often requires to avoid diverging early in training — most modern deep transformer stacks use pre-LN for exactly that stability reason.",
+      "hint": "Pre-LN: norm before the sublayer, cleaner residual path, more stable at depth."
+    },
+    {
+      "front": "What do residual connections actually buy you in a deep transformer?",
+      "general": "A residual connection adds the sublayer's output to its input (y = x + Sublayer(x)) rather than replacing it, which gives the gradient an unimpeded identity path straight back through the network during backprop. Without that path, gradients have to flow through every nonlinearity and every layer's transformation, which is exactly what causes vanishing gradients in very deep networks; the residual path lets gradients skip that and keeps deep stacks trainable."
+    },
+    {
+      "front": "Temperature, top-k, and top-p sampling — what does each actually control?",
+      "general": "Temperature divides the logits before softmax: lower than 1 sharpens the distribution toward the most likely tokens (more deterministic), higher than 1 flattens it (more random/diverse). Top-k restricts sampling to the k highest-probability tokens, cutting off the long low-probability tail regardless of its shape. Top-p (nucleus sampling) instead keeps the smallest set of tokens whose cumulative probability exceeds p, so the effective candidate set size adapts per step — few tokens when the model is confident, more when it's uncertain — which top-k's fixed k can't do.",
+      "hint": "Temperature scales sharpness; top-k = fixed cutoff count; top-p = adaptive cumulative-probability cutoff."
+    },
+    {
+      "front": "What actually determines a model's context-window size, and what does using more of it cost?",
+      "general": "The context window is bounded by what the model was trained on for positional encoding and by the practical compute/memory cost of self-attention, whose cost grows quadratically with sequence length, and of the KV cache, which grows linearly with it. A longer context window isn't free even when the architecture technically supports it — both the per-step attention compute and the standing KV-cache memory grow with every token kept in context.",
+      "specific": "LocalLLM's llama-server is configured for a 16384-token context (the -c flag), a concrete example of that memory/compute budget being set deliberately rather than left at some architecture-implied maximum."
+    },
+    {
+      "front": "LoRA — walk through the actual math, and what stays frozen.",
+      "general": "LoRA freezes the pretrained weight matrix W and adds a low-rank update: W' = W + (alpha/r) * B @ A, where A and B are small trainable matrices of rank r inserted into target projections (typically attention's q_proj/v_proj). Only A and B are trained — W itself never changes — so you train a tiny fraction of the total parameters. r sets the bottleneck's expressive capacity (low r, around 4-8, for narrow style/format changes; higher r, 16-64, for broader behavior shifts), and alpha is a scaling factor on the update, functioning like a learning-rate multiplier on the adapter relative to the frozen base.",
+      "specific": "I used LoRA for applied SFT in my UT Austin coursework, including LLM and VLM fine-tuning, choosing rank based on how broad a behavior shift the task actually needed.",
+      "hint": "W' = W + (alpha/r)*B@A; only A,B train; r = capacity, alpha = adapter scaling."
+    },
+    {
+      "front": "QLoRA — what does it add on top of LoRA?",
+      "general": "QLoRA keeps LoRA's frozen-base-plus-low-rank-adapter structure, but quantizes the frozen base weights to 4-bit NF4 during training while the LoRA adapters themselves are still trained in higher precision. That lets you fine-tune much larger base models within the same GPU memory budget, at the cost of some added complexity (double quantization, paged optimizers to handle memory spikes) and a small additional quality hit versus full-precision LoRA.",
+      "specific": "I used QLoRA alongside standard LoRA in my UT Austin coursework SFT work, so I've handled the 4-bit-frozen-base-plus-higher-precision-adapter setup directly."
+    },
+    {
+      "front": "Full fine-tuning vs. PEFT (LoRA/QLoRA) — when is the trade-off actually worth it?",
+      "general": "Full fine-tuning updates every parameter for the best possible quality ceiling, but needs a full optimizer-state copy — roughly 2-3x model size in memory — and full compute per step. PEFT methods like LoRA/QLoRA train a small added set of parameters at a modest quality gap for most task-adaptation use cases, which is the right default whenever compute/memory is the binding constraint or the task is a narrower adaptation rather than a deep behavioral shift. Full fine-tuning earns its cost specifically when the task needs to move the model's core representations broadly and compute isn't the limiting factor.",
+      "specific": "For the applied SFT I did — including LLM and VLM fine-tuning — LoRA/QLoRA was the right call every time; I'd only reach for full fine-tuning if the goal were a deep, broad behavior change with compute to spare."
+    },
+    {
+      "front": "SFT vs. RLHF — what's the actual conceptual difference?",
+      "general": "Supervised fine-tuning trains directly on labeled input-to-desired-output pairs using standard cross-entropy loss — you're teaching the model to imitate the demonstrations you give it. RLHF goes a step further: it uses a reward model trained on human preference comparisons, then optimizes the policy (the LLM) against that reward signal via reinforcement learning (commonly PPO), which lets it learn preferences that are easier to express as 'which of these two outputs is better' than as a single ideal demonstration — tone, safety trade-offs, subtle style judgments.",
+      "specific": "My hands-on fine-tuning work has been SFT via LoRA/QLoRA — I don't have direct RLHF/RL-pipeline experience, so I'd frame that honestly rather than overclaim it.",
+      "hint": "SFT = imitate demonstrations (cross-entropy); RLHF = optimize against a learned reward model via RL."
+    },
+    {
+      "front": "CoT prompting vs. CoT training — what's the actual difference?",
+      "general": "CoT prompting ('think step by step') elicits reasoning at inference time from a model never specifically trained to do so — it works, but inconsistently, since nothing in the weights guarantees the behavior. CoT training bakes the reasoning-then-answer pattern into the weights via supervised examples that include explicit intermediate reasoning traces, giving more reliable, structured output because the behavior is learned rather than coaxed.",
+      "specific": "I trained CoT as part of my UT Austin coursework, alongside LoRA/QLoRA SFT, so I've done the training version, not just the prompting version."
+    },
+    {
+      "front": "Walk through a VLM's architecture — how does an image actually get into the LLM's sequence?",
+      "general": "A vision encoder (typically a ViT) turns an image into a grid of patch embeddings. A projector — a small trainable adapter, often just an MLP — maps those vision embeddings into the LLM's token embedding space, matching the dimensionality of text token embeddings. Those projected image embeddings are then concatenated with the text token embeddings into one unified sequence, so the LLM's self-attention treats image and text embeddings identically, attending across both without any architectural change to the transformer itself.",
+      "hint": "Vision encoder → projector (into LLM embedding space) → concatenated with text tokens → one sequence."
+    },
+    {
+      "front": "What does VLM SFT actually tune — the whole vision-language stack, or something narrower?",
+      "general": "VLM SFT typically leaves the vision encoder and the LLM backbone largely frozen and trains the projector plus LoRA adapters inserted into the LLM (and sometimes lightweight adapters on the vision side), rather than updating the full model — the same parameter-efficient logic as text-only LoRA, applied to a multimodal stack. This keeps the compute/memory cost proportional to a small trainable slice rather than the full vision-encoder-plus-LLM parameter count.",
+      "specific": "My VLM SFT project applied LoRA for parameter-efficient adaptation, with a recalibration step on the synthesized image-text training data to correct for distribution drift between the synthetic pairs and target-domain examples before evaluation."
+    },
+    {
+      "front": "What does a quantization label like Q6_K or Q5_K actually mean?",
+      "general": "These are GGUF 'K-quant' schemes — not a flat N-bits-per-weight quantization. K-quant groups weights into blocks and mixes bit-widths across sub-blocks with per-block scale factors, so a type like Q6_K stores most weights at roughly 6 bits and Q5_K at roughly 5 bits, but that block structure balances size and speed against accuracy loss more finely than a single global bit-width would.",
+      "specific": "I use these directly in LocalLLM: Q6_K as the quality-first default and Q5_K_M as the low-VRAM fallback profile."
+    },
+    {
+      "front": "What degrades first as you push a model to lower bit-widths?",
+      "general": "Perplexity and coherence degrade gradually through 6-bit and 5-bit K-quants, which are usually still perfectly usable for chat and instruction-following. Below roughly 4 bits the degradation accelerates, and the first casualties are typically rare-token precision, numeric reasoning, and long-context coherence — well before the model becomes obviously incoherent on simple prompts.",
+      "specific": "This is the size-vs-quality boundary behind LocalLLM's defaults: Q6_K and Q5_K_M both sit comfortably above the point where degradation really accelerates.",
+      "hint": "Rare tokens, numeric reasoning, long-context go first — acceleration below ~4-bit."
+    },
+    {
+      "front": "GGUF vs. GPTQ/AWQ — how do you frame the difference?",
+      "general": "GGUF, used by llama.cpp, is a self-contained file format bundling weights, metadata, and K-quant blocks, optimized for CPU/Metal/single-GPU local inference with a single binary and no server dependencies. GPTQ and AWQ are post-training quantization methods — calibration-based, typically 4-bit — more common in GPU-serving stacks like vLLM or TGI tuned for multi-GPU batch throughput. Neither is strictly better; they solve different problems.",
+      "specific": "I chose llama.cpp/GGUF for LocalLLM specifically for single-node local serving simplicity and exact -ngl layer-offload control, not because GPTQ/AWQ are inferior — they target multi-GPU batch throughput, a different deployment shape."
+    },
+    {
+      "front": "What actually causes an LLM to hallucinate?",
+      "general": "The model is trained to produce plausible, fluent continuations, not verified-true ones, and at inference time it has no built-in access to a ground-truth source unless one is explicitly given, like retrieved context in RAG. Hallucination gets worse on out-of-distribution or ambiguous prompts, and especially when the model is pushed for specificity it doesn't actually have — exact numbers, citations, dates — because generating something plausible-sounding is the path of least resistance for a next-token predictor.",
+      "specific": "The RAG systems I've built address exactly this: constrain generation to retrieved, cited context and require the model to say it doesn't have enough information rather than guess."
+    },
+    {
+      "front": "How would you handle a question about multi-node distributed training, DeepSpeed, or vLLM-style multi-GPU serving?",
+      "general": "State the boundary plainly rather than bluffing, then pivot to the adjacent depth actually held. Overclaiming distributed-training experience is easy for an interviewer to probe past and costs credibility; naming the gap and showing exactly how it would get closed reads as judgment, not weakness.",
+      "specific": "My honest answer: 'I don't have hands-on multi-node distributed-training experience — my depth is in single-node serving (llama.cpp/GGUF quantized inference) and parameter-efficient fine-tuning (LoRA/QLoRA) at the scale one GPU supports. If a role needed DeepSpeed-style multi-node training or vLLM-style multi-GPU batch serving, that's the first thing I'd read up on and the first thing I'd want a mentor or teammate depth-check on before shipping.'",
+      "hint": "State the boundary honestly, then pivot to true-today depth (single-node serving, PEFT)."
+    }
+  ]
+}
