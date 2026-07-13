@@ -1,0 +1,318 @@
+{
+  "title": "Platforms · Kafka, Terraform, Kubernetes, Snowflake",
+  "description": "Foundational, transferable concepts across Apache Kafka, Terraform, Kubernetes, and Snowflake.",
+  "cards": [
+    {
+      "front": "[Kafka] What is a partition, and why does Kafka split a topic into several of them?",
+      "back": "A topic is divided into partitions, each an ordered, append-only log. Partitions let a topic scale horizontally across brokers and be consumed in parallel, since each partition can be read by one consumer in a group. More partitions means more throughput but weaker global ordering.",
+      "quizAnswer": "An ordered log slice of a topic; partitions enable parallelism and horizontal scaling across brokers.",
+      "distractors": [
+        "A replica copy of a topic; partitions exist so each broker holds a full backup for failover.",
+        "A consumer-side buffer; partitions let one consumer batch messages before committing offsets to disk.",
+        "A separate topic version; partitions store compacted snapshots while the base topic keeps raw events.",
+        "A time window of a topic; partitions bucket messages by hour so retention can expire them.",
+        "A schema boundary; partitions isolate messages by data type so producers stay strongly typed.",
+        "A logical namespace; partitions group related topics so consumer groups can subscribe to all at once."
+      ]
+    },
+    {
+      "front": "[Kafka] How does a producer decide which partition a message goes to?",
+      "back": "If a message has a key, Kafka hashes the key and maps it to a partition, so all messages with the same key land on the same partition (preserving their order). With no key, messages are distributed across partitions (round-robin or sticky batching). This is why keying by an entity id keeps that entity's events ordered.",
+      "quizAnswer": "The key is hashed to a partition; same key means same partition, so keyed events stay ordered.",
+      "distractors": [
+        "The broker assigns partitions round-robin regardless of key, so ordering depends on consumer commit order.",
+        "The consumer group coordinator picks the partition during rebalancing based on current lag.",
+        "ZooKeeper hashes the message value and routes it to the least-loaded partition automatically.",
+        "The key is hashed to a broker, then the broker chooses any of its local partitions freely.",
+        "The producer always writes to partition zero first, and the leader replicates it outward from there.",
+        "Partition choice follows the schema id, so each message type is pinned to one fixed partition."
+      ]
+    },
+    {
+      "front": "[Kafka] What does a consumer group do, and what happens during a rebalance?",
+      "back": "A consumer group is a set of consumers that cooperatively read a topic, with each partition assigned to exactly one member so work is divided without duplication. When members join or leave (or fail), a rebalance reassigns partitions across the surviving consumers. During a rebalance, processing briefly pauses while ownership is redistributed.",
+      "quizAnswer": "Members split partitions one-per-consumer; a rebalance reassigns partitions when members join or leave.",
+      "distractors": [
+        "Members each read every partition for redundancy; a rebalance re-syncs their duplicated offsets.",
+        "The group elects one leader that reads all partitions; a rebalance just re-elects that leader.",
+        "Members split partitions, but a rebalance replays committed messages to guarantee exactly-once delivery.",
+        "Members share partitions round-robin per message; a rebalance triggers when a partition's ISR shrinks.",
+        "Each member owns one topic; a rebalance moves whole topics between groups when lag grows.",
+        "The broker assigns two consumers per partition for failover; a rebalance promotes the standby."
+      ]
+    },
+    {
+      "front": "[Kafka] What is the ISR (in-sync replica) set, and why does it matter?",
+      "back": "Each partition has one leader and several follower replicas; the ISR is the subset of replicas caught up with the leader. A produce request with acks=all is acknowledged only after all ISR members store it, and only an ISR member can be elected the new leader. The ISR is the mechanism that bounds data loss on broker failure.",
+      "quizAnswer": "The replicas fully caught up with the leader; only ISR members can be acked or elected leader.",
+      "distractors": [
+        "The set of consumers currently in-sync with the leader; only they may commit offsets safely.",
+        "The replicas on the same rack as the leader; ISR membership optimizes network locality for reads.",
+        "The idle standby replicas held in reserve; ISR members activate only after a leader fails.",
+        "The replicas caught up with the leader; any replica, in-sync or not, may be elected as leader.",
+        "The partitions a broker leads; the ISR tracks which topics that broker is responsible for.",
+        "The replicas that have acknowledged the last rebalance; ISR gates consumer group membership."
+      ]
+    },
+    {
+      "front": "[Kafka] What is the practical difference between at-least-once and exactly-once delivery?",
+      "back": "At-least-once means a message may be redelivered if an ack is lost, so consumers can see duplicates and must be idempotent. Exactly-once (via idempotent producers and transactions) ensures each message is processed once even across retries, at some throughput cost. Most systems default to at-least-once because it is simpler and cheaper.",
+      "quizAnswer": "At-least-once may deliver duplicates on retry; exactly-once processes each message once via idempotency and transactions.",
+      "distractors": [
+        "At-least-once may drop messages under load; exactly-once buffers them until every replica is in-sync.",
+        "At-least-once guarantees ordering but not delivery; exactly-once guarantees delivery but not ordering.",
+        "At-least-once commits offsets before processing; exactly-once commits them only after a full rebalance.",
+        "At-least-once retries at the broker; exactly-once retries at the consumer using compacted log replay.",
+        "At-least-once needs no acks; exactly-once requires acks=1 plus a single-partition topic to dedupe.",
+        "At-least-once is producer-side only; exactly-once is consumer-side only and cannot span both together."
+      ]
+    },
+    {
+      "front": "[Kafka] What does log compaction do, and how does it differ from time-based retention?",
+      "back": "Time/size retention deletes old messages once they age past a threshold, regardless of content. Log compaction instead keeps at least the latest message for each key and removes older values for that same key, preserving a full snapshot of the latest state. It suits changelog-style topics where you only need the current value per key.",
+      "quizAnswer": "Compaction keeps the latest message per key; retention deletes messages purely by age or size.",
+      "distractors": [
+        "Compaction merges partitions into one; retention keeps partitions separate but trims their oldest offsets.",
+        "Compaction gzip-compresses old segments; retention deletes them once the topic exceeds its quota.",
+        "Compaction keeps the latest message per partition; retention keeps the latest per consumer group.",
+        "Compaction removes duplicate values across all keys; retention removes messages older than the ISR.",
+        "Compaction deletes the newest message per key to save space; retention deletes the oldest overall.",
+        "Compaction archives keys to cold storage; retention keeps a rolling window in the broker's memory."
+      ]
+    },
+    {
+      "front": "[Terraform] What is the Terraform state file and why is it essential?",
+      "back": "State is Terraform's record mapping the resources in your configuration to the real objects that exist in the provider. Terraform reads state to know what it already manages, so it can compute the difference between desired config and reality. Without state, Terraform could not tell an update from a create, or track resource identities.",
+      "quizAnswer": "A record mapping config resources to real infrastructure, letting Terraform compute what to change.",
+      "distractors": [
+        "A cache of provider credentials and API tokens, so Terraform can authenticate without re-prompting.",
+        "A log of every apply ever run, used mainly to roll back to a previous infrastructure version.",
+        "A copy of your configuration files, kept so Terraform can detect edits to the .tf source.",
+        "A record mapping config to real infrastructure, but only for resources created by terraform apply.",
+        "A dependency graph of modules, used to decide the order in which providers are initialized.",
+        "A snapshot of provider schemas, letting Terraform validate resource arguments without network calls."
+      ]
+    },
+    {
+      "front": "[Terraform] What is the difference between terraform plan and terraform apply?",
+      "back": "Plan is a read-only dry run: Terraform refreshes state, compares desired config to actual infrastructure, and prints the additions, changes, and deletions it would make. Apply executes that plan, calling provider APIs to reach the desired state and then updating the state file. Plan lets you review changes safely before anything is mutated.",
+      "quizAnswer": "Plan previews the changes needed without mutating anything; apply executes them and updates state.",
+      "distractors": [
+        "Plan validates syntax only; apply then re-plans internally and mutates infrastructure in one step.",
+        "Plan locks the state file; apply unlocks it after writing the new desired configuration to disk.",
+        "Plan applies changes to a staging workspace; apply promotes those same changes to production.",
+        "Plan refreshes state from the cloud; apply runs entirely offline using the cached plan only.",
+        "Plan previews changes and updates state; apply then only calls provider APIs without touching state.",
+        "Plan destroys drifted resources; apply recreates them to match the configuration exactly."
+      ]
+    },
+    {
+      "front": "[Terraform] What is configuration drift, and how does Terraform detect it?",
+      "back": "Drift is when real infrastructure diverges from what Terraform's state and config describe, usually because someone changed it manually or another system did. On plan/refresh, Terraform queries the provider for actual attributes and compares them to state, surfacing differences as proposed changes. Applying then reconciles reality back to the declared desired state.",
+      "quizAnswer": "Real infrastructure diverging from declared config; Terraform detects it by refreshing and comparing to state.",
+      "distractors": [
+        "Two engineers editing the same .tf file; Terraform detects it via a merge conflict on apply.",
+        "State growing out of sync with the module version; Terraform detects it during terraform init.",
+        "Provider APIs changing their schema; Terraform detects it by validating arguments before planning.",
+        "Real infrastructure diverging from config; Terraform silently overwrites it without any plan preview.",
+        "The state file being older than the config; Terraform detects it by comparing file timestamps.",
+        "Resources drifting between workspaces; Terraform detects it by diffing the two remote backends."
+      ]
+    },
+    {
+      "front": "[Terraform] Why is remote state with locking recommended for teams?",
+      "back": "A remote backend (like S3 with DynamoDB, or Terraform Cloud) stores state centrally so all team members and CI share one source of truth. State locking prevents two applies from running against the same state at once, which would otherwise corrupt it or cause conflicting changes. It also keeps sensitive state off individual laptops.",
+      "quizAnswer": "It shares one authoritative state and locks it so concurrent applies cannot corrupt it.",
+      "distractors": [
+        "It encrypts the config files centrally and locks them so only one person can edit .tf at a time.",
+        "It replicates state to every engineer's machine and locks their local copies during a plan.",
+        "It stores provider credentials remotely and locks them so applies cannot leak secrets to logs.",
+        "It shares one state and locks it, but locking only blocks plans, never concurrent applies.",
+        "It versions modules centrally and locks module versions so everyone uses the same registry release.",
+        "It caches the last plan remotely and locks it so apply always reuses the reviewed plan output."
+      ]
+    },
+    {
+      "front": "[Terraform] What does it mean that Terraform is declarative and idempotent?",
+      "back": "Declarative means you describe the desired end state, not the steps to get there; Terraform figures out the operations. Idempotent means running apply repeatedly with the same config converges to the same result and makes no changes once reality matches desired state. Together they let you re-run safely and trust the plan output.",
+      "quizAnswer": "You declare the desired end state, and re-applying an unchanged config makes no further changes.",
+      "distractors": [
+        "You script each provisioning step, and re-running replays those steps until they all succeed.",
+        "You declare desired state, but every apply recreates all resources to guarantee consistency.",
+        "You describe end state; idempotency means Terraform ignores drift so reruns never touch anything.",
+        "You declare desired state, and idempotency means each resource can be applied only once ever.",
+        "You define imperative modules, and re-running is safe because state is discarded between applies.",
+        "You declare end state per resource, but ordering must be manual since applies are not repeatable."
+      ]
+    },
+    {
+      "front": "[Terraform] What role do providers and modules play in Terraform?",
+      "back": "A provider is a plugin that knows how to talk to a specific API (AWS, GCP, Kubernetes, etc.) and exposes its resource and data-source types. A module is a reusable, parameterized bundle of resources you can call with different variables and outputs. Providers give Terraform its vocabulary; modules package that vocabulary into shareable components.",
+      "quizAnswer": "Providers are plugins exposing an API's resource types; modules are reusable, parameterized bundles of resources.",
+      "distractors": [
+        "Providers store remote state per cloud; modules are the workspaces that isolate each environment.",
+        "Providers define variables and outputs; modules are the plugins that translate them to API calls.",
+        "Providers are reusable resource bundles; modules are the plugins that connect Terraform to each API.",
+        "Providers lock the state file; modules define the order in which resources are created and destroyed.",
+        "Providers are plugins for an API; modules are alternate versions of state for blue-green deployments.",
+        "Providers manage authentication only; modules are the resource types each cloud exposes to Terraform."
+      ]
+    },
+    {
+      "front": "[Kubernetes] What is a Pod, and how does it relate to containers?",
+      "back": "A Pod is the smallest deployable unit in Kubernetes and wraps one or more tightly coupled containers that share a network namespace (one IP) and can share storage volumes. Containers in a Pod are always scheduled together on the same node. You almost always run one main container per Pod, adding sidecars only when they must be co-located.",
+      "quizAnswer": "The smallest deployable unit wrapping one or more containers that share a network namespace and volumes.",
+      "distractors": [
+        "A group of identical containers across nodes, load-balanced behind a single shared cluster IP.",
+        "A lightweight VM that runs one container and gives it a dedicated kernel for isolation.",
+        "The smallest unit, wrapping containers that each get their own IP but share the same CPU quota.",
+        "A node-level agent that schedules containers and reports their health to the control plane.",
+        "A replica template holding one container plus its desired count for the ReplicaSet controller.",
+        "A namespace-scoped bundle of containers that share storage but never share a network address."
+      ]
+    },
+    {
+      "front": "[Kubernetes] What does a Deployment manage, and how does a ReplicaSet fit in?",
+      "back": "A Deployment declares the desired state for a stateless app: which Pod template and how many replicas. It creates and manages ReplicaSets, which are the controllers that actually keep the requested number of identical Pods running. During a rolling update the Deployment spins up a new ReplicaSet and scales the old one down.",
+      "quizAnswer": "A Deployment declares desired Pods and replicas, managing ReplicaSets that keep that many Pods running.",
+      "distractors": [
+        "A Deployment schedules Pods onto nodes directly; ReplicaSets only store the rollout history for rollback.",
+        "A Deployment exposes Pods on a stable IP; ReplicaSets hold the config the Pods mount at startup.",
+        "A Deployment runs one Pod per node; ReplicaSets add extra Pods when autoscaling kicks in.",
+        "A Deployment declares desired Pods; ReplicaSets are the Services that route traffic to those Pods.",
+        "A Deployment manages stateful volumes; ReplicaSets keep the requested number of identical Pods running.",
+        "A Deployment defines probes and secrets; ReplicaSets bundle them into the Pod template at deploy time."
+      ]
+    },
+    {
+      "front": "[Kubernetes] What is a Service, and how do ClusterIP, NodePort, and LoadBalancer differ?",
+      "back": "A Service gives a stable virtual IP and DNS name that load-balances across a changing set of Pods selected by labels. ClusterIP is reachable only inside the cluster; NodePort also opens a fixed port on every node's IP; LoadBalancer provisions an external cloud load balancer that forwards in. Each type builds on the one before it.",
+      "quizAnswer": "A stable endpoint load-balancing to Pods; ClusterIP is internal, NodePort opens node ports, LoadBalancer is external.",
+      "distractors": [
+        "A DNS record for one Pod; ClusterIP is external, NodePort is internal, LoadBalancer spans clusters.",
+        "A stable endpoint to Pods; ClusterIP exposes a cloud LB, NodePort is internal, LoadBalancer opens node ports.",
+        "A per-Pod sidecar proxy; the three types differ only in which probe they use for health checks.",
+        "A label selector that pins Pods to nodes; the types set whether traffic is TCP, UDP, or HTTP.",
+        "A controller that scales Pods on traffic; ClusterIP, NodePort, and LoadBalancer set the scaling target.",
+        "A stable endpoint to Pods; ClusterIP is internal, NodePort is external cloud, LoadBalancer is node-local."
+      ]
+    },
+    {
+      "front": "[Kubernetes] What is the reconcile loop that controllers run?",
+      "back": "Kubernetes is declarative: you submit the desired state to the API server, and controllers continuously compare desired state to observed cluster state, taking actions to close the gap. If a Pod dies, the ReplicaSet controller notices the shortfall and creates a replacement. This never-ending observe-diff-act loop is what makes the system self-healing.",
+      "quizAnswer": "Controllers continuously compare desired to actual state and act to close the gap, making the cluster self-healing.",
+      "distractors": [
+        "The scheduler runs each container once, then exits; a cron controller restarts them on a fixed timer.",
+        "The kubelet polls the API server for scripts and executes them step by step in submitted order.",
+        "Controllers apply the manifest exactly once at deploy time; drift after that requires a manual re-apply.",
+        "Controllers compare desired to actual state, but only react to events, never to slow silent drift.",
+        "The control plane snapshots the cluster hourly and rolls back any Pod that differs from the snapshot.",
+        "Controllers reconcile only Services and Ingress; Pods self-heal through the container runtime instead."
+      ]
+    },
+    {
+      "front": "[Kubernetes] What is the difference between a liveness probe and a readiness probe?",
+      "back": "A liveness probe checks whether a container is still healthy; if it fails, the kubelet restarts the container. A readiness probe checks whether the container is ready to serve traffic; if it fails, the Pod is removed from Service endpoints but not restarted. Liveness recovers from deadlocks; readiness handles warmup and temporary unavailability.",
+      "quizAnswer": "Liveness failure restarts the container; readiness failure removes the Pod from Service endpoints without restarting.",
+      "distractors": [
+        "Liveness failure removes the Pod from Services; readiness failure restarts the container immediately.",
+        "Liveness checks the node's health; readiness checks the container's, and both trigger a reschedule.",
+        "Liveness failure reschedules the Pod to another node; readiness failure scales up a replacement Pod.",
+        "Liveness runs once at startup; readiness runs continuously, and either failure drains the whole node.",
+        "Liveness failure restarts the container; readiness failure also restarts it but after a longer grace period.",
+        "Liveness gates traffic during warmup; readiness detects deadlocks and restarts the stuck container."
+      ]
+    },
+    {
+      "front": "[Kubernetes] What do ConfigMaps and Secrets provide, and how do they differ?",
+      "back": "Both externalize configuration from container images so the same image runs in different environments, injected as environment variables or mounted files. ConfigMaps hold non-sensitive plain-text config; Secrets hold sensitive data like passwords and tokens and are base64-encoded with tighter access controls. Using them keeps credentials and settings out of the image itself.",
+      "quizAnswer": "Both externalize config into Pods; ConfigMaps hold plain config, Secrets hold sensitive data with tighter controls.",
+      "distractors": [
+        "Both store config; ConfigMaps are encrypted at rest by default, while Secrets are plain base64 text.",
+        "ConfigMaps inject env vars only; Secrets mount files only, and neither can do the other.",
+        "Both externalize config; ConfigMaps are namespace-wide, while Secrets are readable by any namespace.",
+        "ConfigMaps hold sensitive tokens with access controls; Secrets hold plain non-sensitive settings.",
+        "Both hold config; ConfigMaps are versioned for rollback, while Secrets are immutable once created.",
+        "ConfigMaps live on the node's disk; Secrets live only in the container's memory and never persist."
+      ]
+    },
+    {
+      "front": "[Snowflake] Why does Snowflake separate storage from compute?",
+      "back": "Snowflake keeps table data in a shared storage layer and runs queries on independent compute clusters (virtual warehouses). Because they scale separately, you can add compute for a heavy query without duplicating data, and multiple warehouses can read the same data concurrently without contending. You also pay for storage and compute independently.",
+      "quizAnswer": "Storage and compute scale independently, so warehouses can be sized and billed separately over shared data.",
+      "distractors": [
+        "It replicates storage into each warehouse, so every compute cluster owns a private copy for speed.",
+        "It merges storage and compute per query, then tears both down together to minimize idle cost.",
+        "Storage and compute scale together in lockstep, so adding a warehouse also expands the data layer.",
+        "It moves storage onto the compute nodes' local SSDs, so queries never hit the shared object store.",
+        "Storage and compute scale independently, but only one warehouse may read a table at a time.",
+        "It caches all storage in compute memory, so warehouses must be resized whenever data grows."
+      ]
+    },
+    {
+      "front": "[Snowflake] What is a virtual warehouse in Snowflake?",
+      "back": "A virtual warehouse is an independent cluster of compute resources that executes queries and DML. You size it (X-Small up to larger) for performance and can start, suspend, or resume it on demand, paying only while it runs. Different teams or workloads typically get their own warehouses so they do not compete for compute.",
+      "quizAnswer": "An independent, resizable compute cluster that runs queries; you pay only while it is running.",
+      "distractors": [
+        "A logical database that stores tables and views; warehouses hold the data queries read from.",
+        "A cached copy of query results shared across users so repeated queries skip compute entirely.",
+        "An independent compute cluster, but it stays billed continuously whether or not queries run.",
+        "A managed storage tier holding micro-partitions; sizing it changes how much data it can retain.",
+        "A security boundary grouping roles and grants; sizing it sets how many users may connect.",
+        "A resizable compute cluster shared globally, so all accounts contend for the same warehouse pool."
+      ]
+    },
+    {
+      "front": "[Snowflake] What are micro-partitions, and how does pruning use them?",
+      "back": "Snowflake automatically stores table data in small columnar units called micro-partitions, each holding metadata like the min/max of its columns. When a query filters on a column, Snowflake reads that metadata to skip micro-partitions that cannot match, scanning far less data. This pruning happens automatically without you defining indexes.",
+      "quizAnswer": "Small columnar data units with min/max metadata; pruning skips those that cannot match a filter.",
+      "distractors": [
+        "User-defined index files; pruning requires you to declare which columns to partition on first.",
+        "Row-oriented storage blocks; pruning skips whole tables whose row count is below a threshold.",
+        "Compute-side memory pages; pruning evicts the ones a warehouse has not touched recently.",
+        "Columnar data units with min/max metadata; pruning still scans them all but decompresses selectively.",
+        "Replicated data copies per warehouse; pruning removes stale copies once time travel expires.",
+        "Cached result sets keyed by query; pruning discards the ones that no longer match the filter."
+      ]
+    },
+    {
+      "front": "[Snowflake] What is scaling up versus scaling out in Snowflake?",
+      "back": "Scaling up means resizing a warehouse to a larger size to make a single complex query faster with more resources. Scaling out means adding clusters to a multi-cluster warehouse so more concurrent queries can run in parallel without queuing. Up addresses query complexity; out addresses concurrency of many users.",
+      "quizAnswer": "Scaling up resizes a warehouse for bigger queries; scaling out adds clusters for more concurrency.",
+      "distractors": [
+        "Scaling up adds clusters for concurrency; scaling out resizes a warehouse to speed one query.",
+        "Scaling up adds storage capacity; scaling out adds compute, and both require a manual restart.",
+        "Scaling up replicates data to more regions; scaling out replicates warehouses for failover.",
+        "Scaling up resizes a warehouse for concurrency; scaling out splits one query across warehouses.",
+        "Scaling up increases retention for time travel; scaling out increases the number of micro-partitions.",
+        "Scaling up caches more results; scaling out clears caches so each cluster recomputes independently."
+      ]
+    },
+    {
+      "front": "[Snowflake] What does zero-copy cloning let you do?",
+      "back": "Cloning a table, schema, or database in Snowflake creates a new object that initially shares the same underlying micro-partitions instead of physically copying data, so it is near-instant and uses no extra storage at first. As either the clone or original changes, only the modified data diverges. It is ideal for spinning up dev/test copies of production data.",
+      "quizAnswer": "Instantly create a new object sharing underlying data; storage grows only as clone or original changes.",
+      "distractors": [
+        "Instantly copy a table into a new region, keeping both fully synchronized for disaster recovery.",
+        "Create a read-only snapshot that cannot diverge, so the clone always mirrors the original exactly.",
+        "Create a new object sharing data, but the clone duplicates all micro-partitions on first write.",
+        "Duplicate a warehouse's compute config so a test cluster matches production sizing instantly.",
+        "Instantly share data across accounts, letting external consumers query without their own storage.",
+        "Create a new object sharing data, but any change to the original also mutates every clone."
+      ]
+    },
+    {
+      "front": "[Snowflake] How does Snowflake handle semi-structured data like JSON?",
+      "back": "Snowflake has a VARIANT data type that stores semi-structured data (JSON, Avro, Parquet) natively in a single column. You load the raw document and query nested fields with path notation and functions, and Snowflake still applies columnar storage and pruning under the hood. This avoids pre-flattening JSON into rigid relational columns before loading.",
+      "quizAnswer": "The VARIANT type stores JSON natively; you query nested fields with path notation, keeping columnar performance.",
+      "distractors": [
+        "It requires flattening JSON into typed columns at load time, then querying them as normal relations.",
+        "The VARIANT type stores JSON, but each query must fully parse the document with no pruning benefit.",
+        "It stores JSON as plain text blobs; nested access needs an external function outside the warehouse.",
+        "The VARIANT type indexes every JSON key up front, so schema must be declared before loading data.",
+        "It converts JSON to Parquet on ingest, discarding the original nesting to fit relational storage.",
+        "The VARIANT type stores JSON, but only top-level keys are queryable; nested paths need a view."
+      ]
+    }
+  ]
+}

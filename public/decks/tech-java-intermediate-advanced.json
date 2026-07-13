@@ -1,0 +1,292 @@
+{
+  "title": "Java · Intermediate & Advanced",
+  "description": "A mixed-difficulty quiz spanning core Java language, JVM internals, the standard library, and concurrency.",
+  "cards": [
+    {
+      "front": "[Intermediate] What is the equals/hashCode contract, and why must overriding equals force you to override hashCode?",
+      "back": "If two objects are equal by equals(), they must return the same hashCode(). Overriding equals() without hashCode() breaks this, so equal objects can land in different hash buckets and become unfindable in a HashMap or HashSet. The reverse need not hold: equal hashCodes do not imply equality (collisions are legal).",
+      "quizAnswer": "Equal objects must share a hashCode, so hash-based collections can locate them in the correct bucket.",
+      "distractors": [
+        "Equal objects must share a hashCode, and unequal objects must always produce distinct hashCodes.",
+        "Objects with the same hashCode must be equal, so collisions are forbidden inside any hash bucket.",
+        "hashCode must return the object's memory address, which equals() then compares for bucket placement.",
+        "Equal objects may differ in hashCode as long as equals() is symmetric and transitive across calls.",
+        "hashCode only matters for TreeMap ordering, so overriding equals() alone is sufficient for HashMap.",
+        "Equal objects must share a hashCode, but the value may safely change while stored in a set."
+      ]
+    },
+    {
+      "front": "[Advanced] In Java 8+, how does HashMap treeify a bucket, and what conditions trigger it?",
+      "back": "When a single bucket holds at least TREEIFY_THRESHOLD (8) entries AND the table capacity is at least MIN_TREEIFY_CAPACITY (64), that bucket converts from a linked list to a red-black tree, improving worst-case lookup from O(n) to O(log n). If capacity is below 64, the map resizes instead of treeifying. Keys must be Comparable or fall back to identity/hash tiebreaks.",
+      "quizAnswer": "A bucket becomes a red-black tree once it holds 8+ entries and table capacity is at least 64.",
+      "distractors": [
+        "A bucket becomes a red-black tree once it holds 16+ entries, regardless of the table's capacity.",
+        "A bucket becomes a balanced AVL tree once it holds 8+ entries and capacity reaches at least 32.",
+        "The whole table converts to trees once the load factor of 0.75 is exceeded during a put.",
+        "A bucket becomes a red-black tree once it holds 8+ entries; capacity is never a factor here.",
+        "Buckets treeify only when keys implement Comparable, otherwise they stay linked lists forever.",
+        "A bucket becomes a red-black tree once it holds 6+ entries and capacity is at least 64."
+      ]
+    },
+    {
+      "front": "[Intermediate] What does the PECS mnemonic mean for bounded wildcards in generics?",
+      "back": "PECS stands for 'Producer Extends, Consumer Super.' Use `? extends T` when a structure produces T values you read out, and `? super T` when it consumes T values you write in. This maximizes API flexibility while preserving type safety: you can read from a producer as T, and write T into a consumer.",
+      "quizAnswer": "Producer Extends, Consumer Super: use extends to read T out, super to write T in.",
+      "distractors": [
+        "Producer Extends, Consumer Super: use extends to write T in, super to read T out.",
+        "Producer Encapsulates, Consumer Shares: extends narrows the type, super widens it for writing.",
+        "Provider Extends, Client Super: extends allows writes, super allows reads for maximum flexibility.",
+        "Producer Extends, Consumer Super: both wildcards permit reads and writes as the erased type Object.",
+        "Producer Super, Consumer Extends: use super to read T out, extends to write T into a structure.",
+        "Producer Extends, Consumer Super: extends fixes the exact type while super accepts any subtype."
+      ]
+    },
+    {
+      "front": "[Advanced] What is type erasure, and what are two concrete limitations it imposes at runtime?",
+      "back": "Generics are a compile-time feature: the compiler erases type parameters to their bounds (or Object) and inserts casts, so no generic type information survives into the bytecode. Consequently you cannot do `new T[]`, call `instanceof List<String>`, or overload methods that differ only by erased generic parameters. Runtime reflection sees only the raw type.",
+      "quizAnswer": "Type parameters are erased to their bounds at compile time, so you cannot use `new T[]` or `instanceof List<String>`.",
+      "distractors": [
+        "Type parameters are stored as runtime metadata, so `new T[]` works but `instanceof List<String>` fails.",
+        "Type parameters are reified at runtime, so both array creation and parameterized instanceof succeed.",
+        "Type parameters are erased at link time, so overloading by generic parameter works but arrays do not.",
+        "Type parameters are erased to Object always, ignoring bounds, so casts to the bound are never inserted.",
+        "Type parameters survive as generic signatures used by the JIT, blocking only static generic fields.",
+        "Type parameters are erased at compile time, so `new T[]` works while `instanceof` on raw types fails."
+      ]
+    },
+    {
+      "front": "[Intermediate] Why are String objects immutable in Java, and what is the string pool?",
+      "back": "String is immutable: its internal char/byte array and hash are final and never mutated after construction, which makes strings safe to share, cache their hash, and use as map keys. The string pool (string intern table) lets identical string literals share one canonical instance, saving memory. `new String(\"x\")` bypasses the pool unless you call intern().",
+      "quizAnswer": "Immutability lets strings be safely shared and cached; the pool deduplicates identical literals into one instance.",
+      "distractors": [
+        "Immutability lets strings be safely shared; the pool deduplicates every String, including those from `new`.",
+        "Immutability speeds concatenation via in-place edits; the pool caches the last thousand strings used.",
+        "Immutability prevents subclassing; the pool stores each string's hashCode for fast equality checks only.",
+        "Immutability lets strings be mutated only through StringBuilder; the pool holds interned char arrays.",
+        "Immutability lets strings be safely shared; the pool deduplicates literals but is cleared each GC cycle.",
+        "Immutability guarantees thread confinement; the pool assigns each thread its own copy of every literal."
+      ]
+    },
+    {
+      "front": "[Intermediate] What is autoboxing, and what classic pitfall arises when comparing boxed Integers with ==?",
+      "back": "Autoboxing auto-converts primitives to wrappers (int to Integer). The pitfall: == on Integers compares references, not values. Because Integer caches boxed values from -128 to 127, `Integer.valueOf(100) == Integer.valueOf(100)` is true but `... (200) == (200)` is false. Always use equals() or unbox to compare boxed numbers by value.",
+      "quizAnswer": "== on boxed Integers compares references; the -128..127 cache makes small values compare true but larger ones false.",
+      "distractors": [
+        "== on boxed Integers compares references; the -128..127 cache makes large values compare true but small ones false.",
+        "== on boxed Integers always unboxes both sides, so the comparison is by value regardless of caching.",
+        "== on boxed Integers compares values, but the cache from 0..255 makes uncached comparisons throw.",
+        "== on boxed Integers compares references, and Java caches every distinct value ever autoboxed at runtime.",
+        "== on boxed Integers compares hashCodes; identical hashes for small ints make them compare equal.",
+        "== on boxed Integers compares references; only Long and Short are cached, so Integer is always false."
+      ]
+    },
+    {
+      "front": "[Intermediate] What distinguishes checked from unchecked exceptions, and when should each be used?",
+      "back": "Checked exceptions extend Exception (not RuntimeException) and must be declared or caught, signaling recoverable conditions callers should handle. Unchecked exceptions extend RuntimeException and represent programming errors (bad arguments, null derefs) that typically should not be caught locally. Errors extend Throwable and signal unrecoverable JVM problems.",
+      "quizAnswer": "Checked extend Exception and must be handled or declared; unchecked extend RuntimeException and need not be declared.",
+      "distractors": [
+        "Checked extend RuntimeException and must be declared; unchecked extend Exception and may be ignored freely.",
+        "Checked extend Error and are fatal; unchecked extend Exception and represent recoverable conditions.",
+        "Checked extend Exception and are optional to declare; unchecked extend Throwable and must be caught.",
+        "Checked and unchecked both extend Exception; the difference is only whether the compiler logs a warning.",
+        "Checked extend Exception and must be handled; unchecked extend RuntimeException and must also be declared.",
+        "Checked exceptions are thrown by the JVM; unchecked exceptions can only be thrown by user code explicitly."
+      ]
+    },
+    {
+      "front": "[Intermediate] How does try-with-resources work, and in what order are resources closed?",
+      "back": "Any resource declared in a try-with-resources header that implements AutoCloseable is closed automatically when the block exits, even on exception. Multiple resources are closed in reverse order of declaration. If both the body and close() throw, the body's exception propagates and the close() exception is attached as a suppressed exception, retrievable via getSuppressed().",
+      "quizAnswer": "AutoCloseable resources close automatically in reverse declaration order; close() failures become suppressed exceptions.",
+      "distractors": [
+        "AutoCloseable resources close automatically in declaration order; close() failures replace the body's exception.",
+        "Closeable resources close in reverse order; a close() failure is silently swallowed and never surfaced.",
+        "AutoCloseable resources close in reverse order; the body's exception is suppressed in favor of close()'s.",
+        "AutoCloseable resources close in reverse declaration order, but only if the try block completes normally.",
+        "AutoCloseable resources close in parallel; the first close() exception thrown wins and masks the rest.",
+        "AutoCloseable resources close in reverse order; suppressed exceptions are discarded unless a finally exists."
+      ]
+    },
+    {
+      "front": "[Advanced] Why are Java streams described as lazy, and what role do terminal operations play?",
+      "back": "Intermediate operations (map, filter, etc.) are lazy: they only build a pipeline and do no work until a terminal operation (collect, forEach, reduce, count) runs. Execution then fuses the stages and processes elements one at a time, enabling short-circuiting (findFirst, limit) and avoiding intermediate collections. Without a terminal op, nothing is computed.",
+      "quizAnswer": "Intermediate ops only build a pipeline; nothing executes until a terminal op triggers fused, element-at-a-time processing.",
+      "distractors": [
+        "Intermediate ops execute eagerly into buffers; the terminal op merely collects the last buffered result.",
+        "Intermediate ops build a pipeline that runs on stream creation; the terminal op just returns the value.",
+        "Intermediate ops are lazy, but each produces a full intermediate collection consumed by the next stage.",
+        "Intermediate ops only build a pipeline; the terminal op runs each stage fully before the next begins.",
+        "Intermediate ops are lazy; the terminal op forces parallel execution across all elements simultaneously.",
+        "Intermediate ops cache results for reuse; a terminal op replays the cache without recomputing anything."
+      ]
+    },
+    {
+      "front": "[Intermediate] What problem does Optional solve, and what is the anti-pattern it is often misused for?",
+      "back": "Optional models a possibly-absent return value, making the absence explicit in the API and encouraging map/filter/orElse handling instead of null checks. It is intended primarily as a method return type. Anti-patterns include using it for fields, method parameters, or in collections, and calling get() without checking, which just reintroduces NullPointerException-style failures.",
+      "quizAnswer": "It makes an absent return value explicit; misused as fields, parameters, or via unchecked get() calls.",
+      "distractors": [
+        "It makes an absent return value explicit; misused only when combined with primitive streams like IntStream.",
+        "It guarantees non-null returns automatically; misused as a return type instead of for method parameters.",
+        "It makes absence explicit and is thread-safe for shared state; misused when stored in immutable records.",
+        "It replaces all null checks at runtime; the anti-pattern is wrapping it in try-with-resources blocks.",
+        "It makes an absent return value explicit; misused whenever orElseGet is chosen over the orElse method.",
+        "It defers computation lazily like a stream; misused when passed to constructors instead of factory methods."
+      ]
+    },
+    {
+      "front": "[Advanced] How does a lambda differ from an anonymous inner class in terms of `this` and instance creation?",
+      "back": "In a lambda, `this` refers to the enclosing instance, and no new class/scope is introduced; in an anonymous class, `this` refers to the anonymous instance itself. Lambdas are compiled via invokedynamic and often do not allocate a new object per evaluation (they can be cached), whereas each anonymous class instantiation creates a distinct object of a separately generated class.",
+      "quizAnswer": "In a lambda `this` is the enclosing instance and no new class is generated; anonymous classes create their own instance and scope.",
+      "distractors": [
+        "In a lambda `this` is the lambda object itself; anonymous classes instead inherit the enclosing instance's this.",
+        "Both introduce a new scope where `this` is the inner object; only lambdas avoid generating a separate class file.",
+        "In a lambda `this` is the enclosing instance, but each lambda still generates one class file at compile time.",
+        "In a lambda `this` is null unless captured; anonymous classes bind this to the enclosing instance eagerly.",
+        "In a lambda `this` is the enclosing instance; lambdas are compiled to anonymous classes with cached fields.",
+        "In a lambda `this` refers to the functional interface; anonymous classes refer to their generated supertype."
+      ]
+    },
+    {
+      "front": "[Advanced] In the Java Memory Model, what visibility guarantee does `volatile` provide, and what does it NOT provide?",
+      "back": "A volatile read/write establishes a happens-before edge: a write to a volatile variable is visible to any subsequent read of it, and it prevents reordering of surrounding accesses across the barrier. It does NOT provide atomicity for compound actions like count++, which is read-modify-write; for those you need synchronization or an atomic class.",
+      "quizAnswer": "It guarantees visibility and ordering of reads/writes, but not atomicity of compound actions like i++.",
+      "distractors": [
+        "It guarantees atomicity of compound actions like i++, but not visibility across separate threads.",
+        "It guarantees visibility, ordering, and atomicity of single reads and increments on the variable.",
+        "It guarantees mutual exclusion like a lock, so only one thread can access the field at a time.",
+        "It guarantees visibility for the field, but reorders surrounding non-volatile accesses freely.",
+        "It guarantees visibility and ordering, and makes long/double writes atomic, but not increments.",
+        "It guarantees ordering only within one thread, not visibility of writes to other reading threads."
+      ]
+    },
+    {
+      "front": "[Advanced] What capabilities does ReentrantLock offer that intrinsic `synchronized` does not?",
+      "back": "ReentrantLock adds features synchronized lacks: tryLock() (with optional timeout), interruptible lock acquisition, optional fairness policy, multiple Condition objects per lock, and the ability to lock/unlock across method boundaries. The tradeoff is you must unlock() in a finally block manually, whereas synchronized releases automatically on scope exit.",
+      "quizAnswer": "tryLock with timeout, interruptible acquisition, fairness, and multiple conditions, but you must unlock in a finally.",
+      "distractors": [
+        "tryLock with timeout and fairness, plus automatic unlock on scope exit like synchronized provides.",
+        "Reentrancy and condition variables, which synchronized entirely lacks, but no timeout or interruption support.",
+        "tryLock, fairness, and interruptible acquisition, and it is always faster than synchronized under contention.",
+        "tryLock with timeout, interruptible acquisition, and fairness, but it supports only one condition per lock.",
+        "Lock-free CAS semantics and timeouts, avoiding the monitor entirely, but requiring volatile guarded fields.",
+        "tryLock, fairness, and multiple conditions, and unlike synchronized it is not reentrant by the same thread."
+      ]
+    },
+    {
+      "front": "[Intermediate] Why should you prefer an ExecutorService thread pool over creating new Threads per task?",
+      "back": "A thread pool reuses a bounded set of worker threads, amortizing thread-creation cost, capping concurrency to protect the machine, and queuing excess work. Manually spawning a Thread per task risks unbounded thread growth, resource exhaustion, and OutOfMemoryError under load, plus you lose lifecycle management, task queuing, and clean shutdown.",
+      "quizAnswer": "Pools reuse bounded workers, cap concurrency, and queue tasks; per-task threads risk unbounded growth and exhaustion.",
+      "distractors": [
+        "Pools create one thread per task but reuse their stacks, avoiding the exhaustion that raw threads cause.",
+        "Pools reuse bounded workers but cannot queue tasks, so they reject excess work rather than exhausting memory.",
+        "Pools guarantee tasks run in submission order, which per-task threads cannot, preventing race conditions.",
+        "Pools reuse workers and run every task in parallel with no cap, which raw per-task threads cannot achieve.",
+        "Pools eliminate the need for synchronization because a single worker processes all tasks sequentially.",
+        "Pools reuse bounded workers and cap concurrency, but unlike raw threads they cannot be shut down cleanly."
+      ]
+    },
+    {
+      "front": "[Advanced] How does CompletableFuture let you compose asynchronous work without blocking?",
+      "back": "CompletableFuture is a Future you can complete manually and, crucially, chain with non-blocking callbacks: thenApply/thenCompose transform results, thenCombine merges two futures, and exceptionally/handle deal with failures. Callbacks run when the stage completes (on a supplied or common ForkJoinPool executor), so you build a dependency graph instead of calling get() and blocking.",
+      "quizAnswer": "You chain non-blocking callbacks (thenApply, thenCompose, thenCombine) that run on completion instead of blocking on get().",
+      "distractors": [
+        "You chain callbacks that each block the calling thread briefly until the previous stage's get() returns.",
+        "You register callbacks that run on completion, but composition still requires one blocking get() per stage.",
+        "You chain non-blocking callbacks that always execute on the submitting thread to preserve ordering guarantees.",
+        "You poll isDone() in a loop and invoke thenApply manually once each dependent stage reports completion.",
+        "You chain callbacks (thenApply, thenCompose) that run eagerly at creation time, before the source completes.",
+        "You chain non-blocking callbacks, but exceptions cannot be handled in the pipeline; you must catch on get()."
+      ]
+    },
+    {
+      "front": "[Advanced] How do java.util.concurrent atomics like AtomicInteger achieve thread-safe updates without locks?",
+      "back": "Atomics wrap a volatile value and use hardware compare-and-swap (CAS) instructions: incrementAndGet reads the current value and atomically swaps in the new one only if the value is unchanged, retrying in a loop on contention. This is lock-free and often faster than locking under moderate contention, though heavy contention can cause many retries (mitigated by LongAdder).",
+      "quizAnswer": "They use hardware compare-and-swap on a volatile field, retrying in a loop instead of locking.",
+      "distractors": [
+        "They acquire a fine-grained internal spinlock per operation, which is cheaper than an intrinsic monitor.",
+        "They use hardware compare-and-swap, but block the thread rather than retrying when a swap fails.",
+        "They mark the field volatile, which alone makes increment atomic without any compare-and-swap needed.",
+        "They use compare-and-swap on a non-volatile field, relying on synchronized blocks for visibility only.",
+        "They batch updates per thread and merge them lazily, which is why AtomicInteger scales like LongAdder.",
+        "They use hardware compare-and-swap that succeeds unconditionally, so contention never triggers a retry."
+      ]
+    },
+    {
+      "front": "[Advanced] What is generational garbage collection, and what assumption motivates it?",
+      "back": "Generational GC splits the heap into a young generation (Eden + survivor spaces) and an old/tenured generation, based on the 'weak generational hypothesis' that most objects die young. Cheap, frequent minor collections scavenge the young generation, promoting long-lived survivors to the old generation, which is collected less often by more expensive major/full collections.",
+      "quizAnswer": "The heap is split into young and old generations on the assumption that most objects die young.",
+      "distractors": [
+        "The heap is split into young and old generations on the assumption that most objects live a long time.",
+        "The heap is split by object size, since the hypothesis holds that large objects are collected first.",
+        "The heap is split into young and old generations, and objects are promoted based on their access frequency.",
+        "The heap is split into permanent and temporary regions on the assumption that classes rarely unload.",
+        "The heap is split into young and old generations, with minor collections scanning the entire old space too.",
+        "The heap is split by thread, since the hypothesis holds each thread's objects share a common lifetime."
+      ]
+    },
+    {
+      "front": "[Advanced] Why is finalize() discouraged, and what do PhantomReference and Cleaner offer instead?",
+      "back": "finalize() is deprecated because it runs at an unpredictable time (or never), can resurrect objects, delays reclamation, and slows GC. The modern approach is a Cleaner (built on PhantomReference), which registers a cleanup action that runs after the object becomes phantom-reachable, without the ability to resurrect it. Deterministic cleanup should use try-with-resources / AutoCloseable.",
+      "quizAnswer": "finalize() runs unpredictably and can resurrect objects; Cleaner/PhantomReference give safer post-mortem cleanup without resurrection.",
+      "distractors": [
+        "finalize() runs unpredictably; PhantomReference lets you access the object one last time before it is freed.",
+        "finalize() is deprecated because it runs too eagerly; Cleaner defers cleanup until the next full GC deterministically.",
+        "finalize() can resurrect objects; SoftReference replaces it by guaranteeing cleanup exactly when memory is low.",
+        "finalize() runs unpredictably; WeakReference and Cleaner run cleanup synchronously when the last strong ref drops.",
+        "finalize() slows GC; Cleaner runs the same finalize logic but on the finalizer thread with a fixed timeout.",
+        "finalize() runs unpredictably and can resurrect objects; Cleaner guarantees ordering across all registered actions."
+      ]
+    },
+    {
+      "front": "[Intermediate] What are records, and what does the compiler generate for them?",
+      "back": "A record is a concise, immutable data carrier declared as `record Point(int x, int y) {}`. The compiler generates a canonical constructor, private final fields, public accessor methods (x(), y()), and value-based equals(), hashCode(), and toString(). Records are implicitly final, cannot extend a class, and their components are fixed, though you can add a compact constructor for validation.",
+      "quizAnswer": "An immutable data carrier; the compiler generates the constructor, accessors, equals, hashCode, and toString automatically.",
+      "distractors": [
+        "An immutable data carrier; the compiler generates getters and setters but leaves equals and hashCode to you.",
+        "A mutable data carrier; the compiler generates accessors and a builder but omits toString by default.",
+        "An immutable data carrier that can extend abstract classes; the compiler generates only the constructor.",
+        "An immutable data carrier; the compiler generates JavaBeans-style getX() accessors plus equals and hashCode.",
+        "An immutable data carrier; the compiler generates equals and toString but requires you to write hashCode.",
+        "An immutable value class; the compiler generates reference-based equals and identity hashCode for speed."
+      ]
+    },
+    {
+      "front": "[Advanced] What are sealed classes, and how do they interact with exhaustive switch expressions?",
+      "back": "A sealed class or interface restricts which classes may extend/implement it via a `permits` clause; permitted subclasses must be final, sealed, or non-sealed. Because the compiler knows the full set of subtypes, a switch expression over a sealed type can be checked for exhaustiveness, letting you omit a default branch when all permitted types are covered (pattern matching).",
+      "quizAnswer": "They restrict subtypes via permits, letting the compiler verify a switch covers all cases without a default.",
+      "distractors": [
+        "They restrict subtypes via permits, but a switch over them still requires an explicit default branch always.",
+        "They hide subtypes from other packages, so switch exhaustiveness works only within the declaring module.",
+        "They restrict subtypes via permits, and permitted subclasses may be abstract or open without restriction.",
+        "They make a class final and unextendable, so no switch pattern matching over subtypes is possible at all.",
+        "They restrict subtypes via extends clauses, letting the compiler infer generic bounds for switch arms.",
+        "They restrict subtypes via permits, but exhaustiveness checking applies only to enum-based switches."
+      ]
+    },
+    {
+      "front": "[Intermediate] What does `var` do for local variable type inference, and what are its limits?",
+      "back": "`var` lets the compiler infer a local variable's type from its initializer, reducing verbosity while keeping full static typing (it is not dynamic typing). It is limited to local variables with an initializer, for/for-each loop indices, and try-with-resources. It cannot be used for fields, method parameters, return types, or without an initializer, and cannot be initialized to null alone.",
+      "quizAnswer": "It infers a local variable's static type from its initializer; not usable for fields, parameters, or without an initializer.",
+      "distractors": [
+        "It infers a local variable's type from its initializer, and also works for fields and method parameters.",
+        "It makes a local variable dynamically typed, so its type can change on reassignment within the method.",
+        "It infers a local's type from its first use, so an initializer at declaration is optional but recommended.",
+        "It infers a local variable's static type; it may be initialized to null, inferring Object as the type.",
+        "It infers method return types from the returned expression, reducing signature boilerplate in lambdas.",
+        "It infers a local's static type from its initializer, but only for primitives, not reference types."
+      ]
+    },
+    {
+      "front": "[Advanced] What triggers class initialization in the JVM, and how does it differ from class loading?",
+      "back": "Loading brings a class's bytecode into the JVM and creates its Class object; linking verifies, prepares (default field values), and resolves it. Initialization, which runs static initializers and static field assignments, is lazy: it happens on first active use, such as instantiating the class, invoking a static method, or reading/writing a non-constant static field. Accessing a compile-time constant does not trigger it.",
+      "quizAnswer": "Initialization runs static initializers lazily on first active use, distinct from loading which just brings in the bytecode.",
+      "distractors": [
+        "Initialization runs static initializers eagerly at load time, so loading and initialization always occur together.",
+        "Initialization runs static initializers on first use, including reads of compile-time constant static fields.",
+        "Initialization creates the Class object and runs constructors; loading is a separate later verification phase.",
+        "Initialization runs static blocks lazily, but only the JVM's first thread to touch the class triggers it.",
+        "Initialization and loading are the same step; the terms merely distinguish user code from bootstrap classes.",
+        "Initialization runs instance initializers on first active use, distinct from loading which runs static blocks."
+      ]
+    }
+  ]
+}

@@ -20,23 +20,49 @@ async function loadDeckFile(file) {
   }
 }
 
+// Optional visibility config (public/decks/visibility.json): lets you hide
+// built-in groups/decks without editing the manifest. Missing file or missing
+// entry => visible. An explicit `false` hides that group or deck.
+async function loadVisibility() {
+  try {
+    const res = await fetch(`${BASE}decks/visibility.json`, { cache: 'no-cache' })
+    if (!res.ok) return null
+    const cfg = await res.json()
+    return {
+      groups: (cfg && cfg.groups) || {},
+      decks: (cfg && cfg.decks) || {},
+    }
+  } catch {
+    return null
+  }
+}
+
 // Load the bundled decks, grouped by origin, from public/decks/index.json.
 // Supports the grouped format { groups: [{ id, title, description, decks: [...] }] }
 // and falls back to a flat array (one implicit group) for older manifests.
+// Filtered by the optional visibility config.
 async function loadBuiltinGroups() {
   try {
-    const res = await fetch(`${BASE}decks/index.json`, { cache: 'no-cache' })
+    const [res, visibility] = await Promise.all([
+      fetch(`${BASE}decks/index.json`, { cache: 'no-cache' }),
+      loadVisibility(),
+    ])
     if (!res.ok) return []
     const idx = await res.json()
     const groupsRaw = Array.isArray(idx)
       ? [{ id: 'decks', title: 'Decks', description: '', decks: idx }]
       : idx.groups || []
+    const groupOn = (id) => !visibility || visibility.groups[id] !== false
+    const deckOn = (file) => !visibility || visibility.decks[file] !== false
+    const visibleGroups = groupsRaw.filter((g) => groupOn(g.id))
     const groups = await Promise.all(
-      groupsRaw.map(async (g) => ({
+      visibleGroups.map(async (g) => ({
         id: g.id,
         title: g.title,
         description: g.description || '',
-        decks: (await Promise.all((g.decks || []).map(loadDeckFile))).filter(Boolean),
+        decks: (
+          await Promise.all((g.decks || []).filter(deckOn).map(loadDeckFile))
+        ).filter(Boolean),
       }))
     )
     return groups.filter((g) => g.decks.length)

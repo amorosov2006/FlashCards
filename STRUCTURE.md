@@ -216,6 +216,21 @@ Full format used by bundled decks:
 
 ---
 
+## Choosing which decks are shown (`public/decks/visibility.json`)
+
+An optional config file toggles the visibility of built-in groups and decks without editing the manifest:
+
+```json
+{
+  "groups": { "citizenship": true, "tech-fundamentals": false },
+  "decks":  { "tech-python-libraries.json": false }
+}
+```
+
+- Keyed by group `id` and deck filename. `false` hides; `true` or a missing entry shows.
+- Hiding a group hides all decks inside it. Only affects built-in decks, not imported ones.
+- Loaded by `loadVisibility()` in `App.jsx` and applied in `loadBuiltinGroups()`. If the file is absent, everything is shown.
+
 ## Adding a new bundled deck
 
 1. Create `public/decks/<name>.json` following the format above.

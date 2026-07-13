@@ -1,0 +1,279 @@
+{
+  "title": "Python Libraries · NumPy, collections, pandas",
+  "description": "Basic-to-intermediate quiz on NumPy arrays, the collections module, and pandas data structures and operations.",
+  "cards": [
+    {
+      "front": "[NumPy] How does a NumPy ndarray fundamentally differ from a Python list in memory and typing?",
+      "back": "An ndarray stores elements of a single fixed dtype in one contiguous memory block, enabling fast vectorized C-level operations. A Python list holds pointers to arbitrary heterogeneous Python objects scattered in memory. This homogeneity and layout is what makes NumPy fast and memory-efficient.",
+      "quizAnswer": "A contiguous block of one fixed dtype, versus a list of pointers to arbitrary objects.",
+      "distractors": [
+        "A contiguous block, but each element keeps its own dtype like a list does.",
+        "A linked sequence of typed cells, versus a list's contiguous block of pointers.",
+        "A fixed-dtype block, but stored non-contiguously so slicing must copy elements.",
+        "A block of Python objects with a shared dtype tag added for faster iteration.",
+        "A contiguous block of pointers to typed scalars, versus a list of raw values.",
+        "A fixed-dtype block that, unlike a list, cannot be resized or reshaped at all."
+      ]
+    },
+    {
+      "front": "[NumPy] Why are vectorized NumPy operations typically much faster than equivalent Python for-loops?",
+      "back": "Vectorized operations push the per-element work into precompiled C loops over contiguous typed data, avoiding Python's per-iteration interpreter overhead and dynamic dispatch. A Python loop re-checks types and boxes objects every iteration. This is why you replace explicit loops with array expressions.",
+      "quizAnswer": "The loop runs in compiled C over typed data, avoiding per-element Python interpreter overhead.",
+      "distractors": [
+        "NumPy caches loop results, so repeated element operations skip recomputation entirely.",
+        "The loop runs in C, but only for integer dtypes; floats still use Python.",
+        "NumPy automatically spreads the loop across all CPU cores using threads by default.",
+        "The interpreter compiles your Python loop to C the first time it runs.",
+        "Vectorized ops skip bounds checking, which is the main source of the speedup.",
+        "NumPy moves the data to the GPU, running the element loop in parallel there."
+      ]
+    },
+    {
+      "front": "[NumPy] What are NumPy broadcasting rules when combining two arrays of different shapes?",
+      "back": "NumPy compares shapes from the trailing dimension backward; dimensions are compatible when they are equal or one of them is 1, which gets stretched to match. Missing leading dimensions are treated as 1. If any dimension pair is incompatible, it raises a ValueError.",
+      "quizAnswer": "Align shapes from the right; dimensions must be equal or one must be 1 to stretch.",
+      "distractors": [
+        "Align shapes from the left; dimensions must be equal or one must be 1.",
+        "Align from the right; any unequal dimensions are stretched to their least common multiple.",
+        "Align from the right; a size-1 dimension is dropped rather than stretched to match.",
+        "Align from the right; dimensions must be equal, otherwise the smaller array is tiled.",
+        "Align from the right; one dimension must be 1 and the other a multiple of it.",
+        "Align from the right; scalars broadcast, but two arrays must share identical shapes."
+      ]
+    },
+    {
+      "front": "[NumPy] What does basic slicing like a[1:4] return, and how does it relate to the original array?",
+      "back": "Basic slicing returns a view: a new array object that shares the original's underlying data buffer. Writing through the view mutates the original data. Use .copy() for independence; by contrast, fancy (integer-array) and boolean indexing return copies.",
+      "quizAnswer": "A view sharing the original's data buffer, so writes through it mutate the original.",
+      "distractors": [
+        "A copy by default, but NumPy delays allocation until the slice is first written.",
+        "A view, but writes are copy-on-write, so the original changes only after flushing.",
+        "A read-only view; modifying it raises a ValueError to protect the source array.",
+        "A shallow copy sharing element references, so only nested edits reach the original.",
+        "A copy whose dtype is re-inferred, so integer slices silently upcast to float64.",
+        "A view sharing the buffer, but reshaping it detaches the link to the original."
+      ]
+    },
+    {
+      "front": "[NumPy] For a 2D array, what does axis=0 mean when calling arr.sum(axis=0)?",
+      "back": "axis=0 is the row axis, so the operation collapses down the rows and aggregates each column, producing one value per column. axis=1 collapses across columns, aggregating each row. The named axis is the one that disappears from the result shape.",
+      "quizAnswer": "It collapses down the rows, summing each column and yielding one result per column.",
+      "distractors": [
+        "It collapses across the columns, summing each row and yielding one result per row.",
+        "It sums the entire array along its first stride, returning a single scalar value.",
+        "It collapses down the rows but keeps that dimension, returning a one-row 2D array.",
+        "It sums each column, but only over rows that contain no NaN or zero values.",
+        "It collapses the last axis first, so for 2D it actually aggregates the rows.",
+        "It sums down the rows, then divides by the column count to normalize results."
+      ]
+    },
+    {
+      "front": "[NumPy] What is the difference between reshape and ravel on an array?",
+      "back": "reshape returns an array with new dimensions (a view when possible) without changing data. ravel flattens to 1D, also returning a view when the memory layout allows, else a copy. Neither reorders data; flatten() is the always-copy 1D alternative.",
+      "quizAnswer": "reshape changes dimensions; ravel flattens to 1D. Both return views when memory layout permits.",
+      "distractors": [
+        "reshape changes dimensions; ravel flattens to 1D. Both always return independent copies.",
+        "reshape changes dimensions; ravel flattens to 1D. Both always return views, never copies.",
+        "reshape flattens to 1D; ravel sets dimensions. Both return views when layout permits.",
+        "reshape changes dimensions and copies; ravel flattens and returns a view always.",
+        "reshape changes dimensions in place; ravel returns a new flattened copy every time.",
+        "reshape changes dimensions; ravel flattens and sorts, returning a view when possible."
+      ]
+    },
+    {
+      "front": "[NumPy] How does boolean-mask indexing (a[a > 0]) differ from fancy integer-array indexing in what it selects and returns?",
+      "back": "Boolean indexing selects elements where the mask is True, returning a 1D copy. Fancy indexing uses an array of integer positions to pick and reorder elements, also returning a copy shaped like the index array. Both copy, unlike basic slicing which returns a view.",
+      "quizAnswer": "Mask picks where True; fancy picks by integer positions. Both return copies, not views.",
+      "distractors": [
+        "Mask picks where True; fancy picks by integer positions. Both return views, not copies.",
+        "Mask picks by integer positions; fancy picks where True. Both return independent copies.",
+        "Mask picks where True and copies; fancy picks by positions but returns a view.",
+        "Mask picks where True; fancy picks by positions. Both preserve the original 2D shape.",
+        "Mask picks where True; fancy picks by positions. Only fancy indexing returns a copy.",
+        "Mask picks where True, keeping shape; fancy picks by positions, both returning views."
+      ]
+    },
+    {
+      "front": "[NumPy] Why does np.nan behave surprisingly in comparisons, and how do you test for it?",
+      "back": "np.nan is a float that is not equal to anything, including itself, so nan == nan is False and any comparison with it is False. Use np.isnan() to detect NaN. This is why == filters miss NaN and dedicated NaN-aware functions exist.",
+      "quizAnswer": "NaN never equals anything, even itself, so use np.isnan() rather than == to detect it.",
+      "distractors": [
+        "NaN equals only itself but nothing else, so use == np.nan to detect it.",
+        "NaN never equals anything, so use x is np.nan identity checks to detect it.",
+        "NaN compares greater than every number, so test with x > np.inf to find it.",
+        "NaN never equals anything, so np.isnan works but only on integer-typed arrays.",
+        "NaN equals zero in comparisons, so filter with x == 0 to catch missing values.",
+        "NaN never equals anything, so reductions like sum skip it automatically by default."
+      ]
+    },
+    {
+      "front": "[collections] What problem does collections.defaultdict solve compared to a plain dict?",
+      "back": "defaultdict takes a factory called automatically when a missing key is accessed, so you can append or increment without checking existence or using setdefault. Accessing a missing key inserts the default value. A plain dict raises KeyError instead.",
+      "quizAnswer": "It auto-creates a default value for missing keys via a factory, avoiding KeyError on access.",
+      "distractors": [
+        "It returns None for missing keys without inserting them, avoiding KeyError on access.",
+        "It auto-creates a default value, but only when you call get, not on bracket access.",
+        "It pre-fills every possible key with a default, so no lookup ever misses.",
+        "It auto-creates defaults for missing keys, and also blocks overwriting existing keys.",
+        "It raises KeyError like dict, but the factory supplies a fallback for get calls.",
+        "It auto-creates a default via a factory, evaluated once and shared across all keys."
+      ]
+    },
+    {
+      "front": "[collections] What does collections.Counter provide, and what does its most_common(n) method return?",
+      "back": "Counter is a dict subclass that tallies hashable items into counts, built from an iterable or mapping. most_common(n) returns the n highest-count items as (element, count) tuples ordered from most to least frequent; with no argument it returns all. Missing keys count as zero.",
+      "quizAnswer": "Counts hashable items; most_common(n) returns the n highest (element, count) pairs, most frequent first.",
+      "distractors": [
+        "Counts hashable items; most_common(n) returns the n highest counts as bare integers.",
+        "Counts hashable items; most_common(n) returns the n lowest (element, count) pairs first.",
+        "Counts hashable items; most_common(n) returns n pairs in insertion order, not by count.",
+        "Counts unique items only; most_common(n) returns the n most recently added elements.",
+        "Counts hashable items; most_common(n) returns the top n elements without their counts.",
+        "Counts hashable items; most_common(n) returns n random pairs above the mean frequency."
+      ]
+    },
+    {
+      "front": "[collections] What makes collections.deque preferable to a list for queue-like operations, and what does maxlen do?",
+      "back": "deque gives O(1) appends and pops at both ends, whereas a list's operations at the front are O(n) because it shifts elements. A maxlen makes it a bounded ring buffer: pushing past the limit discards items from the opposite end. Ideal for queues and sliding windows.",
+      "quizAnswer": "O(1) pushes and pops at both ends; maxlen bounds it, discarding from the opposite end.",
+      "distractors": [
+        "O(1) pushes and pops at both ends; maxlen bounds it, raising an error when full.",
+        "O(1) at both ends; maxlen bounds it, discarding new items rather than old ones.",
+        "O(1) at the right end only, like a list; maxlen caps total memory it uses.",
+        "O(log n) pushes and pops at both ends; maxlen keeps it sorted within the limit.",
+        "O(1) at both ends; maxlen fixes capacity but silently ignores overflowing appends.",
+        "O(1) pops but O(n) pushes at the left; maxlen discards from the same end."
+      ]
+    },
+    {
+      "front": "[collections] What is a collections.namedtuple and how does it relate to a regular tuple?",
+      "back": "namedtuple is a factory producing an immutable tuple subclass whose fields are accessible by name and by position. Instances are as lightweight as tuples but self-documenting via attribute access. They stay immutable, so use _replace to get a modified copy.",
+      "quizAnswer": "An immutable tuple subclass with named, position-accessible fields; lighter and clearer than a class.",
+      "distractors": [
+        "A mutable tuple subclass with named fields, so attributes can be reassigned in place.",
+        "An immutable dict subclass with ordered keys, accessible by name but not position.",
+        "An immutable tuple subclass, but fields are accessible only by name, not position.",
+        "An immutable tuple wrapper that stores fields in a dict, using more memory than tuples.",
+        "A tuple subclass with named fields that becomes mutable once you call _replace.",
+        "An immutable tuple subclass whose fields are accessible by position but not by name."
+      ]
+    },
+    {
+      "front": "[collections] Given regular dicts preserve insertion order since Python 3.7, what does OrderedDict still add?",
+      "back": "Since 3.7 both keep insertion order, but OrderedDict adds order-aware behavior: move_to_end(), a popitem(last=...) that pops from either end, and equality that is order-sensitive between two OrderedDicts. Plain dict equality ignores order. Use OrderedDict when order operations matter.",
+      "quizAnswer": "Order-aware methods like move_to_end and popitem(last=), plus order-sensitive equality comparisons.",
+      "distractors": [
+        "Guaranteed insertion order, which plain dict still does not actually promise.",
+        "Faster key lookups, since it indexes entries by insertion position internally.",
+        "Order-aware methods like move_to_end, but its equality still ignores ordering.",
+        "Automatic key sorting on insertion, plus a popitem that pops from either end.",
+        "Order-sensitive equality only; it lacks move_to_end and directional popitem support.",
+        "Reverse iteration support, which plain dicts cannot do even in 3.7 and later."
+      ]
+    },
+    {
+      "front": "[collections] What does collections.ChainMap do with several dictionaries?",
+      "back": "ChainMap groups multiple mappings into one view searched in order: a lookup returns the first map that has the key. Writes and deletes affect only the first map. It avoids copying/merging and is handy for layered configs and scopes. Underlying maps stay live.",
+      "quizAnswer": "Views several dicts as one; lookups search them in order, writes hit only the first.",
+      "distractors": [
+        "Views several dicts as one; lookups search in order, writes propagate to every map.",
+        "Merges several dicts into one new dict, with later maps overriding earlier keys.",
+        "Views several dicts as one; lookups search in reverse order, writes hit the last.",
+        "Views several dicts as one; lookups return all matching values as a combined list.",
+        "Views several dicts as one; writes hit the first, but lookups only see that first.",
+        "Chains dicts so lookups search in order, but any write raises a read-only error."
+      ]
+    },
+    {
+      "front": "[pandas] What is the core difference between a pandas Series and a DataFrame?",
+      "back": "A Series is a 1D labeled array of a single dtype with an index. A DataFrame is a 2D labeled table, a collection of Series columns sharing one row index, where columns may have different dtypes. Selecting one DataFrame column returns a Series.",
+      "quizAnswer": "Series is a 1D labeled array; DataFrame is a 2D table of aligned columns sharing an index.",
+      "distractors": [
+        "Series is a 1D labeled array; DataFrame is a 2D table where every column shares one dtype.",
+        "Series is an unlabeled 1D array; DataFrame is a 2D table with labeled rows only.",
+        "Series is a 2D single-column table; DataFrame stacks several Series along the rows.",
+        "Series is a 1D labeled array; DataFrame is a dict of Series with independent row indexes.",
+        "Series holds one dtype; DataFrame is a 2D array, so all its columns share that dtype.",
+        "Series is a 1D array without an index; DataFrame adds both a row and column index."
+      ]
+    },
+    {
+      "front": "[pandas] How do .loc and .iloc differ when selecting from a DataFrame?",
+      "back": ".loc selects by label (index and column names) and its slices are inclusive of the endpoint. .iloc selects by integer position and its slices exclude the endpoint like Python. Mixing them up is a common source of off-by-one and KeyError bugs.",
+      "quizAnswer": ".loc selects by label with inclusive slices; .iloc selects by integer position with exclusive slices.",
+      "distractors": [
+        ".loc selects by integer position; .iloc selects by label, both with inclusive slices.",
+        ".loc selects by label with exclusive slices; .iloc selects by position with inclusive slices.",
+        ".loc selects by label and .iloc by position, but both slice-endpoints are exclusive.",
+        ".loc selects by label and .iloc by position, and both include the slice endpoint.",
+        ".loc selects rows only; .iloc selects columns only, both indexed by their labels.",
+        ".loc and .iloc both select by label, differing only in whether slices are inclusive."
+      ]
+    },
+    {
+      "front": "[pandas] What causes a SettingWithCopyWarning, and how do you assign correctly instead?",
+      "back": "Chained indexing like df[mask]['col'] = x operates on a temporary object that may be a view or copy, so the write may not reach df. pandas warns because the result is ambiguous. Use a single .loc call, df.loc[mask, 'col'] = x, to assign reliably.",
+      "quizAnswer": "Chained indexing writes to an ambiguous temporary; use one df.loc[mask, 'col'] = x call instead.",
+      "distractors": [
+        "Chained indexing writes to an ambiguous temporary; use df[mask]['col'] = x to fix it.",
+        "Assigning across mismatched dtypes; cast the column first, then assign with chained indexing.",
+        "Chained indexing always writes to a copy; suppress the warning and the write still lands.",
+        "Modifying a DataFrame during iteration; collect edits and apply them after the loop finishes.",
+        "Chained indexing writes to a temporary; use df.iloc[mask, 'col'] = x to assign instead.",
+        "Assigning to a filtered view; call .copy() first, then edits will reach the original df."
+      ]
+    },
+    {
+      "front": "[pandas] What happens during arithmetic between two Series with partially overlapping indexes?",
+      "back": "pandas aligns on the index labels first, matching entries by label rather than position. Labels present in only one Series produce NaN in the result unless you use a method with fill_value. This automatic alignment is powerful but a frequent source of unexpected NaN.",
+      "quizAnswer": "Values align by index label; labels missing from either side yield NaN in the result.",
+      "distractors": [
+        "Values align by position; mismatched lengths raise a ValueError before computing.",
+        "Values align by index label; unmatched labels are dropped from the result entirely.",
+        "Values align by position; labels missing from either side yield NaN in the result.",
+        "Values align by label; unmatched labels take the other Series' value as a fallback.",
+        "Values align by label, but unmatched labels default to zero rather than to NaN.",
+        "Values align by insertion order; labels are ignored, so overlapping indexes do nothing."
+      ]
+    },
+    {
+      "front": "[pandas] What are the three phases of a groupby operation, and what does df.groupby('k')['v'].mean() do?",
+      "back": "groupby follows split-apply-combine: split rows into groups by key, apply an aggregation to each group, then combine results into a new indexed object. The example splits by column k, computes the mean of v per group, and returns a Series indexed by the distinct k values.",
+      "quizAnswer": "Split-apply-combine: group rows by k, average v per group, return a Series indexed by k.",
+      "distractors": [
+        "Split-apply-combine: group rows by k, average v per group, return the original-length frame.",
+        "Filter-map-reduce: group rows by k, average v per group, return a Series indexed by k.",
+        "Split-apply-combine: group rows by v, average k per group, return a Series indexed by v.",
+        "Split-apply-combine: sort rows by k, average v cumulatively, return a running-mean Series.",
+        "Split-apply-combine: group by k, average v, return a DataFrame with k as a normal column.",
+        "Split-apply-combine: group rows by k, average all numeric columns, indexed by k values."
+      ]
+    },
+    {
+      "front": "[pandas] How does a how='inner' merge differ from how='left' when joining two DataFrames on a key?",
+      "back": "An inner merge keeps only keys present in both frames, dropping non-matching rows. A left merge keeps every row from the left frame, filling columns from the right with NaN where no match exists. how also supports 'right' and 'outer' for other keep-sets.",
+      "quizAnswer": "Inner keeps only keys in both; left keeps all left rows, filling unmatched right columns with NaN.",
+      "distractors": [
+        "Inner keeps keys in either frame; left keeps all left rows, filling unmatched with NaN.",
+        "Inner keeps only keys in both; left keeps only left rows that also match on the right.",
+        "Inner keeps all rows from both; left keeps left rows, dropping any unmatched right columns.",
+        "Inner keeps keys in both; left keeps all right rows, filling unmatched left columns with NaN.",
+        "Inner drops duplicate keys; left keeps all left rows including the duplicates it removed.",
+        "Inner keeps only keys in both; left keeps all left rows, filling unmatched columns with zero."
+      ]
+    },
+    {
+      "front": "[pandas] How do dropna and fillna differ for handling missing values in a DataFrame?",
+      "back": "dropna removes rows (or columns with axis=1) that contain NaN, shrinking the data. fillna replaces NaN with a specified value or method like ffill, preserving shape. Choose dropna to discard incomplete records and fillna to impute or forward-carry values.",
+      "quizAnswer": "dropna removes rows or columns containing NaN; fillna replaces NaN in place, keeping the shape.",
+      "distractors": [
+        "dropna removes rows or columns containing NaN; fillna also drops them but logs a warning.",
+        "dropna replaces NaN with a default; fillna removes rows containing NaN from the frame.",
+        "dropna removes only fully-NaN rows; fillna replaces NaN, both preserving the original shape.",
+        "dropna removes rows with NaN; fillna replaces NaN, but only within numeric-typed columns.",
+        "dropna removes NaN-containing columns only; fillna replaces NaN across every row and column.",
+        "dropna deletes NaN cells and reindexes; fillna replaces NaN, shifting the shape either way."
+      ]
+    }
+  ]
+}

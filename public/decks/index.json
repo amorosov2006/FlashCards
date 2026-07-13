@@ -104,6 +104,17 @@
         "sasha-06-projects-deep-dive.json",
         "sasha-07-behavioral-weak-claims.json"
       ]
+    },
+    {
+      "id": "tech-fundamentals",
+      "title": "Tech Fundamentals",
+      "description": "Practice + quiz drills: intermediate/advanced Java & Python, core Python libraries, and platform tech (Kafka, Terraform, Kubernetes, Snowflake).",
+      "decks": [
+        "tech-java-intermediate-advanced.json",
+        "tech-python-intermediate-advanced.json",
+        "tech-python-libraries.json",
+        "tech-platforms-kafka-terraform-k8s-snowflake.json"
+      ]
     }
   ]
 }

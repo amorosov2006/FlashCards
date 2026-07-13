@@ -1,0 +1,292 @@
+{
+  "title": "Python · Intermediate & Advanced",
+  "description": "A quiz covering core Python semantics: the language, its data model, and runtime behavior from intermediate to advanced.",
+  "cards": [
+    {
+      "front": "[Intermediate] Why does a function using a mutable default argument like def f(x, acc=[]) accumulate values across calls?",
+      "back": "Default argument values are evaluated once, when the def statement executes, and the same object is reused on every call that omits the argument. Mutating it persists across calls. The fix is a sentinel: def f(x, acc=None): acc = acc if acc is not None else [].",
+      "quizAnswer": "The default list is created once at definition time and reused on every call that omits it.",
+      "distractors": [
+        "Python caches the list per call signature, so identical arguments reuse the same object.",
+        "The list is recreated each call, but the interpreter interns empty lists into one shared object.",
+        "Default arguments are evaluated lazily on first use, then frozen as a module-level global.",
+        "Closures capture the list by reference, so every call shares the enclosing scope's copy.",
+        "Mutable defaults are stored on the function's __dict__ and rebound after each return.",
+        "The garbage collector defers collection of default lists, so they linger between calls."
+      ]
+    },
+    {
+      "front": "[Intermediate] What is the difference between the is operator and the == operator in Python?",
+      "back": "== calls __eq__ and tests whether two objects are equal in value. is tests identity, whether two names refer to the exact same object in memory (comparing id() values). Two distinct objects can be equal but not identical.",
+      "quizAnswer": "is compares object identity (same memory object); == compares value equality via __eq__.",
+      "distractors": [
+        "is compares value equality for immutables; == compares identity for mutable containers only.",
+        "is compares type and identity together; == compares value while ignoring the objects' types.",
+        "is is a faster alias for == that skips calling __eq__ on small integers.",
+        "== compares identity by default and falls back to value only when __eq__ is defined.",
+        "is compares hash values; == compares the underlying value after normalizing types.",
+        "They are equivalent except is short-circuits to True whenever both operands are None."
+      ]
+    },
+    {
+      "front": "[Intermediate] Why does 'a' is 'a' return True but two separately built equal strings may not be identical?",
+      "back": "CPython interns some string literals (and small integers -5 to 256) so identical literals share one object, making is return True. Strings built at runtime, e.g. via concatenation or input, are generally not interned, so they may be equal but not identical. Never rely on is for value comparison.",
+      "quizAnswer": "CPython interns some literals so they share one object, but runtime-built strings usually are not interned.",
+      "distractors": [
+        "All equal strings are interned globally, so is on strings always matches == exactly.",
+        "String interning happens only for strings shorter than 20 characters at runtime.",
+        "Python interns every string once it is used as a dict key, guaranteeing identity thereafter.",
+        "Only strings created before the first garbage collection cycle get interned and shared.",
+        "Interning applies to all immutables equally, so tuples and strings behave identically here.",
+        "CPython interns strings lazily when is is first called, caching the result for reuse."
+      ]
+    },
+    {
+      "front": "[Intermediate] What is the LEGB rule and how does Python resolve a bare name reference?",
+      "back": "Python resolves names by searching scopes in order: Local, Enclosing (any outer function), Global (module), then Built-in. The first match wins. Assigning to a name inside a function makes it local for the whole function body unless declared global or nonlocal.",
+      "quizAnswer": "Names resolve through Local, Enclosing, Global, then Built-in scopes, using the first match found.",
+      "distractors": [
+        "Names resolve through Local, Enclosing, Global, then Built-in, but assignments always search outward first.",
+        "Names resolve Built-in, Global, Enclosing, then Local, so inner scopes override outer ones last.",
+        "Names resolve through Local, Global, Enclosing, then Built-in, skipping enclosing for nested defs.",
+        "Names resolve through Local then Global only; enclosing scopes require an explicit nonlocal each time.",
+        "Names resolve through Class, Enclosing, Global, then Built-in, with class bodies acting as scopes.",
+        "Names resolve dynamically up the call stack, so the caller's locals are searched before globals."
+      ]
+    },
+    {
+      "front": "[Intermediate] Why do closures created in a loop, like [lambda: i for i in range(3)], all return the same final value?",
+      "back": "This is late binding: closures capture the variable i by reference, not its value at creation time. When the lambdas are called, they look up i's current value, which is the loop's final value. Bind eagerly with a default argument: lambda i=i: i.",
+      "quizAnswer": "Closures capture the variable by reference and read its final value when later invoked, not at creation.",
+      "distractors": [
+        "Each lambda captures a copy of i, but Python overwrites all copies with the last iteration's value.",
+        "The loop variable is global, so every lambda shares one binding fixed at the first iteration.",
+        "Closures capture i by value, yet the comprehension reuses one lambda object for all three.",
+        "Late binding freezes i at definition, but the garbage collector rebinds it to the final value.",
+        "Each lambda captures i by reference and evaluates it immediately, caching the first value seen.",
+        "The comprehension leaks i into the enclosing scope, where it is then mutated to its final value."
+      ]
+    },
+    {
+      "front": "[Advanced] Why does the CPython GIL limit CPU-bound threads but still allow I/O-bound threads to benefit from threading?",
+      "back": "The Global Interpreter Lock lets only one thread execute Python bytecode at a time, so CPU-bound threads cannot run in true parallel and see no speedup. During blocking I/O the GIL is released, so other threads run while one waits. For CPU parallelism use multiprocessing or a C extension that releases the GIL.",
+      "quizAnswer": "The GIL serializes bytecode execution, but threads release it during blocking I/O so others can proceed.",
+      "distractors": [
+        "The GIL blocks all concurrency, so only multiprocessing helps both CPU-bound and I/O-bound work.",
+        "The GIL serializes I/O calls but permits CPU-bound bytecode to run in parallel across cores.",
+        "The GIL is released every 100 bytecodes, giving CPU-bound threads near-linear parallel speedup.",
+        "Threads never release the GIL; I/O-bound code benefits only because the OS schedules processes.",
+        "The GIL applies per module, so threads in different modules run their bytecode fully in parallel.",
+        "The GIL serializes memory allocation only, leaving both CPU and I/O bytecode free to run parallel."
+      ]
+    },
+    {
+      "front": "[Intermediate] What distinguishes a generator function from a normal function that returns a list?",
+      "back": "A generator function contains yield and returns a generator object that produces values lazily, one at a time, keeping its local state between resumes. It does not build the whole sequence in memory. A list-returning function computes and stores every value eagerly before returning.",
+      "quizAnswer": "A generator yields values lazily on demand, preserving state between resumes, without materializing the full list.",
+      "distractors": [
+        "A generator returns a list lazily, but caches all yielded values so the sequence can be reused.",
+        "A generator computes every value up front like a list, then hands them out one call at a time.",
+        "A generator runs in a separate thread, yielding values concurrently while the caller continues.",
+        "A generator stores state in a global stack, so only one generator can be active at a time.",
+        "A generator yields values eagerly into a buffer, flushing to the caller when the buffer fills.",
+        "A generator is just a list comprehension wrapped in a function, identical in memory behavior."
+      ]
+    },
+    {
+      "front": "[Advanced] What does a generator's .send(value) method do, and how does it relate to yield as an expression?",
+      "back": "Inside a generator, yield can be an expression whose value is whatever the caller passes to .send(value); that value becomes the result of the paused yield when the generator resumes. gen.send(None) is equivalent to next(gen) and is required to prime a generator to its first yield. This two-way channel underlies generator-based coroutines.",
+      "quizAnswer": "send resumes the generator, and its argument becomes the value of the paused yield expression.",
+      "distractors": [
+        "send appends its argument to the generator's output queue, yielded on the next iteration.",
+        "send resumes the generator and returns its argument unchanged, bypassing the yield expression.",
+        "send sets the generator's return value, retrievable later from the StopIteration exception.",
+        "send injects its argument as the next value produced by yield, skipping the generator's own code.",
+        "send resumes the generator, but the argument becomes the value of the following yield, not the paused one.",
+        "send restarts the generator from the top with the argument bound to its first local variable."
+      ]
+    },
+    {
+      "front": "[Advanced] When writing a decorator, what does functools.wraps do and why does it matter?",
+      "back": "A decorator replaces the original function with a wrapper, which by default takes on the wrapper's __name__, __doc__, __module__, and other metadata. functools.wraps(func) copies those attributes from the original onto the wrapper, preserving introspection, help output, and the original signature metadata. Without it, tools and debuggers see the wrapper instead.",
+      "quizAnswer": "It copies the wrapped function's metadata (name, docstring, etc.) onto the wrapper, preserving introspection.",
+      "distractors": [
+        "It caches the wrapped function's return values so repeated identical calls skip re-execution.",
+        "It copies the wrapper's metadata onto the original function so both share one identity.",
+        "It verifies the wrapper's signature matches the wrapped function, raising if they differ.",
+        "It registers the decorator globally so functools can later unwrap the original function.",
+        "It makes the wrapper thread-safe by copying the wrapped function's lock and metadata.",
+        "It preserves the wrapped function's default arguments, which decorators otherwise discard."
+      ]
+    },
+    {
+      "front": "[Advanced] How do you write a decorator that accepts its own arguments, like @retry(times=3)?",
+      "back": "A parameterized decorator needs an extra layer: an outer function takes the decorator arguments and returns the actual decorator, which then takes and wraps the function. So @retry(times=3) calls retry(times=3) first, and its return value decorates the function. That is three nested functions in total.",
+      "quizAnswer": "Add an outer factory that takes the arguments and returns the real decorator, giving three nested layers.",
+      "distractors": [
+        "Pass the arguments through *args on the wrapper; the decorator reads them from the call each time.",
+        "Use a two-layer decorator and read the arguments from the wrapped function's __defaults__ attribute.",
+        "Decorators cannot take arguments directly; you must subclass functools.partial to bind them.",
+        "Add an inner factory inside the wrapper that returns the decorator after the function runs once.",
+        "Store the arguments on the decorator's __dict__, which the wrapper reads at call time via wraps.",
+        "Use a single function and inspect the difference between decorator args and function args at runtime."
+      ]
+    },
+    {
+      "front": "[Advanced] What methods must a context manager implement, and what does __exit__ do when an exception occurs?",
+      "back": "A context manager implements __enter__ (its return value is bound by as) and __exit__(exc_type, exc_val, exc_tb). On a normal exit those exception arguments are None. If an exception occurred in the with body, they describe it; returning a truthy value from __exit__ suppresses the exception, while a falsy value lets it propagate.",
+      "quizAnswer": "__enter__ and __exit__; __exit__ receives the exception and suppresses it only if it returns truthy.",
+      "distractors": [
+        "__enter__ and __exit__; __exit__ receives the exception and always suppresses it unless it re-raises.",
+        "__open__ and __close__; __close__ receives the exception and suppresses it when it returns None.",
+        "__enter__ and __exit__; __exit__ suppresses the exception whenever it returns a falsy value.",
+        "__enter__ and __exit__; returning the exception object from __exit__ re-raises it to the caller.",
+        "__enter__ and __exit__; __exit__ cannot see exceptions, which propagate before it is ever called.",
+        "__setup__ and __teardown__; __teardown__ gets the exception and suppresses it if it returns True."
+      ]
+    },
+    {
+      "front": "[Advanced] What is the purpose of __slots__ on a class, and what tradeoff does it impose?",
+      "back": "Defining __slots__ tells Python to store instance attributes in a fixed array rather than a per-instance __dict__, saving memory and slightly speeding attribute access, especially with many instances. The tradeoff: you cannot add attributes not listed in __slots__, and by default instances lose their __dict__ and __weakref__ unless those are included.",
+      "quizAnswer": "It replaces the per-instance __dict__ with fixed storage, saving memory but forbidding undeclared attributes.",
+      "distractors": [
+        "It makes all listed attributes read-only after construction, trading flexibility for immutability.",
+        "It replaces the instance __dict__ with a shared class-level dict, saving memory but breaking isolation.",
+        "It caches attribute lookups in a fixed array, speeding access but disabling inheritance of slots.",
+        "It stores attributes in a fixed array and still keeps __dict__, so undeclared attributes work slower.",
+        "It interns attribute names across instances, saving memory but preventing use of properties.",
+        "It moves attributes to the metaclass, reducing per-instance memory but forbidding weak references."
+      ]
+    },
+    {
+      "front": "[Advanced] What is a descriptor, and how is property implemented in terms of the descriptor protocol?",
+      "back": "A descriptor is an object defining __get__, __set__, or __delete__; when stored as a class attribute, it intercepts attribute access on instances. property is a built-in data descriptor implementing all three, routing get/set/delete to the functions you supply. Data descriptors (with __set__ or __delete__) take precedence over the instance __dict__.",
+      "quizAnswer": "A descriptor defines __get__/__set__/__delete__; property is a data descriptor wrapping those accessor functions.",
+      "distractors": [
+        "A descriptor defines __getattr__/__setattr__; property is a metaclass that wraps those on the class.",
+        "A descriptor defines __get__/__set__; property is a non-data descriptor, so the instance __dict__ wins.",
+        "A descriptor overrides __getitem__; property applies the same protocol to attribute-style indexing.",
+        "A descriptor defines __call__; property turns a method into a descriptor by making it callable.",
+        "A descriptor defines __get__/__set__/__delete__; property is a plain function decorator, not a descriptor.",
+        "A descriptor caches attribute values; property is a descriptor that memoizes its getter's result."
+      ]
+    },
+    {
+      "front": "[Advanced] What is a metaclass, and what role does type play in Python's object model?",
+      "back": "A metaclass is the class of a class; it controls class creation, letting you customize a class as it is defined via __new__/__init__ or __call__. type is the default metaclass: calling type(name, bases, namespace) builds a class, and instances of type are themselves classes. You set a custom metaclass with class C(metaclass=Meta).",
+      "quizAnswer": "A metaclass is the class of a class; type is the default metaclass that constructs classes themselves.",
+      "distractors": [
+        "A metaclass is a class's base class; type is the root base every class ultimately inherits from.",
+        "A metaclass is the class of a class; type is a function that only reports an object's runtime type.",
+        "A metaclass wraps instance creation; type is the default constructor called for every new instance.",
+        "A metaclass is any class with __new__ defined; type is merely the built-in that returns type names.",
+        "A metaclass controls instances, not classes; type is the metaclass only for built-in types.",
+        "A metaclass is the class of a module; type is the default metaclass shared by modules and classes."
+      ]
+    },
+    {
+      "front": "[Advanced] In multiple inheritance, how does Python determine method resolution order (MRO)?",
+      "back": "Python computes the MRO using the C3 linearization algorithm, producing a single consistent ordering that preserves each class's local precedence and the order bases are listed, while ensuring a subclass precedes its parents. If no consistent order exists, the class definition raises a TypeError. You can inspect it via Class.__mro__ or Class.mro().",
+      "quizAnswer": "By C3 linearization, which merges base orderings so subclasses precede parents in one consistent order.",
+      "distractors": [
+        "By depth-first left-to-right traversal of the base classes, the classic pre-2.3 resolution scheme.",
+        "By breadth-first traversal of bases, so all direct parents precede any grandparent classes.",
+        "By C3 linearization, but ties are broken by alphabetical class name rather than listing order.",
+        "By the order bases are listed only, ignoring each base's own inheritance chain entirely.",
+        "By C3 linearization applied right-to-left, so the last-listed base takes highest precedence.",
+        "By reverse depth-first traversal, ensuring parents always precede subclasses in the ordering."
+      ]
+    },
+    {
+      "front": "[Advanced] What does super() actually do in a cooperative multiple-inheritance hierarchy?",
+      "back": "super() does not simply call the parent class; it delegates to the next class in the instance's MRO after the current one. This lets diamond hierarchies cooperate so each class in the chain runs once, provided every class calls super(). The zero-argument super() infers the class and instance from the enclosing method's context.",
+      "quizAnswer": "It delegates to the next class in the instance's MRO, enabling cooperative chaining across the hierarchy.",
+      "distractors": [
+        "It calls the immediate base class directly, so diamond hierarchies invoke shared ancestors twice.",
+        "It delegates to the previous class in the MRO, walking back up toward the current class.",
+        "It calls every parent class in listing order, which is why each must avoid calling super() again.",
+        "It delegates to the next class in the MRO, but only for __init__; other methods call the base directly.",
+        "It looks up the method on type(self) and calls the first parent that defines it, skipping the MRO.",
+        "It binds to the topmost base (object) and dispatches down, so classes run in reverse MRO order."
+      ]
+    },
+    {
+      "front": "[Advanced] What does a leading double underscore like __value do inside a class body (name mangling)?",
+      "back": "An identifier of the form __name (at most one trailing underscore) inside a class is textually replaced with _ClassName__name. This name mangling helps avoid accidental clashes with attributes in subclasses; it is not true privacy, just a namespacing convention. A dunder like __init__ (two trailing underscores) is not mangled.",
+      "quizAnswer": "It is mangled to _ClassName__value to avoid subclass name clashes; it is not real privacy.",
+      "distractors": [
+        "It makes the attribute truly private, raising AttributeError on any access from outside the class.",
+        "It is mangled to _ClassName__value, which also makes the attribute read-only outside the class.",
+        "It marks the attribute as protected, accessible in subclasses but hidden from unrelated code.",
+        "It is mangled to __ClassName_value and additionally excluded from the instance's __dict__.",
+        "It triggers name mangling only when the class defines __slots__, otherwise it stays unchanged.",
+        "It reserves the name for the metaclass, so subclasses inherit a distinct mangled copy each."
+      ]
+    },
+    {
+      "front": "[Intermediate] In a function signature, what do *args and **kwargs capture, and what constrains their order?",
+      "back": "*args collects extra positional arguments into a tuple; **kwargs collects extra keyword arguments into a dict. In a signature the order is positional/default params, then *args, then keyword-only params, then **kwargs. A bare * marks the start of keyword-only parameters without collecting extras.",
+      "quizAnswer": "*args gathers extra positionals into a tuple; **kwargs gathers extra keywords into a dict, in that order.",
+      "distractors": [
+        "*args gathers extra keywords into a tuple; **kwargs gathers extra positionals into a dict, in that order.",
+        "*args gathers extra positionals into a list; **kwargs gathers extra keywords into a dict, order-free.",
+        "*args gathers all arguments into a tuple; **kwargs then filters out the keyword ones into a dict.",
+        "*args gathers extra positionals into a tuple, but must follow **kwargs, which gathers keywords first.",
+        "*args gathers extra positionals into a dict; **kwargs gathers extra keywords into a tuple, in that order.",
+        "*args and **kwargs both gather any leftover arguments, so their relative order never matters."
+      ]
+    },
+    {
+      "front": "[Intermediate] What is the difference between an iterable and an iterator in Python?",
+      "back": "An iterable defines __iter__ and can produce a fresh iterator; a list, dict, or string is iterable. An iterator defines both __iter__ (returning itself) and __next__, holding the position and yielding values until it raises StopIteration. Iterators are consumed once; iterables can be iterated repeatedly by producing new iterators.",
+      "quizAnswer": "An iterable produces iterators via __iter__; an iterator holds state and yields values via __next__.",
+      "distractors": [
+        "An iterable defines __next__ and holds position; an iterator defines __iter__ and can be reused freely.",
+        "An iterable and an iterator are the same protocol; the terms differ only for mutable versus immutable types.",
+        "An iterable yields values via __next__ directly; an iterator wraps it to add StopIteration handling.",
+        "An iterable can be iterated once; an iterator produces a fresh iterable each time __iter__ is called.",
+        "An iterator produces iterables via __iter__; an iterable holds the current position across loops.",
+        "An iterable requires __getitem__ only; an iterator requires __iter__ only, never __next__."
+      ]
+    },
+    {
+      "front": "[Advanced] What is the difference between a shallow copy and a deep copy of a nested structure?",
+      "back": "copy.copy makes a shallow copy: a new top-level container whose elements are the same objects as the original, so nested mutable objects are shared. copy.deepcopy recursively copies nested objects, producing a fully independent structure, and tracks already-copied objects to handle cycles and shared references correctly.",
+      "quizAnswer": "A shallow copy duplicates only the top container, sharing nested objects; a deep copy recurses fully.",
+      "distractors": [
+        "A shallow copy duplicates every level but shares the top container; a deep copy replaces only the top.",
+        "A shallow copy duplicates immutable elements; a deep copy duplicates mutable ones, sharing immutables.",
+        "A shallow copy recurses one level down; a deep copy recurses two levels, sharing anything deeper.",
+        "A shallow copy and deep copy both duplicate everything; deepcopy merely also copies class definitions.",
+        "A shallow copy shares the top container but copies nested objects; a deep copy copies only the container.",
+        "A shallow copy duplicates references without new containers; a deep copy allocates one new flat container."
+      ]
+    },
+    {
+      "front": "[Advanced] For an object to work correctly as a dict key or set member, what contract must __hash__ and __eq__ satisfy?",
+      "back": "Objects that compare equal must have equal hashes, so __eq__ and __hash__ must stay consistent. Hashable objects should be effectively immutable in the fields used for hashing; mutating a key after insertion can make it unfindable. Defining __eq__ without __hash__ makes a class unhashable by default (__hash__ set to None).",
+      "quizAnswer": "Equal objects must have equal hashes, and the hash must not change while the object is a key.",
+      "distractors": [
+        "Unequal objects must have unequal hashes, and equal objects may share or differ in hash freely.",
+        "Equal objects must have equal hashes, and defining __eq__ alone keeps the default __hash__ intact.",
+        "The hash must equal the object's id(), so identity and equality always coincide for dict keys.",
+        "Equal objects may have different hashes as long as __eq__ resolves the resulting bucket collisions.",
+        "Mutable objects are fine as keys provided __hash__ recomputes from current field values each lookup.",
+        "Equal hashes require equal objects, so any hash collision means the two keys compare as equal."
+      ]
+    },
+    {
+      "front": "[Intermediate] In a try statement, when do the else and finally clauses run relative to the try body and except handlers?",
+      "back": "else runs only if the try body completed with no exception, after the body and before finally. finally always runs, whether the try succeeded, raised and was handled, raised and propagated, or exited via return/break. A return or new exception in finally overrides any pending return or exception from the rest of the statement.",
+      "quizAnswer": "else runs only when no exception occurred; finally always runs, even on return or unhandled exceptions.",
+      "distractors": [
+        "else runs only when an exception was handled; finally runs only when no exception occurred at all.",
+        "else runs after every attempt including handled exceptions; finally runs only on unhandled exceptions.",
+        "else and finally both run only when the try body succeeds; a raised exception skips both entirely.",
+        "else runs when no exception occurred; finally runs unless the try body exits early via return or break.",
+        "else runs before the try body as setup; finally runs after, regardless of any exception raised.",
+        "else runs whenever an except clause matched; finally runs only if no return statement executed first."
+      ]
+    }
+  ]
+}
