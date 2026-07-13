@@ -77,13 +77,13 @@
     {
       "front": "Walk me through your Terraform usage at USAA.",
       "general": "Infrastructure-as-code questions want the concrete resource set you managed and an honest note on evidence. A strong answer names the specific AWS resources provisioned as code and frames it as real production experience. When the work is internal with no public repository, saying so plainly — internal, narrative-only evidence — is more credible than vaguely implying something shareable exists.",
-      "specific": "I managed production AWS serverless infrastructure as code — Lambda, API Gateway, IAM, CloudWatch, S3, and DynamoDB — for the notification-platform rebuild. I flag this as real production experience with no public repo attached, the same evidentiary posture as FrostByte and Policy RAG: internal, narrative-only.",
+      "specific": "I managed production AWS serverless infrastructure as code — Lambda, API Gateway, IAM, CloudWatch, S3, and DynamoDB — for the notification-platform rebuild. I flag this as real production experience with no public repo attached, the same evidentiary posture as FrostByte and Project Overview: internal, narrative-only.",
       "hint": "Lambda, API Gateway, IAM, CloudWatch, S3, DynamoDB — internal/narrative-only, no public repo."
     },
     {
       "front": "What does your Terraform module structure and state management look like?",
       "general": "This drills into IaC maturity — modules, remote state, locking. The honest approach is to speak to what's actually evidenced: how infrastructure was organized into modules for reproducible multi-environment deployment. If asked for state-backend specifics you haven't documented (remote state backends, state locking), the credible move is to say plainly that that depth isn't documented and pivot to what you can speak to concretely — the resource list and the reproducibility goal.",
-      "specific": "I speak to what's evidenced: infrastructure provisioned as Terraform modules for the Policy RAG service (Postgres, IAM, networking) for reproducible multi-environment deployment, and separately for the notification platform's serverless resources. If asked for state-backend specifics (remote state, locking) beyond this, I say plainly that depth isn't something I've documented and pivot to what I can speak to concretely — the resource list and the reproducibility goal."
+      "specific": "I speak to what's evidenced: infrastructure provisioned as Terraform modules for the notification platform's AWS serverless stack (Lambda, API Gateway, IAM, CloudWatch, S3, DynamoDB), organized for reproducible multi-environment deployment. If asked for state-backend specifics (remote state, locking) beyond this, I say plainly that depth isn't something I've documented and pivot to what I can speak to concretely — the resource list and the reproducibility goal."
     },
     {
       "front": "Do you have a public Terraform repo to point to?",

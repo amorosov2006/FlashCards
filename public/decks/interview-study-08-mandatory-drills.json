@@ -30,14 +30,14 @@
     {
       "front": "You've got 8+ years of experience — walk me through it. (JPM-BBAO)",
       "general": "For an experience-gap question, state the true number plainly with no rounding up and no defensiveness, then let a concrete, verifiable body of work carry the weight the years don't. Naming the gap first buys credibility for everything you say after it.",
-      "specific": "The JD asks for 8+ years hands-on; my actual is ~5.8 years (5 yr 10 mo, computed, no gaps). I rehearse: I hold an M.S. in Data Science (UT Austin, conferred May 2026) plus a shipped, code-verified portfolio (LocalLLM, FedInsight, FrostByte, Policy RAG). I state the gap plainly, then let my portfolio carry it. No defensiveness, no rounding up my years.",
+      "specific": "The JD asks for 8+ years hands-on; my actual is ~5.8 years (5 yr 10 mo, computed, no gaps). I rehearse: I hold an M.S. in Data Science (UT Austin, conferred May 2026) plus a shipped, code-verified portfolio (LocalLLM, FedInsight, FrostByte, Project Overview). I state the gap plainly, then let my portfolio carry it. No defensiveness, no rounding up my years.",
       "hint": "State ~5.8 years plainly, then let the portfolio carry it — never round up."
     },
     {
       "front": "This role is posted at a senior/lead level (SWES05). What level and comp are you targeting? (JPM-Senior Lead AI, JPM-PublicCloud)",
-      "general": "Decide your accept-level and comp floor before the first recruiter screen so it isn't decided live under pressure. Signal openness to a leveling conversation, lead with owned scope as your stretch case, state your floor once, and hold it. Where you lack a formal title, be specific about scope rather than apologizing for the title.",
-      "specific": "I decide my accept-level and comp floor before the first recruiter screen — I don't let it get decided live. My posture: open to a leveling conversation, I lead with the scope I own (notification rebuild, Policy RAG proposal-to-production) as my stretch case, I state my Lead/SWES04 floor once ($152–215K) and I hold it. I don't have a formal management title — so I'm specific about my scope instead.",
-      "hint": "State the $152–215K floor once and hold it; lead with owned scope."
+      "general": "Decide your accept-level and comp floor before the first recruiter screen so it isn't decided live under pressure. Signal openness to a leveling conversation, lead with owned scope as your stretch case, and anchor against a down-level with the credential arc if one exists (a degree completed while doing the work). State your floor once and hold it.",
+      "specific": "I decide my accept-level and comp floor before the first recruiter screen — I don't let it get decided live. My posture: open to a leveling conversation; I lead with the scope I own (principal developer on the notification rebuild; FrostByte and Project Overview, both adopted by my team) as my stretch case; and I anchor against an SE III framing with the arc — SE II was my BS-commensurate level, and I completed my M.S. in Data Science (May 2026) while doing this work. I state my Lead/SWES04 floor once ($152–215K) and I hold it.",
+      "hint": "Floor once ($152–215K); scope leads; the MS anchors against SE III."
     },
     {
       "front": "Tell me about your experience managing and mentoring. (JPM-Lead ai-ml)",
@@ -54,14 +54,14 @@
     {
       "front": "Several of our reqs ask for 5+ years of GenAI/LLM work. How much do you have?",
       "general": "For a tenure gap in a specialty, give the honest focused count and immediately frame it as sitting on top of a longer engineering foundation — position the depth of the base as the reason your specialty work is production-grade, not as an excuse for the shorter count.",
-      "specific": "Several reqs ask for 5+ years GenAI/LLM; my honest count is ~2 years of focused GenAI (LocalLLM, FedInsight, Policy RAG, MS coursework) on top of 5.8 years of production engineering. My rehearsed line: \"My focused GenAI/LLM work is about two years, but it sits on nearly six years of production engineering — the RAG systems I've shipped are production-grade because of that foundation.\"",
+      "specific": "Several reqs ask for 5+ years GenAI/LLM; my honest count is ~2 years of focused GenAI (LocalLLM, FedInsight, FrostByte, MS coursework) on top of 5.8 years of production engineering. My rehearsed line: \"My focused GenAI/LLM work is about two years, but it sits on nearly six years of production engineering — the RAG system I've shipped is production-grade because of that foundation.\"",
       "hint": "~2 years focused GenAI on ~6 years production engineering — that base is why it's production-grade."
     },
     {
       "front": "Why is a Software Engineer II applying for a Lead / Senior-Lead role?",
-      "general": "When your title lags your scope, explain that ownership grew faster than the title, cite the concrete scope that proves it, and stay open to a leveling conversation rather than insisting on a title match. Openness reads as confidence; insistence reads as defensiveness.",
-      "specific": "I rehearse: my scope and ownership (notification rebuild, Policy RAG) grew faster than my title; my M.S. is now conferred (May 2026); I'm open to a leveling conversation, not insisting on a title match.",
-      "hint": "Scope outgrew the title; open to leveling, not insisting on a match."
+      "general": "When your title lags your scope, give the jump a cause: open with the arc (hired at the level commensurate with your old credential; completed the new degree while doing the work), cite the concrete scope that proves it, and stay open to a leveling conversation rather than insisting on a title match. Openness reads as confidence.",
+      "specific": "The arc: SE II is the level I was hired at with a bachelor's. Since then I completed an M.S. in Data Science (UT Austin, May 2026, GPA 3.97) while serving as principal developer on the notification rebuild and shipping two AI tools my team adopted — FrostByte and Project Overview. The work demonstrated the scope; the degree formalized the AI/ML depth — this loop is about the level commensurate with both. I stay open to a leveling conversation, not insisting on a title match.",
+      "hint": "Arc: BS→SE II; MS (May 2026) + demonstrated scope → next level; open to leveling."
     },
     {
       "front": "Tell me about the hybrid search / reranking you built in FedInsight. (Guardrail card.)",
@@ -70,10 +70,10 @@
       "hint": "Local-only, not published — mention as recent work, no numbers unless pushed."
     },
     {
-      "front": "What QPS / user count does your production RAG service at USAA handle?",
-      "general": "When you lack real traffic numbers, don't manufacture or imply them. Soften the framing to what's true — that it was adopted and running in production — and avoid any phrasing that suggests external-scale traffic you can't back up.",
-      "specific": "If I'm pressed on QPS/user count, I soften to \"an internally adopted production service\" — I don't have the real numbers in my dossier, and I don't imply external-scale traffic.",
-      "hint": "\"Internally adopted production service\" — no invented QPS, no external-scale implication."
+      "front": "If pressed on the RAG-prototype line from one of the two already-sent resumes (VP-FullStack, Lead SWE Firmwide) — what's the rehearsed bridge, and when do I use it?",
+      "general": "New materials never mention the internal RAG prototype at all — this isn't a claim to defend in general, it's context-specific insurance for two already-sent resumes that predate the current no-RAG-prototype directive. If asked, state the honest boundary plainly: it was prototyped, not selected for deployment, then pivot immediately to the shipped work. Never volunteer this unprompted in any other screen, and never imply the prototype had production traffic or usage numbers to quote.",
+      "specific": "For the two already-sent resumes only (VP-FullStack req 210750779, JPM Lead SWE Firmwide req 210767095): \"I prototyped a RAG service at work end-to-end; it wasn't selected for deployment. FedInsight is my shipped RAG work — I designed and built it on my own time, and it's live and public. I designed the eval methodology for it and I'm building the harness now.\" I never volunteer this in any other screen, and I never imply the prototype was in production or had QPS/user numbers.",
+      "hint": "Two screens only — prototyped, not selected for deployment, then pivot to FedInsight. Never volunteer elsewhere."
     },
     {
       "front": "Push again on your Kubernetes-distinct work — where exactly did that happen?",

@@ -91,7 +91,7 @@
     {
       "front": "What's the actual distinction between prompt engineering and context engineering?",
       "general": "Prompt engineering optimizes the instruction and wording given to the model for a single turn — phrasing, few-shot examples, output-format constraints. Context engineering is the broader discipline of everything that surrounds the prompt at inference time: retrieved documents from RAG, tool outputs, conversation history, and system-prompt discipline. In other words, prompt engineering tunes the words; context engineering tunes what information actually reaches the model's context window.",
-      "specific": "The FedInsight/Policy RAG system prompts I worked on — 'use ONLY the provided context, cite [n], and say you don't have enough information rather than guessing' — are context engineering, not just prompt wording: they govern how retrieved context is used, not merely how the request is phrased."
+      "specific": "The FedInsight system prompt I worked on — 'use ONLY the provided context, cite [n], and say you don't have enough information rather than guessing' — is context engineering, not just prompt wording: it governs how retrieved context is used, not merely how the request is phrased."
     },
     {
       "front": "Give me a concrete example of context engineering from your own systems.",

@@ -4,7 +4,7 @@
   "cards": [
     {
       "front": "Probe: 'You're an SE II — why apply to a Lead/VP role?'",
-      "back": "Frame scope, not title: explain your title band has lagged your actual scope (cite Lead-level work you've owned — architecture, key decisions), back it with demonstrable output, and stay explicitly open to a leveling conversation grounded in what you can show. Confident, not defensive.",
+      "back": "Give the jump a cause, then frame scope: open with the arc — hired at the level commensurate with your old credential, completed the new degree (M.S., May 2026) while doing the work — then cite Lead-level work you've owned (architecture, key decisions), back it with demonstrable output, and stay explicitly open to a leveling conversation grounded in what you can show. The degree explains the timing; the scope carries the argument. Confident, not defensive.",
       "distractors": [
         "Insist the title is just a formality and refuse to discuss leveling at all.",
         "Apologize for applying above your band and offer to take a lower-level role.",
@@ -13,7 +13,7 @@
         "List years of experience as the sole justification, with no evidence of scope.",
         "Become defensive and explain that your manager unfairly held back your promotion."
       ],
-      "quizAnswer": "Frame scope, not title: cite Lead-level work you owned, back it with evidence, and stay open to a leveling conversation."
+      "quizAnswer": "Open with the arc (degree completed while doing the work), cite Lead-level scope you owned, back it with evidence, stay open to leveling."
     },
     {
       "front": "Probe: 'These roles want 5+ years of GenAI; you have ~2. Why talk?'",
@@ -43,7 +43,7 @@
     },
     {
       "front": "Probe: 'You list a production RAG service — production how? QPS? users?'",
-      "back": "Calibrate the claim honestly: soften 'production' to what's true (e.g. a team-adopted internal tool with real users on real data, not a high-QPS public system; or a portfolio implementation on public data) while keeping the technical depth intact — the chunking, hybrid retrieval, reranking, and recall@k evaluation are the same regardless of scale. Never defend a number you don't have.",
+      "back": "Calibrate the claim honestly: the shipped RAG work is FedInsight, a personal, public project (GitHub repo + live Hugging Face Space) — delivered and real, but not a high-QPS production system, and say so plainly. Keep the technical depth intact (chunking, embeddings, dual pgvector/Chroma backends, source-attributed generation); note hybrid retrieval/reranking are written and tested locally but not yet published, and the recall@k/MRR eval harness is designed, not built. Never defend a number you don't have.",
       "distractors": [
         "Invent a QPS and user count on the spot so 'production' sounds impressive.",
         "Insist it's a massive high-scale public system and dare them to disprove it.",

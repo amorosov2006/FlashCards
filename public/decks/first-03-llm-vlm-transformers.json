@@ -133,7 +133,7 @@
     {
       "front": "What actually causes an LLM to hallucinate?",
       "general": "The model is trained to produce plausible, fluent continuations, not verified-true ones, and at inference time it has no built-in access to a ground-truth source unless one is explicitly given, like retrieved context in RAG. Hallucination gets worse on out-of-distribution or ambiguous prompts, and especially when the model is pushed for specificity it doesn't actually have — exact numbers, citations, dates — because generating something plausible-sounding is the path of least resistance for a next-token predictor.",
-      "specific": "The RAG systems I've built address exactly this: constrain generation to retrieved, cited context and require the model to say it doesn't have enough information rather than guess."
+      "specific": "FedInsight, my personal RAG project, addresses exactly this: constrain generation to retrieved, cited context and require the model to say it doesn't have enough information rather than guess."
     },
     {
       "front": "How would you handle a question about multi-node distributed training, DeepSpeed, or vLLM-style multi-GPU serving?",

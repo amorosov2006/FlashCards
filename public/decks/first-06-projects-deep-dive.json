@@ -1,6 +1,6 @@
 {
   "title": "First Interview · My Projects",
-  "description": "Deep-dive cards on every project that appears on the two send-ready resumes for these interviews: the USAA notification platform (with OpenTelemetry/Prometheus observability), LocalLLM, FrostByte, the Policy & Compliance RAG service, and FedInsight Phase 1 — real numbers, real trade-offs, no invented metrics.",
+  "description": "Deep-dive cards on every project that appears on the send-ready resumes for these interviews: the USAA notification platform (with OpenTelemetry/Prometheus observability), LocalLLM, FrostByte, Project Overview, and FedInsight Phase 1 — real numbers, real trade-offs, no invented metrics.",
   "studyOnly": true,
   "cards": [
     {
@@ -24,7 +24,7 @@
     {
       "front": "What did you actually manage with Terraform on this platform?",
       "general": "Speak to the resource list you actually provisioned, and be upfront if there's no public repo attached — internal, narrative-only evidence is still real evidence.",
-      "specific": "Production AWS serverless infrastructure as code — Lambda, API Gateway, IAM, CloudWatch, S3, and DynamoDB — for the notification-platform rebuild. This is internal work with no public repo attached, same evidentiary posture as FrostByte and Policy RAG.",
+      "specific": "Production AWS serverless infrastructure as code — Lambda, API Gateway, IAM, CloudWatch, S3, and DynamoDB — for the notification-platform rebuild. This is internal work with no public repo attached, same evidentiary posture as FrostByte and Project Overview.",
       "hint": "Lambda/API Gateway/IAM/CloudWatch/S3/DynamoDB via Terraform; internal only, no public repo."
     },
     {
@@ -76,27 +76,27 @@
       "hint": "Ad-hoc analyst SQL requests → plain-English queries; internally adopted."
     },
     {
-      "front": "Walk me through the Policy & Compliance RAG service you built at USAA.",
-      "general": "Describe the full pipeline shape and your role in proposing it, not just building it — proposal-to-production is the stronger story than implementation alone.",
-      "specific": "I proposed, designed, and shipped a production RAG service over our policy/compliance corpus — chunking, Hugging Face embeddings, pgvector persistence, LLM-grounded answers with source citation — with backing infrastructure provisioned as Terraform modules.",
-      "hint": "Proposed + built end-to-end: chunking, HF embeddings, pgvector, cited grounded answers."
+      "front": "Walk me through Project Overview, your VS Code extension.",
+      "general": "Describe the problem (ramp-up time on an unfamiliar codebase), the mechanism (a chat-panel command driving the LanguageModelChat API), and the design choice that matters (the analysis prompt externalized to markdown).",
+      "specific": "A VS Code extension built on the LanguageModelChat API: from a single chat-panel command it analyzes an unfamiliar codebase and auto-generates a themed, rendered walkthrough. The analysis prompt is externalized to a markdown file, so tuning the walkthrough's behavior needs no redeploy. Adopted by my team at USAA — the second of my two internally adopted AI tools, alongside FrostByte.",
+      "hint": "LanguageModelChat API; one command → rendered walkthrough; prompt externalized to markdown."
     },
     {
-      "front": "Tell me about the evaluation harness you built for this RAG service.",
+      "front": "What's your evaluation story for FedInsight?",
       "general": "A retrieval-quality eval harness needs a held-out labeled query set and metrics that measure whether the right document was retrieved, not just whether an answer looked plausible — recall@k measures whether a relevant doc appears in the top k results, MRR measures how high the first relevant result ranks on average.",
-      "specific": "I built a recall@k and MRR evaluation harness over a held-out QA set for the Policy RAG service at USAA — this is the one true eval-harness proof point in my portfolio; I don't have equivalent numbers for FedInsight, since that harness isn't built there.",
-      "hint": "recall@k + MRR over held-out QA set — Policy RAG only, not FedInsight."
+      "specific": "I've designed the retrieval-quality eval methodology for FedInsight — recall@k and MRR over a held-out golden question set — but the harness itself isn't built yet, so I have no numbers to quote. I present it as design work and the explicit next roadmap step, never as measured results.",
+      "hint": "recall@k + MRR methodology designed for FedInsight — harness not built, no numbers."
     },
     {
-      "front": "How was the Policy RAG service's infrastructure provisioned?",
-      "general": "Name the actual resources and the reproducibility goal — this is internal, narrative-only evidence, same posture as the rest of the work-Terraform experience.",
-      "specific": "Postgres, IAM, and networking were provisioned as Terraform modules for reproducible deployment across environments. No public repo — internal experience only, same as the notification-platform Terraform work.",
-      "hint": "Postgres/IAM/networking as Terraform modules; internal only."
+      "front": "What problem did Project Overview actually solve for the team?",
+      "general": "Name the concrete before/after workflow change, not an abstract benefit — what ramping onto an unfamiliar codebase looked like before, and what changed.",
+      "specific": "Ramping onto an unfamiliar codebase used to mean hours of manual code spelunking and interrupting teammates; Project Overview turns that into a single chat-panel command producing a structured, rendered walkthrough. Like FrostByte, it was adopted by the team without a formal mandate.",
+      "hint": "Manual spelunking → one-command walkthrough; adopted without a mandate."
     },
     {
-      "front": "Why did you propose a RAG service instead of keeping keyword search for policy documents?",
+      "front": "Why build FedInsight as a RAG system instead of keyword search over Fed documents?",
       "general": "Keyword search misses semantically related but differently-worded content; embedding-based retrieval finds relevant passages even when exact terms don't match, and grounding the LLM's answer in retrieved passages with citation reduces the risk of an unsupported answer.",
-      "specific": "I proposed replacing keyword-only document search with a production RAG service — chunking, embeddings, pgvector persistence, and LLM-grounded answers with source citation — because the policy corpus had enough vocabulary mismatch that keyword search was missing relevant compliance passages.",
+      "specific": "Federal Reserve communications have heavy vocabulary mismatch — a plain-English question rarely shares terms with FOMC phrasing — so FedInsight uses embedding-based retrieval (chunking, MiniLM embeddings, pgvector/Chroma persistence) to find passages keyword search would miss, with LLM-grounded answers citing their source passages.",
       "hint": "Vocabulary mismatch problem; citation-grounded generation reduces unsupported answers."
     },
     {

@@ -17,9 +17,9 @@
     },
     {
       "front": "Why is a Software Engineer II applying for a Lead-level role?",
-      "general": "When title lags scope, explain that ownership grew faster than title, cite the concrete scope that proves it, and stay open to a leveling conversation rather than insisting on a title match.",
-      "specific": "My scope — principal developer on the USAA notification rebuild, sole proposer and builder of the Policy RAG service — grew faster than my title; my M.S. is now conferred, as of May 2026. I'm open to a leveling conversation, not insisting on a title match.",
-      "hint": "Ownership outgrew title; M.S. now conferred; open to leveling."
+      "general": "When title lags scope, give the jump a cause: open with the arc (hired at the level commensurate with the old credential; completed the new degree while doing the work), cite the concrete scope that proves it, and stay open to a leveling conversation rather than insisting on a title match.",
+      "specific": "SE II was my BS-commensurate level. I completed my M.S. in Data Science (May 2026, GPA 3.97) while serving as principal developer on the USAA notification rebuild and shipping FrostByte and Project Overview — both adopted by my team. The work demonstrated the scope; the degree formalized the depth. I'm open to a leveling conversation, not insisting on a title match.",
+      "hint": "BS→SE II; MS earned during the work; scope + degree → next level; open to leveling."
     },
     {
       "front": "How much multi-cloud experience do you actually have?",
@@ -54,7 +54,7 @@
     {
       "front": "Several of these req areas touch 5+ years of GenAI/LLM work. How much do you have?",
       "general": "For a tenure gap in a specialty, give the honest focused count and immediately frame it as sitting on top of a longer engineering foundation — position the depth of the base as the reason your specialty work is production-grade.",
-      "specific": "My focused GenAI/LLM work is about two years — LocalLLM, FedInsight, Policy RAG, and my M.S. coursework — but it sits on nearly six years of production engineering. The RAG systems I've shipped are production-grade because of that foundation, not despite the shorter GenAI-specific count.",
+      "specific": "My focused GenAI/LLM work is about two years — LocalLLM, FedInsight, FrostByte, and my M.S. coursework — but it sits on nearly six years of production engineering. The RAG systems I've shipped are production-grade because of that foundation, not despite the shorter GenAI-specific count.",
       "hint": "~2 years focused GenAI on ~6 years production engineering — the base is why it's production-grade."
     },
     {
@@ -96,7 +96,7 @@
     {
       "front": "Tell me about a time you failed or a mistake you learned from.",
       "general": "A small, real failure story with a clear 'what I'd do differently' beats an invented large one — pick the smallest honest example you actually have, and be candid if it isn't fully sharpened yet.",
-      "specific": "I don't have a single fully rehearsed failure story finalized yet. My honest candidate areas, still to sharpen before a live loop: whether any notification-pipeline stage ever needed a hotfix or rollback I was involved in, whether a chunking or embedding choice on Policy RAG or FedInsight had to be redone after it underperformed, or whether an EnergyBot forecasting model needed retraining after a validation surprise. I'd pick the smallest, most concrete one of these and state plainly what I'd do differently.",
+      "specific": "I don't have a single fully rehearsed failure story finalized yet. My honest candidate areas, still to sharpen before a live loop: whether any notification-pipeline stage ever needed a hotfix or rollback I was involved in, whether a chunking or embedding choice on FedInsight had to be redone after it underperformed, or whether an EnergyBot forecasting model needed retraining after a validation surprise. I'd pick the smallest, most concrete one of these and state plainly what I'd do differently.",
       "hint": "Open gap — name candidate areas honestly rather than inventing a polished story."
     }
   ]

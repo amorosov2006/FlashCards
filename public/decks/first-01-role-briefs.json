@@ -18,8 +18,8 @@
     {
       "front": "VP-FullStack: Give me your 60-second pitch for this role.",
       "general": "State title and years of experience, the one or two most relevant projects, and land on why this specific team's problem excites you — cold, in under a minute.",
-      "specific": "I'm a Software Engineer II with 5.8 years building Java/Spring Boot microservices and React/TypeScript front ends in regulated financial services, plus hands-on production agentic AI. At USAA I was principal developer rebuilding a legacy monolithic notification platform into a distributed, event-driven AWS system, and I built FrostByte, an MCP server exposing our Snowflake warehouse as a typed AI tool catalogue. I've also shipped LocalLLM, a public full-stack platform with a LangGraph ReAct agent, WebSocket/SSE streaming, and a multi-agent researcher-analyst-critic pipeline. This role's mix of Java microservices, a Python AI agent, and a React frontend is exactly the polyglot, full-stack-plus-agentic work I already do, and AWM's advisory-platform problem is a natural extension of the LLM-tool-integration work I do daily.",
-      "hint": "SWE II, 5.8 yrs, USAA rebuild + FrostByte + LocalLLM, polyglot fit."
+      "specific": "I'm a Software Engineer II with 5.8 years building Java/Spring Boot microservices and React/TypeScript front ends in regulated financial services — and a recently completed M.S. in Data Science (UT Austin, May 2026) — plus hands-on production agentic AI. At USAA I was principal developer rebuilding a legacy monolithic notification platform into a distributed, event-driven AWS system, and I built FrostByte, an MCP server exposing our Snowflake warehouse as a typed AI tool catalogue. I've also shipped LocalLLM, a public full-stack platform with a LangGraph ReAct agent, WebSocket/SSE streaming, and a multi-agent researcher-analyst-critic pipeline. This role's mix of Java microservices, a Python AI agent, and a React frontend is exactly the polyglot, full-stack-plus-agentic work I already do, and AWM's advisory-platform problem is a natural extension of the LLM-tool-integration work I do daily.",
+      "hint": "SWE II, 5.8 yrs, recent MS, USAA rebuild + FrostByte + LocalLLM, polyglot fit."
     },
     {
       "front": "VP-FullStack: Why this team, why AWM?",
@@ -35,9 +35,9 @@
     },
     {
       "front": "VP-FullStack: You're a Software Engineer II — this posting is for a Lead role. How do you frame that?",
-      "general": "Name the title gap plainly, then let scope of ownership carry the argument; stay open to a leveling conversation instead of insisting on a title match.",
-      "specific": "My scope grew faster than my title — principal developer on the USAA notification rebuild, and I proposed and shipped the Policy RAG service end to end. I'm open to a leveling conversation rather than insisting my title already matches; my M.S. in Data Science is also now conferred, as of May 2026.",
-      "hint": "Scope outgrew title; open to leveling, not insisting on a match."
+      "general": "Name the title gap plainly, give it a cause (the M.S. completed while doing the work), then let scope of ownership carry the argument; stay open to a leveling conversation instead of insisting on a title match.",
+      "specific": "SE II is the level I was hired at with a bachelor's. Since then I completed an M.S. in Data Science — May 2026, earned while serving as principal developer on the USAA notification rebuild and shipping FrostByte and Project Overview, both adopted by my team. The work demonstrated the scope; the degree formalized the AI/ML depth — this role is the level commensurate with both. I'm open to a leveling conversation rather than insisting my title already matches.",
+      "hint": "Arc: BS→SE II; MS + ownership carry it; open to leveling."
     },
     {
       "front": "VP-FullStack: What's the first technical risk you'd want to de-risk in the first 90 days here?",
@@ -66,19 +66,19 @@
     {
       "front": "Firmwide: How do you match this JD's top requirements?",
       "general": "Match the requirements you can evidence directly, and be upfront about the ones you can only partially meet rather than implying full coverage.",
-      "specific": "Observability (OpenTelemetry, Prometheus) — I run both at USAA alongside Kafka lifecycle events. Big-data pipelines (Snowflake) — FrostByte's MCP server sits over our ~7M-events/day Snowflake warehouse. Agentic AI concepts (MCP, RAG) — FrostByte and Policy RAG. Time-series forecasting — 3+ years of regression/GBT/ARIMA-family models at EnergyBot. Multi-cloud and Dynatrace/ServiceNow — I'm upfront that my production depth is AWS-only; I don't claim tools I haven't used.",
+      "specific": "Observability (OpenTelemetry, Prometheus) — I run both at USAA alongside Kafka lifecycle events. Big-data pipelines (Snowflake) — FrostByte's MCP server sits over our ~7M-events/day Snowflake warehouse. Agentic AI concepts (MCP, RAG) — FrostByte at work, plus FedInsight, my personal public RAG project. Time-series forecasting — 3+ years of regression/GBT/ARIMA-family models at EnergyBot. Multi-cloud and Dynatrace/ServiceNow — I'm upfront that my production depth is AWS-only; I don't claim tools I haven't used.",
       "hint": "OTel/Prometheus, Snowflake via FrostByte, forecasting from EnergyBot, honest on multi-cloud/Dynatrace."
     },
     {
       "front": "Firmwide: Give me your 60-second pitch for this role.",
       "general": "Lead with the observability and Snowflake-scale evidence since that's the strongest overlap, then name the honest gaps before being asked.",
-      "specific": "I'm a Software Engineer II with 5.8 years in regulated financial services building event-driven distributed systems and applied AI/ML. At USAA I architected the Kafka observability layer for a notification-platform rebuild — lifecycle events, DLQ handling, retry logic, idempotency — plus OpenTelemetry and Prometheus for metrics and traces. I built FrostByte, an MCP server letting non-engineers investigate incidents in plain English over a Snowflake warehouse processing about 7 million events a day. At EnergyBot I owned time-series forecasting pipelines end-to-end — ingest, train, validate, deploy, monitor. My production cloud depth is AWS, not multi-cloud, and I don't have ServiceNow or Dynatrace experience — I say that plainly, because the observability and Snowflake-scale work is the closer match, and the ramp-up on the rest is fast.",
+      "specific": "I'm a Software Engineer II with 5.8 years in regulated financial services building event-driven distributed systems and applied AI/ML, with an M.S. in Data Science completed this May. At USAA I architected the Kafka observability layer for a notification-platform rebuild — lifecycle events, DLQ handling, retry logic, idempotency — plus OpenTelemetry and Prometheus for metrics and traces. I built FrostByte, an MCP server letting non-engineers investigate incidents in plain English over a Snowflake warehouse processing about 7 million events a day. At EnergyBot I owned time-series forecasting pipelines end-to-end — ingest, train, validate, deploy, monitor. My production cloud depth is AWS, not multi-cloud, and I don't have ServiceNow or Dynatrace experience — I say that plainly, because the observability and Snowflake-scale work is the closer match, and the ramp-up on the rest is fast.",
       "hint": "Kafka/OTel/Prometheus, FrostByte@Snowflake, EnergyBot forecasting, honest AWS-only gap."
     },
     {
       "front": "Firmwide: Why this team specifically?",
       "general": "Connect your own daily habit of using AI tools in engineering work to the team's mandate of driving AI-assisted engineering adoption — this is the single most-asked competency across the JD.",
-      "specific": "I already use Cursor, Claude Opus, and GitHub Copilot daily in my own workflow and own the design of three internally adopted AI tools — this team's mandate to drive responsible AI-assisted engineering adoption firmwide is a scaled version of what I already do individually, and turning raw telemetry into actionable state is exactly what I did with Kafka lifecycle events at USAA.",
+      "specific": "I already use Cursor, Claude Opus, and GitHub Copilot daily in my own workflow and own the design of two internally adopted AI tools — FrostByte and Project Overview — this team's mandate to drive responsible AI-assisted engineering adoption firmwide is a scaled version of what I already do individually, and turning raw telemetry into actionable state is exactly what I did with Kafka lifecycle events at USAA.",
       "hint": "Daily AI-tool practice scales to the team's adoption mandate."
     },
     {
@@ -89,9 +89,9 @@
     },
     {
       "front": "Firmwide: This is a Lead-level posting and you're a Software Engineer II — how do you address that?",
-      "general": "Same framing as any title-gap question: name it, then let ownership evidence and degree status carry it, staying open to a leveling conversation.",
-      "specific": "I hold the Software Engineer II title today, but my scope — principal developer on the notification rebuild, sole designer of FrostByte and the Policy RAG service — reflects Lead-level ownership. I'm open to a leveling conversation rather than insisting on a title match; the JD's own posted band is roughly where I'd expect to land.",
-      "hint": "Title gap named; scope carries the argument; open to leveling."
+      "general": "Same framing as any title-gap question: name it, then let ownership evidence and the completed-degree arc carry it, staying open to a leveling conversation.",
+      "specific": "I hold the Software Engineer II title today — the level I was hired at with a bachelor's. Since then I completed an M.S. in Data Science (May 2026) while my scope grew to Lead-level ownership: principal developer on the notification rebuild, sole designer of FrostByte and Project Overview, both adopted by the team. I'm open to a leveling conversation rather than insisting on a title match; the JD's own posted band is roughly where I'd expect to land.",
+      "hint": "Title gap named; MS arc + scope carry it; open to leveling."
     },
     {
       "front": "Firmwide: The JD wants closed-loop, auto-remediating playbooks — do you have that experience?",

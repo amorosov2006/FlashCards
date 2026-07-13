@@ -93,7 +93,7 @@
     {
       "front": "How do you tell whether a 2-point difference between two model configs is real or noise?",
       "general": "Treat it as a hypothesis test rather than eyeballing a single number: compute a confidence interval (or run a paired significance test) around the metric difference between the two configurations, ideally on the same held-out queries so the comparison is paired rather than independent. If the confidence interval around the difference includes zero, or the p-value doesn't clear your significance threshold, the 2-point gap is plausibly noise from the particular sample of queries rather than a real improvement.",
-      "specific": "This is the statistical-rigor mindset from my stats coursework applied directly to eval-harness work — treating a recall@k or MRR delta as a claim that needs a significance check, not just a number to report."
+      "specific": "This is the statistical-rigor mindset from my stats coursework applied directly to retrieval-eval design — the eval methodology I designed for FedInsight treats a recall@k or MRR delta as a claim that needs a significance check, not just a number to report."
     }
   ]
 }

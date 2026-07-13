@@ -1,61 +1,61 @@
 {
   "title": "Interview · RAG, Retrieval & Evals",
-  "description": "Study cards on retrieval metrics, chunking, embeddings, hybrid retrieval, reranking, grounding, and vector stores, mapped to my Policy RAG and FedInsight systems.",
+  "description": "Study cards on retrieval metrics, chunking, embeddings, hybrid retrieval, reranking, grounding, and vector stores, mapped to my FedInsight system and the eval methodology I designed for it.",
   "studyOnly": true,
   "cards": [
     {
       "front": "Can you define recall@k and give the formula?",
       "general": "Recall@k measures, of all the relevant documents that exist for a query, what fraction appear in the top-k retrieved results: recall@k = (number of relevant docs in top-k) / (total number of relevant docs for the query). For example, if a query has 4 relevant chunks in the corpus and the top-5 results contain 3 of them, then recall@5 = 3/4 = 0.75. It answers the question 'are we finding the right material at all,' independent of the ranking order within the top-k. It's the metric that catches when a system is missing relevant material entirely.",
-      "specific": "This is one of the two metrics in the recall@k/MRR eval harness I built and ran on the Policy & Compliance RAG service at USAA, scored over a held-out QA set with known-relevant chunks. That harness is my only true-today eval-harness evidence in my portfolio.",
+      "specific": "This is one of the two metrics in the retrieval-quality evaluation methodology I designed for FedInsight, scored over a held-out golden question set with known-relevant chunks. Honesty caveat: I designed this, I haven't built the harness yet, so I don't have numbers to quote.",
       "hint": "found in top-k / total relevant"
     },
     {
       "front": "What is MRR, and how is it calculated?",
       "general": "Mean Reciprocal Rank: for each query, the reciprocal rank is 1 / (rank of the first relevant result); MRR is the mean of that value across all queries, MRR = (1/N) * Σ(1/rank_i). Worked example: query A's first relevant hit is at rank 1 so RR = 1.0; query B's first hit is at rank 3 so RR = 1/3 ≈ 0.33; query C has no relevant hit in the returned set so RR = 0; MRR = (1.0 + 0.33 + 0) / 3 ≈ 0.44. It answers 'how quickly does the first good answer show up,' which matters most when a user only reads the top result or the system only passes the top chunk to the LLM.",
-      "specific": "MRR is the second metric in my Policy RAG eval harness at USAA, which I run alongside recall@k over the held-out QA set. It's especially load-bearing for RAG because my pipeline typically only passes the top few chunks to the LLM.",
+      "specific": "MRR is the second metric in the evaluation methodology I designed for FedInsight, alongside recall@k over the held-out QA set — designed, not yet built into a running harness. It's especially load-bearing for RAG because my pipeline typically only passes the top few chunks to the LLM.",
       "hint": "mean of 1/(rank of first relevant hit)"
     },
     {
       "front": "How does precision@k differ from recall@k?",
       "general": "Precision@k measures, of the k results actually retrieved, what fraction are relevant: precision@k = (number of relevant docs in top-k) / k. For example, if 3 of the top-5 results are relevant, precision@5 = 3/5 = 0.6. Recall@k and precision@k are a trade-off pair: recall asks 'did we find everything,' precision asks 'is what we returned mostly useful.' Both matter for RAG, because a system that retrieves everything relevant plus a pile of noise still confuses the LLM's grounding step.",
-      "specific": "Precision@k rounds out the offline retrieval-metric vocabulary alongside the recall@k and MRR that my Policy RAG harness actually reports.",
+      "specific": "Precision@k rounds out the offline retrieval-metric vocabulary alongside the recall@k and MRR I chose for FedInsight's designed evaluation methodology; I didn't include it in that design, but it's the natural extension if I build the harness out further.",
       "hint": "relevant in top-k / k"
     },
     {
       "front": "What is nDCG, and when would you reach for it over recall@k or MRR?",
       "general": "Normalized Discounted Cumulative Gain rewards relevant results appearing earlier in the ranked list and can incorporate graded relevance rather than just binary relevant/not-relevant. DCG = Σ(relevance_i / log2(i+1)) summed over ranked positions, then normalized against the ideal ordering's DCG to get a 0-1 score. It's more information-rich than recall@k or MRR when relevance isn't binary, for example distinguishing a 'highly relevant' chunk from a 'tangentially relevant' one, at the cost of needing graded relevance labels in the golden set rather than simple yes/no judgments.",
-      "specific": "nDCG is a graded-relevance option beyond the binary recall@k/MRR that my Policy RAG harness currently uses; adopting it would mean I'd add graded labels to the golden set."
+      "specific": "nDCG is a graded-relevance option beyond the binary recall@k/MRR I designed for FedInsight's evaluation methodology; adopting it would mean I'd add graded labels to the golden set once I actually build the harness."
     },
     {
       "front": "What does hit-rate tell you, and how does it compare to recall@k?",
       "general": "Hit-rate is a binary per-query metric: did at least one relevant document appear in the top-k, yes or no, aggregated as hit-rate@k = (number of queries with at least one relevant hit in top-k) / total queries. It's simpler and coarser than recall@k because it ignores how many relevant docs were found, just whether any showed up. It's useful as a fast sanity check before computing the more detailed metrics.",
-      "specific": "Hit-rate is a quick first-pass check that sits below the recall@k/MRR detail my Policy RAG harness reports.",
+      "specific": "Hit-rate is a quick first-pass check that sits below the recall@k/MRR detail in the evaluation methodology I designed for FedInsight.",
       "hint": "did at least one relevant doc show up?"
     },
     {
       "front": "These retrieval metrics overlap a lot. What does each one actually catch that the others miss?",
       "general": "Each metric isolates a different failure mode. Recall@k catches 'we're missing relevant material entirely.' Precision@k catches 'we're burying signal in noise.' MRR catches 'the right answer is in there, but not near the top,' which matters most for RAG since most pipelines only pass the top few chunks to the LLM. nDCG adds graded-relevance nuance on top of MRR and recall. Hit-rate is the fastest, crudest first check. You pick the metric that maps to the failure you're most worried about.",
-      "specific": "In my Policy RAG harness, recall@k and MRR are the two that I actually compute, giving both a 'did we find it' and a 'how highly ranked' view over the held-out QA set."
+      "specific": "In the evaluation methodology I designed for FedInsight, recall@k and MRR are the two I chose, giving both a 'did we find it' and a 'how highly ranked' view over a held-out QA set — though I haven't built the harness yet to actually compute them."
     },
     {
       "front": "How do you actually build a held-out QA set for a RAG eval harness?",
       "general": "Sample representative queries against the real corpus, ideally a mix of easy factual lookups and harder multi-hop or paraphrase queries. Then manually or semi-manually label which document chunks are the ground-truth relevant set for each query. Finally, hold that set out from any tuning or development work so it stays a fair offline benchmark rather than something the system was implicitly fit to. The result is a fixed set of queries with known-relevant chunks that you can score repeatably.",
-      "specific": "This is exactly the shape of the Policy RAG harness I built at USAA: a held-out QA set with known-relevant chunks, scored via recall@k and MRR."
+      "specific": "This is exactly the shape of the evaluation methodology I designed for FedInsight: a held-out QA set with known-relevant chunks, scored via recall@k and MRR. The design is done; the harness itself isn't built yet."
     },
     {
       "front": "What separates a golden eval set that's genuinely useful from one that's just a rubber-stamp?",
       "general": "A useful golden set has coverage of realistic query phrasing, not just the exact wording that would trivially match a chunk via keyword overlap. It has enough queries per relevance-difficulty tier to detect regressions statistically rather than by eyeballing single examples. And it gets periodically re-validated as the corpus or retrieval strategy changes, because a golden set built once and never revisited stops reflecting the live system.",
-      "specific": "These are the quality bars behind my Policy RAG held-out QA set; a set that only matched exact wording or was never revisited would give false confidence."
+      "specific": "These are the quality bars I planned into the held-out QA set design for FedInsight; a set that only matched exact wording or was never revisited would give false confidence once I actually build the harness."
     },
     {
       "front": "What's the real distinction between offline and online evaluation of a RAG system?",
       "general": "Offline evaluation runs the retrieval/RAG pipeline against a fixed golden QA set with known ground truth, computing recall@k, MRR, precision@k. It's fast, repeatable, and catches regressions before deploy, but it's only as representative as the golden set's coverage. Online evaluation measures real-user signal in production such as click-through, thumbs up/down, follow-up-question rate, and session abandonment. It captures the real query distribution and real relevance judgments, but it's noisier, slower to accumulate, and can't cleanly isolate retrieval quality from generation quality without careful instrumentation.",
-      "specific": "My offline evaluation (recall@k/MRR over a held-out QA set) is real, shipped, true-today work on the Policy RAG service at USAA. I'm honest that I have no online-evaluation signal (user feedback loops, production A/B) evidenced anywhere in my portfolio; I say so plainly rather than implying a feedback loop exists."
+      "specific": "I've designed an offline-eval methodology (recall@k/MRR over a held-out golden set) for FedInsight, but I haven't built the harness yet, so I don't have offline numbers to quote either. I'm honest that I have no online-evaluation signal (user feedback loops, production A/B) evidenced anywhere in my portfolio; I say both gaps plainly rather than implying either exists."
     },
     {
       "front": "Across your work, where has eval actually been done versus where is it still roadmap?",
       "general": "It's important to separate shipped evaluation from planned evaluation when describing a portfolio. Offline retrieval evaluation over a held-out golden set is a concrete, verifiable deliverable. Online evaluation via production feedback loops or A/B testing is a distinct capability that requires production instrumentation and real traffic, and claiming it without evidence is a credibility risk.",
-      "specific": "My offline evaluation with recall@k/MRR over a held-out QA set is real, true-today work on the Policy RAG service at USAA, my only true-today eval-harness evidence in my portfolio. My FedInsight eval harness (recall@k, MRR) is roadmap only and not built at all, so I never cite FedInsight eval numbers. I have no online-evaluation signal anywhere in my portfolio."
+      "specific": "Across my portfolio, eval is entirely roadmap right now: I designed a retrieval-quality evaluation methodology (recall@k, MRR, golden QA set) for FedInsight, but the harness itself isn't built, so I don't cite any eval numbers for it or anywhere else. I have no online-evaluation signal anywhere in my portfolio either. I say this plainly rather than implying a harness exists."
     },
     {
       "front": "Walk me through your recursive chunking choice of 800-character chunks with 150-character overlap.",
@@ -110,12 +110,12 @@
     {
       "front": "Where does metadata filtering fit into a hybrid retrieval pipeline?",
       "general": "Metadata filtering can be applied either before fusion (pre-filtering one arm's candidate pool) or after fusion. Applying it post-fusion, after the rank-fusion step has combined the dense and sparse rankings, preserves the ranking signal from both arms. Pre-filtering one arm's pool risks distorting the fusion by removing candidates before both rankings have had their say.",
-      "specific": "In FedInsight I apply metadata filters, for example a meeting-date range, post-fusion, after RRF has combined the dense and sparse rankings, specifically to preserve both arms' ranking signal rather than distorting the fusion."
+      "specific": "In FedInsight I apply metadata filters, for example a meeting-date range, post-fusion, after RRF has combined the dense and sparse rankings, specifically to preserve both arms' ranking signal rather than distorting the fusion. Caveat: this is part of my hybrid pipeline, which is code-complete and tested on a personal fork but not yet pushed to my public repo."
     },
     {
       "front": "What happens if BM25 or the reranker isn't available at query time?",
       "general": "A well-designed pipeline degrades gracefully rather than hard-failing. If the sparse component can't build or isn't enabled, hybrid search falls back to dense-only retrieval. The same philosophy applies to reranking: a failure there falls back to the original ranked order rather than erroring out. The system always returns some ranked result instead of throwing.",
-      "specific": "In FedInsight, if BM25 fails to build or isn't enabled, my hybrid search silently falls back to dense-only retrieval; a reranker failure falls back to the original ranked order. I lazy-load both so there's no cost when disabled."
+      "specific": "In FedInsight, if BM25 fails to build or isn't enabled, my hybrid search silently falls back to dense-only retrieval; a reranker failure falls back to the original ranked order. I lazy-load both so there's no cost when disabled. Caveat: hybrid search and reranking are code-complete and tested on a personal fork, not yet on my public repo."
     },
     {
       "front": "What's the real difference between a bi-encoder retriever and a cross-encoder reranker?",
@@ -126,12 +126,12 @@
     {
       "front": "Why is reranking turned off by default in FedInsight?",
       "general": "Cross-encoder reranking is an extra model load and extra inference cost per query, so leaving it off by default keeps a demo fast and snappy. Exposing it as an opt-in toggle lets a user turn it on when quality matters more than latency. Lazy-loading the reranker means there's zero cost when it's disabled.",
-      "specific": "In FedInsight I set RERANK=false by default to keep the Hugging Face Space demo fast, expose it as a Streamlit sidebar checkbox so it's opt-in, and lazy-load it like BM25 so there's zero cost when disabled."
+      "specific": "In FedInsight I set RERANK=false by default to keep things fast, expose it as a Streamlit sidebar checkbox so it's opt-in, and lazy-load it like BM25 so there's zero cost when disabled. Caveat: reranking is code-complete and tested on a personal fork, not yet pushed to my public repo or live on the Hugging Face Space."
     },
     {
       "front": "What's the actual mechanism for stopping hallucination in a RAG system?",
       "general": "The core mechanism is retrieval-first design plus a disciplined system prompt. You constrain the model to answer only from retrieved context, require inline citations (for example [n] mapped to source chunks) so every claim is traceable back to a source, and instruct the model to explicitly say 'I don't have enough information' rather than guess when the retrieved context doesn't cover the question. Grounding plus citation plus a permission to abstain is what keeps the model from inventing facts.",
-      "specific": "This is the actual system-prompt language I use in both FedInsight and the Policy RAG service at USAA: answer only from retrieved context, cite [n] to source chunks, and abstain when context is insufficient. For FedInsight, grounding and citation are my hallucination-mitigation mechanism; it has no eval numbers of its own, since I haven't built that harness."
+      "specific": "This is the actual system-prompt language I use in FedInsight: answer only from retrieved context, cite [n] to source chunks, and abstain when context is insufficient. Grounding and citation are my hallucination-mitigation mechanism; FedInsight has no eval numbers of its own, since I designed the recall@k/MRR methodology but haven't built the harness."
     },
     {
       "front": "What's your fallback when no LLM is configured or available?",
@@ -142,7 +142,7 @@
     {
       "front": "Beyond prompt discipline, what's the retrieval-quality side of hallucination mitigation?",
       "general": "There are two distinct necessary pieces. Prompt discipline handles 'don't invent facts beyond the retrieved context.' But if retrieval quality itself is bad, meaning recall@k is low, no amount of prompt discipline saves the answer, because the correct grounding material was never in the context window at all. So an eval harness that measures retrieval quality handles 'make sure the right context actually got retrieved in the first place.' Both are necessary; grounding rules can't rescue a retrieval miss.",
-      "specific": "The retrieval-quality side is my recall@k/MRR harness on the Policy RAG service at USAA (true-today). It complements the grounding/citation prompt discipline I use in both Policy RAG and FedInsight; FedInsight itself has no such eval numbers because I haven't built that harness."
+      "specific": "The retrieval-quality side is the recall@k/MRR evaluation methodology I designed for FedInsight — but I haven't built the harness, so I can't point to numbers proving retrieval quality is solid; that's a known, stated gap, not a solved problem. The grounding/citation prompt discipline is real and shipped; the retrieval-quality proof behind it is still roadmap."
     },
     {
       "front": "For pgvector, what's the trade-off between IVFFlat and HNSW indexes?",

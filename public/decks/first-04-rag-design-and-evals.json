@@ -6,12 +6,12 @@
     {
       "front": "Why use RAG instead of just fine-tuning the model on your documents?",
       "general": "RAG injects external knowledge at inference time via retrieval, so updating what the system knows only requires re-indexing documents, not retraining a model — critical for corpora that change frequently. It also keeps knowledge separate from the model's parametric weights, which gives traceability: you can cite the exact source chunk behind an answer, something fine-tuned parametric knowledge can't do. Fine-tuning is better suited to changing behavior, style, or format, not to keeping up with a fast-changing factual corpus.",
-      "specific": "This is exactly the shape of the RAG systems I've built — FOMC minutes and policy documents that update on a real cadence, where re-embedding new documents is far cheaper than retraining a model."
+      "specific": "This is exactly the shape of FedInsight, my personal RAG project — FOMC minutes and Federal Reserve policy communications that update on a real cadence, where re-embedding new documents is far cheaper than retraining a model."
     },
     {
       "front": "Walk through the stages of a RAG pipeline end to end.",
       "general": "Offline: ingest source documents, parse them into clean text, chunk that text, embed each chunk, and store the embeddings plus metadata in a vector store. Online, per query: retrieve candidate chunks (dense, sparse, or hybrid), optionally rerank the candidate pool with a cross-encoder, assemble the selected chunks into a context block with citation markers, and generate an answer constrained to that context. A held-out eval harness (recall@k, MRR) sits alongside this to catch regressions before they reach users.",
-      "specific": "This is the exact pipeline shape I built: scraper, PyMuPDF parser, recursive chunker, MiniLM embedder, pgvector/Chroma store, hybrid retrieval, citation-constrained generation."
+      "specific": "This is the exact pipeline shape I built in FedInsight: scraper, PyMuPDF parser, recursive chunker, MiniLM embedder, pgvector/Chroma store, hybrid retrieval (written and tested locally, not yet published), citation-constrained generation. The eval harness is the piece I've designed but not yet built."
     },
     {
       "front": "Walk through your chunking strategy — why 800 characters with 150 overlap?",
@@ -56,13 +56,13 @@
     {
       "front": "Recall@k — definition, formula, and a worked example.",
       "general": "Recall@k = (number of relevant documents appearing in the top-k) divided by (total number of relevant documents that exist for the query). Worked example: a query has 4 relevant chunks in the corpus; the top-5 retrieved results contain 3 of them, so recall@5 = 3/4 = 0.75. It answers 'are we finding the right material at all,' independent of ranking order within the top-k.",
-      "specific": "This is the primary metric on the recall@k/MRR eval harness I built for an internal policy-and-compliance RAG service, scored over a held-out golden QA set.",
+      "specific": "This is one of the two primary metrics in the retrieval-quality eval methodology I designed for FedInsight — recall@k and MRR over a held-out golden question set. I'm precise that the harness itself is designed, not yet built, so I quote no numbers.",
       "hint": "recall@k = relevant-in-top-k / total-relevant."
     },
     {
       "front": "MRR (Mean Reciprocal Rank) — definition, formula, and a worked example.",
       "general": "For each query, reciprocal rank = 1 / (rank of the first relevant result); MRR is the mean of that value across all queries: MRR = (1/N) * sum(1/rank_i). Worked example: query A's first relevant hit is at rank 1 (RR=1.0), query B's first relevant hit is at rank 3 (RR=1/3≈0.33), query C has no relevant hit at all (RR=0); MRR = (1.0+0.33+0)/3 ≈ 0.44. It answers 'how quickly does the first good answer show up' — the metric that matters most when only the top chunk or two actually reach the LLM.",
-      "specific": "This was the other half of the eval harness I built on the internal policy RAG service — recall@k and MRR together, over a held-out golden QA set.",
+      "specific": "This is the other half of the eval methodology I designed for FedInsight — recall@k and MRR together, over a held-out golden question set. Designed, not yet built — I say that plainly rather than imply measured results.",
       "hint": "MRR = mean of 1/rank-of-first-relevant-hit across queries."
     },
     {
@@ -85,12 +85,12 @@
     {
       "front": "How do you actually build a golden QA set for a RAG eval harness?",
       "general": "Sample representative queries against the real corpus — a mix of easy factual lookups and harder multi-hop or paraphrase queries — then manually or semi-manually label which document chunks are the ground-truth relevant set for each query, and hold that set out from any tuning or development work so it stays a fair offline benchmark. A useful golden set also needs enough queries per difficulty tier to detect regressions statistically rather than by eyeballing single examples, and periodic re-validation as the corpus or retrieval strategy changes.",
-      "specific": "This is exactly the shape of the harness I built on an internal policy RAG service — a held-out QA set with known-relevant chunks, scored via recall@k and MRR — real, shipped work; this is distinct from the FedInsight project, whose own eval harness is roadmap only and has not been built."
+      "specific": "This is exactly the design I've laid out for FedInsight's eval harness — a held-out golden question set with known-relevant chunks, scored via recall@k and MRR. The methodology is designed; the harness itself is roadmap work and has not been built, so I present it as design thinking, never as shipped work or measured numbers."
     },
     {
       "front": "Offline vs. online evaluation for a RAG system — what's the actual distinction?",
       "general": "Offline evaluation runs the pipeline against a fixed golden QA set with known ground truth (recall@k, MRR, precision@k) — fast, repeatable, catches regressions before deploy, but only as representative as the golden set's coverage. Online evaluation measures real-user signal in production — click-through, thumbs up/down, follow-up-question rate, session abandonment — capturing the real query distribution and real relevance judgments, but is noisier, slower to accumulate, and harder to cleanly attribute to retrieval versus generation quality.",
-      "specific": "My true-today evidence is offline evaluation only — the recall@k/MRR harness on an internal policy RAG service. I have no online-evaluation signal (user feedback loops, production A/B testing) evidenced anywhere in my work, and I'd say so plainly rather than imply a feedback loop exists."
+      "specific": "My honest position: for FedInsight I've designed the offline methodology — recall@k and MRR over a held-out golden set — but the harness isn't built yet, so I have no offline numbers, and I have no online-evaluation signal (user feedback loops, production A/B testing) either. I'd say both plainly rather than imply measured results or a feedback loop exist."
     },
     {
       "front": "How do you actually choose k for retrieval?",
@@ -100,7 +100,7 @@
     {
       "front": "How do you actually enforce grounding and citation in a RAG system's answers?",
       "general": "A disciplined system prompt constrains the model to answer only from the retrieved context and requires inline citations — a marker like [n] mapped to the specific source chunk — so every claim is traceable back to a specific piece of retrieved evidence rather than the model's parametric memory.",
-      "specific": "This is the actual system-prompt language I've used: 'use ONLY the provided context, cite [n], and say you don't have enough information rather than guessing' — used across the RAG systems I've built."
+      "specific": "This is the actual system-prompt language I use in FedInsight: 'use ONLY the provided context, cite [n], and say you don't have enough information rather than guessing.'"
     },
     {
       "front": "What's the actual mechanism for an abstain / no-answer path in RAG, and why does it matter?",
@@ -109,7 +109,7 @@
     {
       "front": "What's the actual, complete mechanism for reducing hallucination in a RAG system — not just the prompt?",
       "general": "Two separate levers, both necessary. First, prompt discipline: constrain the model to the retrieved context, require citations, and instruct it to abstain rather than guess — this handles 'don't invent facts beyond what was retrieved.' Second, retrieval quality itself, measured by the recall@k/MRR eval harness — if recall@k is low, no amount of prompt discipline saves the answer, because the correct grounding material was never in the context window to begin with. A fully no-LLM extractive fallback (returning top-ranked chunk excerpts directly instead of generating free text) is a structural third option that can't hallucinate at all, since nothing is generated.",
-      "specific": "My extractive, no-LLM fallback caps excerpts at 400 characters per chunk for exactly this reason, and the recall@k/MRR harness measuring the retrieval-quality side is the one I actually built and ran, on an internal policy RAG service."
+      "specific": "My extractive, no-LLM fallback in FedInsight caps excerpts at 400 characters per chunk for exactly this reason, and the recall@k/MRR methodology measuring the retrieval-quality side is the one I designed for FedInsight — the harness itself is roadmap work, not built, so I frame it as design, never as measured results."
     },
     {
       "front": "pgvector — IVFFlat vs. HNSW, and what does the cosine operator actually do?",

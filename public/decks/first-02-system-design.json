@@ -84,8 +84,8 @@
     {
       "front": "What would you actually put in a model registry entry?",
       "general": "A versioned model artifact plus its lineage — training data snapshot or reference, evaluation metrics, the approval/promotion state, and the deployment environment it's cleared for — enough that any rollback can point at a known-good prior version.",
-      "specific": "I'd design this at the conceptual level since I haven't built a registry myself — my closest evidenced analog is the recall@k/MRR evaluation harness I built for the Policy RAG service, the same idea of gating a change behind a measured quality bar before it ships.",
-      "hint": "Artifact + lineage + metrics + approval state; analog: Policy RAG's eval harness."
+      "specific": "I'd design this at the conceptual level since I haven't built a registry myself — my closest analog is the retrieval-quality evaluation methodology (recall@k, MRR, golden question set) I designed for FedInsight, my personal RAG project: the same idea of gating a change behind a measured quality bar before it ships. I'm clear that the FedInsight harness itself is designed, not yet built.",
+      "hint": "Artifact + lineage + metrics + approval state; analog: FedInsight eval methodology (designed, not built)."
     },
     {
       "front": "How would you decide when a canary has failed and should roll back?",
