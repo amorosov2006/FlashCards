@@ -40,6 +40,18 @@
       "hint": "Arc: BS→SE II; MS + ownership carry it; open to leveling."
     },
     {
+      "front": "VP-FullStack (JD update 7/14): The JD now REQUIRES leading AI-assisted dev-tool use and setting team expectations for validating AI outputs. How do you answer?",
+      "general": "Treat a validation-standards question as a process answer, not a tools answer: name the checks AI-generated code must pass (secure-coding review, peer review, automated tests), who enforces them, and how good patterns get reused. Lead with a tool you built or drove adoption of, then the standards you applied to its output.",
+      "specific": "This is my strongest genuine line: I built the two AI tools my team adopted — FrostByte and Project Overview — and I use AI-assisted development daily (Cursor, Claude, Copilot). My expectation-setting answer: AI output is a draft, never a merge — it goes through the same gates as any code: secure-coding review, peer review, automated tests. FrostByte is also my incident/root-cause example: plain-English investigation over ~7M events/day in Snowflake, replacing ad hoc SQL — the JD's “incident/root-cause analysis support” line, literally.",
+      "hint": "AI output = draft, never a merge; same gates as any code; FrostByte = the incident/RCA example."
+    },
+    {
+      "front": "VP-FullStack (JD update 7/14): Responsible AI in engineering workflows — data sensitivity, secure handling of inputs/outputs, coaching engineers. What's your answer?",
+      "general": "Anchor responsible-AI answers in concrete design decisions, not policy talk: what data the tool can see, how credentials/secrets are handled, what never leaves the boundary, and how you taught teammates the same discipline. Coaching without direct reports = onboarding assets, review practices, and patterns others adopted.",
+      "specific": "My evidence is FrostByte's design: runtime credential capture into environment variables — nothing hard-coded; schema-grounded queries so the model only sees documented columns and enums; structured JSON responses. In a bank, I treat data sensitivity as a design input: enterprise-authorized tools only, no sensitive data into unapproved surfaces. Coaching-wise — I have no direct reports, so my honest framing is the onboarding assets and review practices I built that my team adopted; scaling that discipline across a team is exactly what this role asks for.",
+      "hint": "FrostByte design choices = the evidence; enterprise-authorized only; coaching = adopted assets, honestly framed."
+    },
+    {
       "front": "VP-FullStack: What's the first technical risk you'd want to de-risk in the first 90 days here?",
       "general": "Show you can reason about a prototype-stage team's real risk — ambiguous boundaries, unclear ownership — rather than jumping straight to code; this signals the 'ask before guessing' trait the JD explicitly wants.",
       "specific": "At prototype pace with patterns still crystallizing, I'd want to nail down the service boundary between the Java microservices and the Python AI agent early — exactly the kind of boundary-design work I did on the USAA rebuild and on FrostByte's tool catalogue — before more code accumulates on either side of an ambiguous line.",
