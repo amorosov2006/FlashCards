@@ -1,0 +1,306 @@
+{
+  "title": "AWS SAA - Exam Scenarios",
+  "description": "Exam-style scenario questions with realistic wrong answers; cycle-2/3 practice.",
+  "cards": [
+    {
+      "front": "A security team has identified a single IP address performing reconnaissance scans against instances in a public subnet. They must block all traffic from that IP with minimal changes to the environment. What should the solutions architect recommend?",
+      "back": "Add an explicit deny rule for that IP to the subnet's network ACL, numbered lower than the allow rules. Only NACLs support deny rules; security groups are allow-only, so any answer that 'adds a deny rule to the security group' is impossible. Deploying WAF fails because WAF attaches to CloudFront, ALB, or API Gateway, not directly to subnets or instances, and modifying route tables does not filter by source IP. Because NACLs evaluate rules in number order and stop at the first match, the deny must precede the allows.",
+      "distractors": [
+        "Add an inbound deny rule for the IP address to the security group attached to the instances.",
+        "Deploy AWS WAF directly on the subnet and create an IP match rule to drop the traffic.",
+        "Update the subnet route table to send traffic from the malicious IP to a blackhole route."
+      ],
+      "quizAnswer": "Add a deny rule for the IP to the network ACL, numbered before the allow rules."
+    },
+    {
+      "front": "An application in Account A must read objects from an S3 bucket in Account B. The security team requires that the application keep running under its existing IAM role with no changes to the application code and no role assumption in the client. What should the solutions architect recommend?",
+      "back": "Attach a bucket policy (a resource-based policy) in Account B granting the Account A role's ARN read access, and ensure the role's identity policy allows s3:GetObject on that bucket. Resource-based policies grant cross-account access directly without the caller assuming a new role or switching identity, exactly matching 'no role assumption in the client'. Creating a role in Account B to assume violates the no-assumption constraint, IAM users with shared long-lived keys violate credential hygiene, and making the bucket public violates least privilege outright.",
+      "distractors": [
+        "Create an IAM role in Account B and modify the application to call sts:AssumeRole before each S3 request.",
+        "Create an IAM user in Account B and distribute its access keys to the application in Account A.",
+        "Enable public read access on the bucket and restrict access using an S3 lifecycle configuration."
+      ],
+      "quizAnswer": "Add a bucket policy in Account B granting the Account A role read access, with a matching allow in the role's identity policy."
+    },
+    {
+      "front": "A company stores database credentials for an RDS for PostgreSQL instance in configuration files. A new security mandate requires the credentials to be encrypted, automatically rotated every 30 days, and retrievable by the application at runtime. Which solution meets these requirements with the least operational overhead?",
+      "back": "Store the credentials in AWS Secrets Manager and enable managed rotation, which uses a built-in Lambda rotation integration for RDS. Secrets Manager is the only option with turnkey automatic rotation. Parameter Store SecureString encrypts and serves values but has no built-in rotation, you would have to build and maintain a custom rotation function, which is more operational overhead. Encrypted environment variables and KMS-encrypted files in S3 both fail the automatic-rotation requirement entirely.",
+      "distractors": [
+        "Store the credentials as SecureString parameters in SSM Parameter Store and enable its native 30-day rotation schedule.",
+        "Store the credentials in Lambda environment variables encrypted with a customer-managed KMS key.",
+        "Encrypt the configuration files with KMS and store them in a private S3 bucket with versioning enabled."
+      ],
+      "quizAnswer": "Store the credentials in AWS Secrets Manager with automatic rotation enabled for the RDS database."
+    },
+    {
+      "front": "A financial services company must encrypt objects in S3 and prove, for auditors, exactly which principals used the encryption key and when, while controlling the key rotation schedule. Which encryption approach should the solutions architect recommend?",
+      "back": "SSE-KMS with a customer-managed key (CMK). Every use of a CMK is logged in CloudTrail, giving the per-principal key-usage audit trail, and the customer controls the key policy and rotation configuration. SSE-S3 encrypts but gives no per-key usage audit or rotation control since AWS manages the keys invisibly. An AWS-managed KMS key logs usage but its rotation is fixed and not configurable. SSE-C forces the customer to supply and manage keys on every request, far more overhead than the requirement demands.",
+      "distractors": [
+        "Use SSE-S3 default encryption, which records key usage per principal in CloudTrail.",
+        "Use SSE-KMS with the AWS-managed key (aws/s3) and configure a custom rotation schedule on it.",
+        "Use SSE-C so that AWS CloudTrail records each customer-provided key used per request."
+      ],
+      "quizAnswer": "Use SSE-KMS with a customer-managed KMS key, giving CloudTrail-audited key usage and customer-controlled rotation."
+    },
+    {
+      "front": "A healthcare company suspects that some of its S3 buckets contain unencrypted objects with patient PII uploaded by internal teams. Compliance needs an automated way to discover and classify sensitive data across all buckets. Which service should the solutions architect recommend?",
+      "back": "Amazon Macie: it uses machine learning to discover, classify, and report sensitive data such as PII in S3, which is precisely this requirement. GuardDuty detects threats from VPC Flow Logs, DNS logs, and CloudTrail, it does not inspect object contents for PII. Inspector scans EC2, ECR images, and Lambda for software vulnerabilities (CVEs), not data classification. Config tracks resource configuration changes, it can flag an unencrypted bucket setting but cannot find PII inside objects.",
+      "distractors": [
+        "Enable Amazon GuardDuty and review its PII findings for the S3 data sources.",
+        "Run Amazon Inspector assessments against the S3 buckets to classify the stored objects.",
+        "Create AWS Config rules that scan object contents for patient identifiers."
+      ],
+      "quizAnswer": "Enable Amazon Macie to automatically discover and classify PII across the S3 buckets."
+    },
+    {
+      "front": "After a security incident, auditors ask two questions: which principal modified a specific security group last month, and whether that security group had ever allowed 0.0.0.0/0 on port 22 at any point in the past year. Which combination answers both with the least effort?",
+      "back": "AWS Config answers the configuration-history question: it records every configuration state of the security group over time and can evaluate compliance rules such as 'no 0.0.0.0/0 on port 22', including when the resource drifted and when it was fixed. CloudTrail answers the 'who made the API call' question. GuardDuty only raises threat findings and keeps no configuration timeline; Detective is for graph-based root-cause investigation of findings, not configuration history; Inspector scans for CVEs.",
+      "distractors": [
+        "Use Amazon GuardDuty, which retains a full change timeline for every security group.",
+        "Use Amazon Detective to reconstruct the security group's historical rule sets.",
+        "Use Amazon Inspector's network reachability findings to list historical rule changes."
+      ],
+      "quizAnswer": "Use AWS Config for the security group's configuration history and compliance timeline, with CloudTrail identifying who made each change."
+    },
+    {
+      "front": "A company uses AWS Organizations with many member accounts. Security requires that no user in any member account, including account administrators with full IAM rights, can disable or delete CloudTrail trails. What should the solutions architect recommend?",
+      "back": "Attach a Service Control Policy (SCP) to the organization root or relevant OUs that denies cloudtrail:StopLogging and cloudtrail:DeleteTrail. SCPs set the permission ceiling for every principal in member accounts, and an explicit deny in an SCP cannot be overridden by any identity policy, even a full-admin one, because explicit deny always wins in policy evaluation. Per-account IAM policies fail because account admins can edit them. Permissions boundaries apply per identity and admins can remove them. A Config rule is detective, it reports the violation after the fact instead of preventing it.",
+      "distractors": [
+        "Attach an IAM policy denying CloudTrail changes to every user in each member account.",
+        "Apply a permissions boundary to all administrator roles in the member accounts.",
+        "Create an AWS Config rule that flags accounts where CloudTrail has been disabled."
+      ],
+      "quizAnswer": "Attach an SCP at the organization level that explicitly denies stopping or deleting CloudTrail trails."
+    },
+    {
+      "front": "EC2 instances in private subnets must call AWS KMS and SQS. A new compliance rule states this traffic must never traverse the public internet, and the VPC currently routes such calls through a NAT gateway. What should the solutions architect recommend?",
+      "back": "Create interface VPC endpoints (PrivateLink) for KMS and SQS. Interface endpoints place ENIs with private IPs in your subnets so API calls stay entirely on the AWS network, satisfying the no-internet requirement. The NAT gateway path egresses to the services' public endpoints, which violates the constraint. Gateway endpoints are wrong here because they exist only for S3 and DynamoDB. An internet gateway is the opposite of the requirement, and VPC peering connects VPCs, not AWS service APIs.",
+      "distractors": [
+        "Create gateway VPC endpoints for KMS and SQS and add them to the private route tables.",
+        "Keep the NAT gateway, since NAT traffic to AWS services never leaves the AWS network.",
+        "Set up VPC peering between the application VPC and the AWS service VPCs for KMS and SQS."
+      ],
+      "quizAnswer": "Create interface VPC endpoints (PrivateLink) for KMS and SQS so the API traffic stays on the AWS network."
+    },
+    {
+      "front": "A public web application behind an ALB is being hit with SQL injection and cross-site scripting attempts, and the team also wants to rate-limit abusive clients by IP. Which service should the solutions architect recommend?",
+      "back": "AWS WAF attached to the ALB: it is the layer 7 rule engine with managed and custom rules for SQL injection and XSS, plus rate-based rules for per-IP throttling and geo-blocking. Shield Standard is automatic, free layer 3/4 DDoS protection and has no application-layer inspection rules; it cannot detect SQLi or XSS. GuardDuty detects threats from logs, it sits nowhere in the request path and blocks nothing. NACLs filter by IP/port/protocol only and cannot inspect HTTP payloads or apply rate limits.",
+      "distractors": [
+        "Enable AWS Shield Standard on the ALB to filter SQL injection and XSS payloads.",
+        "Enable Amazon GuardDuty so it can block malicious HTTP requests inline.",
+        "Add network ACL rules that match and drop SQL injection patterns in request bodies."
+      ],
+      "quizAnswer": "Attach AWS WAF to the ALB with SQL injection, XSS, and rate-based rules."
+    },
+    {
+      "front": "An RDS for MySQL database backs a business-critical application. The database must remain available with automatic failover if an entire Availability Zone fails; read scaling is not a requirement. What should the solutions architect recommend?",
+      "back": "Enable RDS Multi-AZ: a synchronously replicated standby in another AZ with automatic DNS failover in roughly 60-120 seconds and zero data loss. This is the exact match for 'survive an AZ outage with automatic failover'. A cross-AZ read replica fails because promotion is manual and asynchronous replication risks losing recent writes. Snapshot-and-restore has an RTO of hours, not automatic failover. Placing a second instance in the same AZ obviously fails the AZ-outage requirement no matter how the two are configured.",
+      "distractors": [
+        "Create a cross-AZ read replica and promote it automatically when the primary becomes unavailable.",
+        "Take automated snapshots every hour and restore to a new AZ if the current AZ fails.",
+        "Launch a second RDS instance in the same AZ behind a Network Load Balancer for failover."
+      ],
+      "quizAnswer": "Convert the RDS instance to a Multi-AZ deployment for synchronous replication and automatic failover."
+    },
+    {
+      "front": "A global company runs its transactional database on Aurora MySQL in us-east-1. Regulators require a disaster recovery plan with an RPO of a few seconds and an RTO of under one minute if the entire region fails. What should the solutions architect recommend?",
+      "back": "Aurora Global Database: dedicated replication infrastructure gives sub-second replication lag into up to five read-only secondary regions, and a secondary region can be promoted in under one minute, exactly matching RPO seconds / RTO under a minute. Multi-AZ fails because the standby lives in the same region. Cross-region snapshot copies have an RPO of hours. A binlog-based cross-region MySQL read replica has higher and less predictable lag and a slower, manual promotion path than the purpose-built global database.",
+      "distractors": [
+        "Enable Aurora Multi-AZ so the standby instance is placed in a different AWS Region.",
+        "Copy automated Aurora snapshots to a second region every six hours and restore on failure.",
+        "Create a binlog-based cross-region read replica and promote it manually during a regional outage."
+      ],
+      "quizAnswer": "Deploy Aurora Global Database with a secondary region, promoting it during a regional outage."
+    },
+    {
+      "front": "An e-commerce site's checkout flow calls an order-processing tier directly. During flash sales the processing tier is overwhelmed and orders are lost. Orders must never be lost and the processing tier should work through backlogs at its own pace. What should the solutions architect recommend?",
+      "back": "Put an SQS queue between checkout and processing, with the processing tier in an Auto Scaling group consuming from the queue (scaling on queue depth) and a dead-letter queue for poison messages. The queue absorbs bursts, decouples producer from consumer availability, and retries failed messages, satisfying both 'never lose orders' and 'drain at its own pace'. SNS direct to the tier fails because a plain SNS-to-HTTP push has bounded retries and no consumer-paced buffering; simply enlarging instances fails because any fixed capacity can still be exceeded and a crash still loses in-flight orders; synchronous Lambda invocation just moves the overload problem.",
+      "distractors": [
+        "Publish orders to an SNS topic that pushes directly to the processing tier's HTTP endpoint.",
+        "Vertically scale the order-processing instances to a larger instance type before each sale.",
+        "Have the checkout tier invoke the processing logic synchronously through Lambda for elasticity."
+      ],
+      "quizAnswer": "Decouple the tiers with an SQS queue consumed by an Auto Scaling processing fleet, with a dead-letter queue."
+    },
+    {
+      "front": "A company can tolerate roughly 30 minutes of downtime (RTO) and a few minutes of data loss (RPO) for its DR site in another region, but wants the lowest possible standing cost that still meets those numbers. Which DR strategy should the solutions architect recommend?",
+      "back": "Pilot light: keep only the core, the continuously replicating database, running in the DR region, with the application tier defined as AMIs and templates scaled to zero and launched at failover. That yields an RTO in the tens of minutes and an RPO in minutes at the lowest cost that satisfies the targets. Backup and restore is cheaper but its RTO and RPO are hours, missing both targets. Warm standby and active-active both meet the numbers but cost more, and the exam tiebreak is the cheapest option that meets every requirement.",
+      "distractors": [
+        "Warm standby, running a scaled-down copy of the full stack in the DR region.",
+        "Backup and restore, copying nightly snapshots to the DR region and restoring on demand.",
+        "Active-active multi-Region with traffic distributed by Route 53."
+      ],
+      "quizAnswer": "Pilot light: replicate the database continuously to the DR region and launch the application tier only at failover."
+    },
+    {
+      "front": "A three-AZ VPC has private subnets whose instances reach the internet through a single NAT gateway in AZ-a. During an AZ-a outage, instances in the other AZs lost all outbound connectivity. How should the solutions architect fix this?",
+      "back": "Deploy one NAT gateway per AZ and update each AZ's private route table to point 0.0.0.0/0 at the NAT gateway in its own AZ. NAT gateways are AZ-scoped, so per-AZ deployment removes the cross-AZ dependency (and the cross-AZ data charges). A second NAT in the same AZ-a changes nothing about the failure mode. NAT instances add management burden and are the legacy low-availability option. An egress-only internet gateway is IPv6-only and does not replace IPv4 NAT.",
+      "distractors": [
+        "Add a second NAT gateway in AZ-a so the two can fail over to each other.",
+        "Replace the NAT gateway with a NAT instance in an Auto Scaling group spanning all AZs.",
+        "Replace the NAT gateway with an egress-only internet gateway attached to the VPC."
+      ],
+      "quizAnswer": "Deploy a NAT gateway in each AZ and route each private subnet to the NAT gateway in its own AZ."
+    },
+    {
+      "front": "When an order is placed, three independent systems must each receive the event: billing, fulfillment, and analytics. Each system must be able to retry failed processing independently without affecting the others, and no system may miss an event. What should the solutions architect recommend?",
+      "back": "Publish the event to an SNS topic subscribed by three SQS queues, one per system (the fan-out pattern). SNS guarantees every subscriber gets every message, and each SQS queue gives its consumer durable buffering, independent retries, and a DLQ, so one system's failure never affects the others. A single shared queue fails because SQS is point-to-point: each message is consumed once, not by all three systems. Direct SNS-to-endpoint push loses the independent durable retry buffer. Three separate publishes from the producer couples it to every consumer and risks partial writes.",
+      "distractors": [
+        "Send the event to a single SQS queue that all three systems poll as competing consumers.",
+        "Have the order service write the event three times, once to each system's API.",
+        "Subscribe the three systems' HTTP endpoints directly to the SNS topic with no queues."
+      ],
+      "quizAnswer": "Fan out through SNS to three SQS queues, one per downstream system."
+    },
+    {
+      "front": "A company runs its primary web stack in one region and a minimal static maintenance site in another. If the primary site fails health checks, all traffic should automatically shift to the standby site. Which Route 53 routing policy should the solutions architect use?",
+      "back": "Failover routing: designate the primary record with an attached health check and the standby as the secondary; when the health check fails, Route 53 automatically answers with the secondary. This is the definitional active-passive DR policy. Weighted routing splits traffic by fixed proportions regardless of health (it can shift traffic but is designed for canaries, not active-passive DR). Latency-based routing would send some users to the standby even when the primary is healthy. Simple routing supports no health-check-driven logic at all.",
+      "distractors": [
+        "Weighted routing with 100/0 weights, manually updated to 0/100 during an outage.",
+        "Latency-based routing so users are automatically moved when the primary slows down.",
+        "Simple routing with a low TTL so clients re-resolve quickly after a failure."
+      ],
+      "quizAnswer": "Failover routing with a health check on the primary record and the standby as secondary."
+    },
+    {
+      "front": "A multiplayer game uses a custom UDP protocol served from EC2 fleets in two regions. Players worldwide need low latency, enterprise customers require two fixed IP addresses for firewall allow-lists, and failover between regions must happen in seconds without waiting for DNS caches. What should the solutions architect recommend?",
+      "back": "AWS Global Accelerator: it operates at the TCP/UDP layer, provides exactly two static anycast IP addresses, routes players over the AWS global backbone to the nearest healthy regional endpoint, and fails over between regions in seconds without any DNS TTL dependency. CloudFront fails because it is HTTP/HTTPS only and cannot proxy a custom UDP protocol. Route 53 latency routing gives no static IPs and failover is delayed by client DNS caching. An NLB is regional; by itself it cannot route or fail over between two regions.",
+      "distractors": [
+        "Serve the game through CloudFront, which caches UDP traffic at edge locations.",
+        "Use Route 53 latency-based routing with a 60-second TTL for regional failover.",
+        "Deploy a single Network Load Balancer with cross-region targets and two Elastic IPs."
+      ],
+      "quizAnswer": "Use AWS Global Accelerator for static anycast IPs, UDP support, and fast cross-region failover."
+    },
+    {
+      "front": "An RDS for MySQL database is at 90% CPU, almost entirely from read queries generated by a reporting dashboard. Write volume is modest. The company wants to improve performance without changing the database engine. What should the solutions architect recommend?",
+      "back": "Add read replicas and point the reporting dashboard at them. This is the canonical read-scaling answer: asynchronous, readable copies that offload read traffic from the primary. Multi-AZ is the trap: the standby is synchronous but not readable, so it adds availability, not read capacity. Vertical scaling buys headroom but is bounded, costs more, and does not separate reporting load from transactional load. Migrating to Redshift changes the engine and the architecture, violating the stated constraint.",
+      "distractors": [
+        "Convert the instance to a Multi-AZ deployment and direct report queries to the standby.",
+        "Scale the instance vertically to the largest available memory-optimized instance type.",
+        "Migrate the reporting workload to Amazon Redshift and connect the dashboard to it."
+      ],
+      "quizAnswer": "Create RDS read replicas and route the reporting dashboard's read traffic to them."
+    },
+    {
+      "front": "A gaming company needs a real-time leaderboard with sorted rankings, sub-millisecond reads, and the cache must survive a node failure with automatic failover. Which service should the solutions architect recommend?",
+      "back": "ElastiCache for Redis: sorted sets are a native Redis structure purpose-built for leaderboards, reads are sub-millisecond, and Redis supports Multi-AZ replication with automatic failover plus snapshot/AOF persistence. Memcached fails twice: it has neither sorted data structures nor any replication or failover. DynamoDB alone delivers single-digit milliseconds, not sub-millisecond, and ranking requires extra modeling. RDS is disk-based relational storage, the wrong latency class entirely.",
+      "distractors": [
+        "ElastiCache for Memcached with client-side sharding across nodes for durability.",
+        "A DynamoDB table with a GSI on the score attribute for sorted reads.",
+        "RDS for PostgreSQL with an ORDER BY score index and a large buffer cache."
+      ],
+      "quizAnswer": "ElastiCache for Redis, using sorted sets with Multi-AZ automatic failover."
+    },
+    {
+      "front": "A DynamoDB-backed product catalog serves millions of reads of a small set of hot items. The team needs microsecond read latency during peak events but cannot rewrite the application's data access layer. What should the solutions architect recommend?",
+      "back": "DynamoDB Accelerator (DAX): an in-memory, write-through cache in front of DynamoDB that serves repeated reads in microseconds, and because it is API-compatible via the DAX client, the data access code stays essentially unchanged, satisfying the no-rewrite constraint. ElastiCache would require building and maintaining cache-aside logic, a rewrite of the access layer. Raising RCUs increases throughput capacity but DynamoDB latency stays single-digit milliseconds, never microseconds. Global tables address multi-Region access, not latency class.",
+      "distractors": [
+        "Add ElastiCache for Redis and implement cache-aside logic in the data access layer.",
+        "Increase the table's provisioned read capacity units until reads return in microseconds.",
+        "Enable DynamoDB global tables to serve the hot items from a closer region."
+      ],
+      "quizAnswer": "Put DynamoDB Accelerator (DAX) in front of the table via the DAX client for microsecond cached reads."
+    },
+    {
+      "front": "Analysts need to run occasional ad hoc SQL queries against JSON and Parquet files already stored in an S3 data lake. The company refuses to provision or manage any clusters and wants to pay only when queries run. What should the solutions architect recommend?",
+      "back": "Amazon Athena: serverless SQL directly against data in S3, pay per query for data scanned, zero infrastructure, typically paired with the Glue Data Catalog for schemas. The keywords 'ad hoc', 'directly on S3', 'no cluster', and 'pay per query' all point here. Redshift requires a provisioned cluster (and even Redshift Serverless implies loading or configuring external access for a standing warehouse, overkill for occasional queries). EMR means managing a cluster and jobs. Loading into RDS adds ETL and a running database for occasional analysis.",
+      "distractors": [
+        "Load the files into an Amazon Redshift cluster and query them with BI tools.",
+        "Launch an EMR cluster with Presto and keep it running for analyst queries.",
+        "Import the data into RDS for PostgreSQL and query it with standard SQL."
+      ],
+      "quizAnswer": "Use Amazon Athena to query the S3 data in place, serverless and pay per query."
+    },
+    {
+      "front": "A fleet of IoT sensors produces a continuous event stream. Two teams need the data: one runs a custom real-time anomaly detector, the other wants to replay the last 7 days of events for model retraining. Both must read the full stream independently. What should the solutions architect recommend?",
+      "back": "Kinesis Data Streams with retention configured to at least 7 days (configurable up to 365 days; the default is only 24 hours, a classic trap). Streams supports multiple independent consumer applications, per-shard ordering, and replay from any point in the retention window; enhanced fan-out gives each registered consumer its own 2 MB/s per shard push pipe. Firehose fails because it has no consumer API and no replay, it only delivers into destinations. SQS fails because a consumed message is gone, there is no replay and no multi-reader semantics. SNS has no retention or replay at all.",
+      "distractors": [
+        "Kinesis Data Firehose, since both teams can replay its delivery stream for 7 days.",
+        "An SQS Standard queue that both teams poll, relying on its 14-day message retention.",
+        "An SNS topic that both teams subscribe to, replaying past events when needed."
+      ],
+      "quizAnswer": "Kinesis Data Streams with extended retention (up to 365 days) and independent consumers, using enhanced fan-out."
+    },
+    {
+      "front": "A rendering farm of Linux EC2 instances spread across three AZs must all read and write a shared set of project files with POSIX permissions. Storage must grow automatically as projects are added. What should the solutions architect recommend?",
+      "back": "Amazon EFS: NFS-based, POSIX-compliant, regional across AZs, elastic capacity, and mountable concurrently by the whole fleet, ticking every stated requirement. EBS Multi-Attach fails on two counts: it works only within a single AZ and requires a cluster-aware file system, plus volumes do not grow automatically. S3 is object storage without POSIX file semantics, breaking applications that expect a real file system. FSx for Windows is SMB for Windows workloads, not the fit for a Linux POSIX fleet.",
+      "distractors": [
+        "An io2 volume with Multi-Attach enabled, mounted by instances in all three AZs.",
+        "An S3 bucket mounted on each instance as the primary POSIX file system.",
+        "FSx for Windows File Server shares mounted by the Linux instances over SMB."
+      ],
+      "quizAnswer": "Amazon EFS mounted across all three AZs for elastic, shared POSIX file storage."
+    },
+    {
+      "front": "A media site serves a global audience: static assets from S3 and dynamic pages from an ALB in one region. Users far from that region report slow page loads. The company wants better global performance for both content types with minimal re-architecture. What should the solutions architect recommend?",
+      "back": "CloudFront with two origins: the S3 bucket for static assets and the ALB for dynamic content. CloudFront caches static content at edge locations and accelerates dynamic requests over the AWS backbone with persistent connections to the origin, no application changes required. Global Accelerator improves routing but does no caching, leaving the biggest static-content win on the table for an HTTP workload. Replicating the full stack to more regions is a major re-architecture, violating the constraint. Route 53 latency routing needs multiple regional deployments to route between, which do not exist here.",
+      "distractors": [
+        "Put AWS Global Accelerator in front of the ALB and S3 to cache content at the edge.",
+        "Deploy the full application stack to three additional regions behind latency-based routing.",
+        "Enable S3 Transfer Acceleration on the bucket and point users directly at the accelerated endpoint."
+      ],
+      "quizAnswer": "Serve both static (S3 origin) and dynamic (ALB origin) content through a CloudFront distribution."
+    },
+    {
+      "front": "Application logs must be queryable for the first 30 days, retained but rarely touched for 90 more days, then kept 7 years purely for compliance at minimum cost. Retrieval time in the compliance period may take hours. What should the solutions architect recommend?",
+      "back": "An S3 lifecycle policy: keep objects in Standard for 30 days, transition to Standard-IA at day 30, then transition to Glacier Deep Archive at day 120 for the 7-year tail (Deep Archive is the cheapest class, 12-48 hour retrieval, 180-day minimum duration, all fine here). Intelligent-Tiering alone is for unknown patterns; this pattern is known, so explicit lifecycle transitions are cheaper and more direct. One Zone-IA is wrong for sole compliance copies since an AZ loss destroys them. Keeping everything in Standard fails minimum cost outright.",
+      "distractors": [
+        "Store the logs in S3 Intelligent-Tiering for the full 7 years and let it optimize automatically.",
+        "Transition the logs to One Zone-IA at day 30 and keep them there for the 7-year retention.",
+        "Keep all logs in S3 Standard with versioning so no lifecycle management is required."
+      ],
+      "quizAnswer": "Lifecycle policy: Standard for 30 days, transition to Standard-IA, then to Glacier Deep Archive for the 7-year compliance tail."
+    },
+    {
+      "front": "A nightly batch job processes images for several hours, checkpoints its progress to S3, and can be safely stopped and resumed at any point. The company wants the lowest possible EC2 compute cost for this job. What should the solutions architect recommend?",
+      "back": "Spot Instances, ideally in an Auto Scaling group or Spot Fleet with mixed instance types: the job is stateless between checkpoints, fault-tolerant, and interruption-tolerant, the exact profile Spot's up-to-90% discount is designed for; the 2-minute interruption warning gives time to checkpoint. On-Demand leaves the maximum discount on the table for an interruptible workload. Reserved Instances and Savings Plans suit steady always-on usage, not a few hours per night, and still cost more than Spot. Dedicated Hosts are a compliance/licensing play at premium prices.",
+      "distractors": [
+        "On-Demand Instances, because batch workloads cannot tolerate Spot interruptions.",
+        "Standard Reserved Instances with a three-year term for the nightly job's instance type.",
+        "Dedicated Hosts to guarantee capacity for the batch window each night."
+      ],
+      "quizAnswer": "Run the job on Spot Instances, checkpointing to S3 and handling the 2-minute interruption warning."
+    },
+    {
+      "front": "A company has a steady, predictable baseline of EC2 compute spend, but engineering plans to migrate between instance families and possibly shift some workloads to Fargate over the next year. They want the deepest discount that survives those changes. What should the solutions architect recommend?",
+      "back": "A Compute Savings Plan: commit to a dollars-per-hour compute spend for 1 or 3 years and receive up to roughly 72% off while remaining flexible across instance family, size, region, and even Fargate and Lambda usage, exactly matching the planned migrations. Standard RIs lock to a specific instance family and region, so the family migration would strand the discount. Spot fails because baseline production load is not interruption-tolerant. On-Demand carries no discount at all. RIs only beat Savings Plans when an AZ-level capacity reservation is required, which is not stated here.",
+      "distractors": [
+        "Standard Reserved Instances for the current instance family in the current region.",
+        "Spot Instances for the entire baseline, migrating workloads when interruptions occur.",
+        "Remain on On-Demand pricing to preserve flexibility during the migrations."
+      ],
+      "quizAnswer": "Purchase a Compute Savings Plan, keeping the discount across instance families, regions, and Fargate."
+    },
+    {
+      "front": "A workload in private subnets moves terabytes of data to and from S3 every day through a NAT gateway, and NAT data processing has become one of the largest line items on the bill. Traffic patterns must not change from the application's perspective. What should the solutions architect recommend?",
+      "back": "Create a gateway VPC endpoint for S3 and add it to the private subnets' route tables. Gateway endpoints are free, and S3-bound traffic then bypasses the NAT gateway entirely, eliminating its per-GB data processing charges for that traffic while remaining transparent to the application. An interface endpoint for S3 works but bills hourly plus per-GB, needlessly replacing one data charge with another when the free gateway endpoint exists. A second NAT gateway adds cost rather than removing it. S3 Transfer Acceleration is for long-distance internet uploads and adds cost, the exam punishes reaching for it here.",
+      "distractors": [
+        "Create an interface VPC endpoint for S3 to remove the NAT charges.",
+        "Add a second NAT gateway to spread the data processing cost across two devices.",
+        "Enable S3 Transfer Acceleration on the bucket to lower the per-GB transfer price."
+      ],
+      "quizAnswer": "Add a free gateway VPC endpoint for S3 so the traffic bypasses the NAT gateway and its data processing charges."
+    },
+    {
+      "front": "A new consumer app's DynamoDB table sees traffic that is spiky and completely unpredictable, with long idle periods and sudden viral bursts. The team does not want to manage capacity settings and wants to avoid paying for idle throughput. Which table configuration should the solutions architect recommend?",
+      "back": "On-Demand capacity mode: pay per request with no capacity planning, scaling instantly with the bursts and costing nothing for throughput while idle, the reflex answer for 'unknown or spiky traffic, no capacity management'. Provisioned mode at peak wastes money through every idle period. Provisioned with auto scaling reacts on a delay, so sudden viral spikes can throttle before capacity catches up, and it still requires managing floors, ceilings, and target utilization. DAX is a read-latency cache, it does not address capacity management at all.",
+      "distractors": [
+        "Provisioned capacity set to the expected viral peak to guarantee headroom.",
+        "Provisioned capacity with auto scaling, which adjusts instantly to any burst.",
+        "Add DAX in front of the table so capacity settings no longer matter."
+      ],
+      "quizAnswer": "Use DynamoDB On-Demand capacity mode: pay per request, instant burst scaling, nothing to manage."
+    },
+    {
+      "front": "A company must keep 5 PB of historical data that will almost never be read, but access patterns for a separate 200 TB working set are unknown and shifting. Management wants the lowest storage cost for both with no ongoing tuning effort. What should the solutions architect recommend?",
+      "back": "Split by what is known: the 5 PB of near-never-read data goes to S3 Glacier Deep Archive, the cheapest class, since its 12-48 hour retrieval and 180-day minimum are acceptable for archival data. The 200 TB with unknown, shifting access goes to S3 Intelligent-Tiering, which moves each object between tiers automatically for a small monitoring fee, with no retrieval fees and no tuning. Putting everything in Intelligent-Tiering overpays for the archive (its opt-in archive tiers still cost more oversight than a direct Deep Archive placement for known-cold data); putting everything in Deep Archive breaks the working set with hours-long retrievals and early-deletion charges; Standard-IA on unknown patterns risks 30-day minimum-duration and retrieval fees on hot objects.",
+      "distractors": [
+        "Store both datasets in S3 Intelligent-Tiering so all tiering decisions are automatic.",
+        "Store both datasets in Glacier Deep Archive to guarantee the lowest per-GB price.",
+        "Store both datasets in Standard-IA, since infrequent access pricing suits mixed patterns."
+      ],
+      "quizAnswer": "Glacier Deep Archive for the 5 PB cold archive; S3 Intelligent-Tiering for the 200 TB unknown-pattern working set."
+    }
+  ]
+}

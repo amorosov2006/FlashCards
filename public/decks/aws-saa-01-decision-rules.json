@@ -1,0 +1,466 @@
+{
+  "title": "AWS SAA - Decision Rules",
+  "description": "Drill deck for the SAA-C03 decision tables and keyword reflexes; cycle-1/2 training.",
+  "cards": [
+    {
+      "front": "S3 storage class picker: which class for data with an unknown or changing access pattern?",
+      "back": "S3 Intelligent-Tiering: moves objects between access tiers automatically based on observed access, millisecond retrieval, no retrieval fees, no minimum storage duration, just a small monthly per-object monitoring fee. It is the reflex answer for 'unknown or unpredictable access pattern' combined with 'minimize cost with minimal management'. Standard-IA and the Glacier classes punish wrong guesses with retrieval fees and minimum-duration charges, so they only win when the access pattern is known.",
+      "distractors": [
+        "S3 Standard-IA, because infrequent-access pricing is always cheaper regardless of how often data is read.",
+        "S3 Glacier Flexible Retrieval, because data with an unknown pattern should be treated as archival by default.",
+        "S3 One Zone-IA, because unknown access patterns do not justify multi-AZ storage."
+      ],
+      "quizAnswer": "S3 Intelligent-Tiering: automatic tier movement, no retrieval fees, small monitoring fee; the reflex for unknown access patterns."
+    },
+    {
+      "front": "Archive data is accessed rarely (about once a quarter) but must be readable in milliseconds when needed. Which S3 class?",
+      "back": "S3 Glacier Instant Retrieval: millisecond retrieval like Standard, archive-level storage price, 90-day minimum storage duration. The keyword pair is 'rarely accessed' plus 'instant/millisecond retrieval'. Glacier Flexible Retrieval is cheaper but retrieval takes minutes to hours (expedited, standard, bulk tiers), and Glacier Deep Archive takes 12 to 48 hours, so both fail a milliseconds requirement.",
+      "distractors": [
+        "S3 Glacier Flexible Retrieval with expedited retrievals, since expedited mode returns data in milliseconds.",
+        "S3 Glacier Deep Archive, because it is the cheapest archive class and retrieval speed is secondary.",
+        "S3 Standard, because no Glacier class supports millisecond retrieval."
+      ],
+      "quizAnswer": "S3 Glacier Instant Retrieval: millisecond access at archive pricing, 90-day minimum storage duration."
+    },
+    {
+      "front": "Compliance requires retaining records for 7-10 years at the lowest possible storage cost; retrieval within a day or two is acceptable. Which S3 class?",
+      "back": "S3 Glacier Deep Archive: the cheapest storage class in S3, built exactly for long-term compliance retention. Retrieval takes 12 hours standard or 48 hours bulk, and objects carry a 180-day minimum storage duration, both irrelevant for a multi-year retention requirement. Glacier Flexible Retrieval costs more and only wins when retrieval in minutes to hours is actually required.",
+      "distractors": [
+        "S3 Glacier Flexible Retrieval, because Deep Archive does not support compliance workloads.",
+        "S3 Standard-IA with a 10-year lifecycle expiration, because IA classes are the cheapest for old data.",
+        "S3 Intelligent-Tiering, because it always converges to the cheapest possible tier automatically."
+      ],
+      "quizAnswer": "S3 Glacier Deep Archive: cheapest class, 12-hour standard / 48-hour bulk retrieval, 180-day minimum; built for 7-10 year compliance retention."
+    },
+    {
+      "front": "S3 Standard-IA vs One Zone-IA: what differs and when is each the answer?",
+      "back": "Both offer millisecond retrieval, a 30-day minimum billed duration, and lower storage cost with a per-GB retrieval fee. Standard-IA stores redundantly across multiple AZs at 99.9% availability: the answer for infrequently accessed but important data, such as a DR secondary copy. One Zone-IA stores in a single AZ at 99.5% availability for roughly 20% less: only for re-creatable data or secondary backup copies you could regenerate, because losing that AZ loses the data.",
+      "distractors": [
+        "One Zone-IA is the multi-AZ option and Standard-IA is single-AZ; pick One Zone-IA for critical backups.",
+        "Standard-IA has no minimum storage duration, so it is ideal for objects deleted within days.",
+        "One Zone-IA offers higher durability than Standard-IA because all copies are kept close together."
+      ],
+      "quizAnswer": "Standard-IA is multi-AZ for important infrequent data; One Zone-IA is single-AZ, cheaper, only for re-creatable or secondary copies."
+    },
+    {
+      "front": "EBS gp3 vs gp2: what changed and which is the default choice?",
+      "back": "gp3 is the default general purpose SSD: a baseline of 3,000 IOPS and 125 MB/s regardless of volume size, with IOPS and throughput provisionable independently of capacity, at a lower per-GB price than gp2. gp2 is the legacy model: IOPS tied to size at 3 IOPS per GB with burst credits, so a small gp2 volume that exhausts its burst credits crawls. The exam still tests that burst-credit trap; the fix is migrating to gp3 or provisioning more capacity.",
+      "distractors": [
+        "gp2, because gp3 requires you to buy IOPS bundled with capacity while gp2 lets you provision them separately.",
+        "gp3 IOPS scale automatically with volume size at 3 IOPS per GB, exactly like gp2.",
+        "gp2, because gp3 is an HDD-backed class unsuitable for boot volumes."
+      ],
+      "quizAnswer": "gp3: baseline 3,000 IOPS / 125 MB/s at any size, IOPS provisionable independently, cheaper than gp2; gp2 ties IOPS to size with burst credits."
+    },
+    {
+      "front": "Which EBS volume types for a mission-critical database needing extreme IOPS, and for cheap sequential-throughput workloads?",
+      "back": "io2 Block Express: provisioned IOPS SSD, up to 256,000 IOPS with sub-millisecond latency and the highest durability, the mission-critical database answer. st1 (throughput optimized HDD): high sequential throughput for big data, log processing, and streaming workloads, poor at random I/O. sc1 (cold HDD): lowest-cost EBS for infrequently accessed sequential data. Neither HDD type can serve as a boot volume.",
+      "distractors": [
+        "gp3 for the database, because general purpose SSD has no IOPS ceiling when striped.",
+        "sc1 for the database, because cold HDD offers the most consistent low-latency random I/O.",
+        "st1 as a boot volume for throughput-heavy instances, since HDD types boot faster."
+      ],
+      "quizAnswer": "io2 Block Express (up to 256,000 IOPS, sub-ms) for critical databases; st1 for sequential throughput; sc1 for cold sequential data; HDD types cannot boot."
+    },
+    {
+      "front": "Many Linux EC2 instances across multiple AZs need a shared POSIX file system that grows automatically. Which service?",
+      "back": "EFS: NFS-based, POSIX-compliant, regional and multi-AZ, elastic capacity with pay-per-GB-used, mountable by thousands of instances concurrently. EBS is block storage for one instance (Multi-Attach is niche, same-AZ, and needs a cluster-aware file system), S3 is an object API rather than a POSIX file system, and FSx for Windows is SMB for Windows workloads. Keyword: 'shared Linux file storage that scales automatically'.",
+      "distractors": [
+        "A single EBS gp3 volume attached to all instances across AZs simultaneously.",
+        "S3 mounted as a native POSIX file system, since object storage supports file locking by default.",
+        "FSx for Windows File Server, because SMB is the standard shared protocol for Linux fleets."
+      ],
+      "quizAnswer": "Amazon EFS: NFS, POSIX, multi-AZ, elastic, shared across many Linux instances."
+    },
+    {
+      "front": "A lift-and-shift Windows application needs an SMB file share with Active Directory integration. Which service?",
+      "back": "FSx for Windows File Server: native SMB protocol, Windows NTFS semantics, Active Directory integration, the reflex answer for any Windows file-share migration. EFS is NFS/Linux and does not speak SMB for Windows workloads; FSx for Lustre is a high-performance POSIX scratch system, not a Windows share. The keyword trio is 'Windows', 'SMB', 'Active Directory'.",
+      "distractors": [
+        "Amazon EFS, because NFS shares are natively consumable by Windows applications expecting SMB.",
+        "FSx for Lustre with an AD connector, since Lustre supports SMB in Windows mode.",
+        "S3 with File Gateway on every EC2 instance, as the standard pattern for in-cloud Windows shares."
+      ],
+      "quizAnswer": "FSx for Windows File Server: SMB protocol plus Active Directory integration for lifted-and-shifted Windows apps."
+    },
+    {
+      "front": "FSx for Lustre vs NetApp ONTAP vs OpenZFS: which use case triggers each?",
+      "back": "FSx for Lustre: high-performance POSIX scratch file system for HPC, genomics, and ML training, with native S3 linkage (lazy-load from and write back to a bucket). FSx for NetApp ONTAP: migrating existing NetApp workloads, multi-protocol access over NFS, SMB, and iSCSI. FSx for OpenZFS: ZFS-based workloads that lean on snapshots and cloning. Reflex: 'HPC/ML scratch' is Lustre, 'NetApp' or 'multi-protocol' is ONTAP, 'ZFS snapshots/clones' is OpenZFS.",
+      "distractors": [
+        "FSx for Lustre is the Windows SMB option; ONTAP is the HPC scratch system.",
+        "FSx for OpenZFS is designed for petabyte-scale ML training with S3 integration.",
+        "FSx for NetApp ONTAP supports only NFS, so SMB clients must use Lustre instead."
+      ],
+      "quizAnswer": "Lustre: HPC/ML scratch with S3 linkage; ONTAP: NetApp migrations, NFS/SMB/iSCSI multi-protocol; OpenZFS: ZFS snapshot/clone workloads."
+    },
+    {
+      "front": "RDS Multi-AZ vs read replicas: purpose, replication mode, and readability?",
+      "back": "Multi-AZ is high availability: synchronous replication to a standby in another AZ, automatic failover via DNS flip in roughly 60-120 seconds, and the standby is not readable (classic Multi-AZ; the newer 'Multi-AZ with two readable standbys' deployment is the exception). Read replicas are read scaling: asynchronous replication, readable, can be cross-region, and failover requires a manual promotion that breaks replication. The trap: 'improve read performance' is a read replica question even if Multi-AZ vocabulary appears nearby; 'survive an AZ outage with automatic failover' is Multi-AZ, never a replica alone.",
+      "distractors": [
+        "Multi-AZ replicates asynchronously and the standby serves read traffic to offload the primary.",
+        "Read replicas replicate synchronously, so promoting one is automatic and lossless.",
+        "Multi-AZ and read replicas are the same feature; the difference is only the instance size of the standby."
+      ],
+      "quizAnswer": "Multi-AZ: synchronous standby, automatic failover, not readable, for HA. Read replicas: asynchronous, readable, manual promotion, for read scaling."
+    },
+    {
+      "front": "How do Aurora replicas differ from ordinary RDS read replicas?",
+      "back": "Aurora replicas share the cluster storage volume, so there is no separate data copy and replica lag is low, and they double as automatic failover targets: on writer failure a replica is promoted in about 30 seconds. RDS read replicas each hold a separate asynchronous copy and are not automatic failover targets. Aurora endpoints: cluster endpoint always points at the current writer, reader endpoint load-balances across all replicas, custom endpoints pin a subset (for example a reporting pool), instance endpoints hit one node.",
+      "distractors": [
+        "Aurora replicas each maintain a full independent copy of the data, which is why failover takes longer than RDS.",
+        "RDS read replicas share storage with the primary, while Aurora replicas use binlog replication.",
+        "Aurora has no reader endpoint; applications must load-balance across instance endpoints themselves."
+      ],
+      "quizAnswer": "Aurora replicas share cluster storage (low lag), serve reads, and are automatic failover targets (~30s promotion); RDS read replicas are separate async copies with manual promotion."
+    },
+    {
+      "front": "Cross-region relational DR with RPO in seconds and RTO under a minute: what is the answer, and what question shape does Aurora Serverless v2 answer instead?",
+      "back": "Aurora Global Database: one read-write primary region plus up to 5 read-only secondary regions with sub-second replication lag over dedicated replication infrastructure (not binlog); a secondary region promotes in under 1 minute. That combination is the reflex for 'RPO in seconds, RTO under a minute, cross-region'. Aurora Serverless v2 answers a different shape: unpredictable or spiky database load where you do not want to manage instance sizing, because capacity (ACUs) scales up and down within seconds.",
+      "distractors": [
+        "A cross-region RDS MySQL read replica, because asynchronous binlog replication guarantees an RPO of zero.",
+        "RDS Multi-AZ, because the standby can be placed in a different region for regional DR.",
+        "Nightly cross-region snapshot copies, which meet an RPO of seconds at lower cost."
+      ],
+      "quizAnswer": "Aurora Global Database: up to 5 read-only secondary regions, sub-second replication lag, secondary promotable in under 1 minute."
+    },
+    {
+      "front": "Why is 'promote a read replica' the wrong answer to an automatic-failover requirement?",
+      "back": "Promotion is a manual action that breaks the replication relationship and requires repointing the application, so recovery runs at human speed, and because replication is asynchronous, recent writes can be lost (nonzero RPO). Multi-AZ gives automatic DNS failover to a synchronously replicated standby in roughly 60-120 seconds with no data loss; Aurora automatically promotes a replica in about 30 seconds. Read replicas answer throughput questions, not availability questions.",
+      "distractors": [
+        "Read replica promotion is automatic whenever the primary fails a health check, making it equivalent to Multi-AZ.",
+        "Promotion preserves the replication link, so the promoted replica can be demoted back without data loss.",
+        "Synchronous replication to read replicas guarantees zero RPO during promotion."
+      ],
+      "quizAnswer": "Promotion is manual, breaks replication, and async lag risks data loss; automatic failover requires Multi-AZ or Aurora, not a read replica."
+    },
+    {
+      "front": "DynamoDB GSI vs LSI: what does each change, and what is the LSI trap?",
+      "back": "GSI: a new partition key (plus optional sort key), its own provisioned throughput, eventually consistent reads only, and it can be added or removed at any time after table creation. LSI: the same partition key with an alternate sort key, shares the table's throughput, supports strongly consistent reads, but must be defined at table creation, can never be added later, and is capped at 5 per table. The trap answer offers 'add an LSI' to an existing table; that is impossible, so the real answer is a GSI.",
+      "distractors": [
+        "LSIs can be added to an existing table at any time, while GSIs must be declared at creation.",
+        "GSIs support strongly consistent reads by default because they share the base table's partitions.",
+        "An LSI lets you choose a completely new partition key for alternate access patterns."
+      ],
+      "quizAnswer": "GSI: new partition key, own throughput, eventual consistency, add anytime. LSI: same partition key, alternate sort key, strongly consistent, creation-time only, max 5."
+    },
+    {
+      "front": "When is DynamoDB Accelerator (DAX) the answer, and when is it the trap?",
+      "back": "DAX is an in-memory, write-through cache sitting in front of the DynamoDB API, delivering microsecond reads, and it is API-compatible via the DAX client so the application logic does not change. It is the answer for read-heavy and repeated-read workloads that need microsecond latency. It is the trap when the workload is write-heavy (write-through provides no write relief) or when the scenario really wants a general-purpose cache with rich data structures, which is ElastiCache territory.",
+      "distractors": [
+        "DAX requires rewriting the application against a separate caching API unrelated to DynamoDB.",
+        "DAX is a write-back cache that batches writes, making it ideal for write-heavy relief.",
+        "DAX delivers single-digit millisecond reads, the same latency as DynamoDB itself."
+      ],
+      "quizAnswer": "DAX: transparent write-through cache with microsecond reads via the DAX client; right for read-heavy repeat reads, wrong for write-heavy relief."
+    },
+    {
+      "front": "DynamoDB On-Demand vs provisioned capacity, and what are Global Tables and Streams for?",
+      "back": "On-Demand: pay per request with zero capacity management, the reflex for spiky or unknown traffic ('unknown pattern, do not want to manage capacity'). Provisioned, optionally with auto scaling: cheaper at steady, predictable volume. Global Tables: multi-Region, multi-active replication with last-writer-wins conflict resolution, DynamoDB's answer to the same question shape Aurora Global Database answers for relational. Streams: an ordered change log with 24-hour retention that commonly triggers Lambda for downstream processing on item changes.",
+      "distractors": [
+        "Provisioned capacity is always cheaper than On-Demand, including for rare unpredictable bursts.",
+        "Global Tables are single-writer: one region accepts writes and the rest are read-only.",
+        "DynamoDB Streams retain changes for 365 days and deliver them unordered."
+      ],
+      "quizAnswer": "On-Demand for spiky/unknown traffic, provisioned for steady volume; Global Tables give multi-Region multi-active writes; Streams are a 24-hour ordered change log that triggers Lambda."
+    },
+    {
+      "front": "ElastiCache Redis vs Memcached: how do you pick?",
+      "back": "Redis: rich data structures (sorted sets, lists, hashes, pub/sub), persistence via snapshots and AOF, Multi-AZ replication with automatic failover, read replicas; the answer for leaderboards, session stores needing durability, and pub/sub. Memcached: simple key-value strings, multithreaded, pure horizontal sharding, no persistence and no replication; the answer for a maximally simple object cache that can afford to lose data. Any mention of durability, failover, or data structures means Redis.",
+      "distractors": [
+        "Memcached, for a gaming leaderboard, because sorted sets are a Memcached-only feature.",
+        "Memcached supports Multi-AZ automatic failover; Redis relies on client-side sharding alone.",
+        "Redis is multithreaded and Memcached is single-threaded, so Memcached cannot scale horizontally."
+      ],
+      "quizAnswer": "Redis: data structures, persistence, replication with automatic failover (leaderboards, durable sessions, pub/sub). Memcached: simple multithreaded sharded cache, no persistence."
+    },
+    {
+      "front": "Security group vs network ACL: scope, state, and rule semantics?",
+      "back": "Security group: instance/ENI level, stateful (return traffic is automatically allowed), allow rules only, and all rules are evaluated with the most permissive winning. NACL: subnet level, stateless (both directions must be allowed explicitly, including ephemeral ports for return traffic), supports both allow and explicit deny, and rules are evaluated in number order with the first match winning.",
+      "distractors": [
+        "Security groups are stateless and NACLs are stateful, so SG rules must cover return traffic explicitly.",
+        "NACLs apply at the instance level while security groups protect entire subnets.",
+        "Security groups evaluate rules in number order and stop at the first match."
+      ],
+      "quizAnswer": "SG: instance-level, stateful, allow-only, all rules evaluated. NACL: subnet-level, stateless, allow and deny, numbered rules with first match winning."
+    },
+    {
+      "front": "You must block traffic from one specific malicious IP address. Security group or NACL?",
+      "back": "NACL: only network ACLs support explicit deny rules, so 'block a specific IP' can never be a security group answer, security groups are allow-only. Add a deny rule with a lower rule number than the allow rules, because NACLs evaluate in number order and stop at the first match. Stateless caveat: NACL changes must account for both inbound and outbound directions.",
+      "distractors": [
+        "Add a deny rule to the security group, since SGs support both allow and deny entries.",
+        "Remove the IP from the security group's allow list; that constitutes an explicit block for that source.",
+        "Add the deny rule with the highest rule number so it is evaluated after the allows as a final catch."
+      ],
+      "quizAnswer": "A network ACL deny rule numbered before the allows; security groups cannot deny, they are allow-only."
+    },
+    {
+      "front": "Private access from a VPC to S3 or DynamoDB with no NAT and no extra charge: which endpoint type?",
+      "back": "Gateway VPC endpoint: implemented as a route table entry, free of charge, and supports exactly two services: S3 and DynamoDB. Traffic stays on the AWS network and stops flowing through the NAT gateway, which also eliminates NAT data processing charges for that traffic. The classic distractor is 'interface endpoint for S3': it exists for edge cases like on-prem access over Direct Connect, but inside a VPC the gateway endpoint is the free, correct pick.",
+      "distractors": [
+        "An interface VPC endpoint, because S3 and DynamoDB are only reachable over PrivateLink ENIs.",
+        "A NAT gateway in a public subnet, which keeps S3 traffic private and incurs no data processing charge.",
+        "A gateway endpoint, which supports all AWS services including SQS and KMS."
+      ],
+      "quizAnswer": "A gateway VPC endpoint: a free route-table entry, available only for S3 and DynamoDB."
+    },
+    {
+      "front": "How does an interface VPC endpoint (PrivateLink) work, and when is it the answer?",
+      "back": "It is an ENI with a private IP placed in your subnet, protected by security groups, billed hourly plus per-GB data processed. It covers most AWS services (SQS, KMS, Secrets Manager, Kinesis, API Gateway, and more) as well as your own or third-party services published via PrivateLink, giving cross-VPC and cross-account private connectivity without peering. It is the answer for 'private access to service X without traversing the internet' whenever X is not S3 or DynamoDB served by a free gateway endpoint.",
+      "distractors": [
+        "Interface endpoints are free route-table entries with no hourly or data charges.",
+        "Interface endpoints only work for S3 and DynamoDB; all other services require a NAT gateway.",
+        "PrivateLink requires a VPC peering connection between consumer and provider VPCs."
+      ],
+      "quizAnswer": "An ENI with a private IP (hourly plus data charges) reaching most AWS services and PrivateLink-published services privately; use when a free gateway endpoint does not apply."
+    },
+    {
+      "front": "Internet Gateway vs NAT Gateway: who gets what kind of internet access?",
+      "back": "The IGW attaches to the VPC and gives public subnets two-way internet access: route 0.0.0.0/0 to the IGW and give instances public IPs. The NAT Gateway gives private-subnet instances outbound-only IPv4 internet access: it sits in a public subnet, and the private subnet's route table points 0.0.0.0/0 at it. NAT Gateways are AWS-managed, scale automatically, and bill hourly plus per-GB processed; inbound connections from the internet can never initiate through one.",
+      "distractors": [
+        "A NAT gateway provides two-way internet access, including inbound connections to private instances.",
+        "The NAT gateway is placed in the private subnet it serves, alongside the instances using it.",
+        "An IGW gives outbound-only access; for inbound traffic you must add a NAT gateway."
+      ],
+      "quizAnswer": "IGW: two-way internet for public subnets. NAT Gateway: outbound-only IPv4 for private subnets, deployed in a public subnet."
+    },
+    {
+      "front": "What is an egress-only Internet Gateway, and how do you make NAT highly available?",
+      "back": "The egress-only IGW is the IPv6 counterpart of a NAT gateway: stateful, outbound-only internet access for IPv6 traffic; the exam tests it as 'the IPv6 answer' where NAT gateways are the IPv4 answer. NAT gateways are AZ-scoped resources: for HA, deploy one NAT gateway per AZ and point each AZ's private route table at its local NAT gateway, so an AZ outage does not sever outbound connectivity from the surviving AZs.",
+      "distractors": [
+        "An egress-only IGW handles IPv4 outbound traffic; NAT gateways are for IPv6.",
+        "A single NAT gateway is regional and automatically survives any AZ failure.",
+        "An egress-only IGW permits inbound IPv6 connections as long as they are rate-limited."
+      ],
+      "quizAnswer": "Egress-only IGW: stateful outbound-only IPv6 access. NAT HA: one NAT gateway per AZ with per-AZ route tables."
+    },
+    {
+      "front": "VPC peering vs Transit Gateway: when does each win?",
+      "back": "Peering is 1:1 and non-transitive: A peered with B and B peered with C does not let A reach C, so a full mesh grows quadratically; it is fine for a handful of VPCs and has no hourly cost. Transit Gateway is a hub-and-spoke router with transitive routing across dozens or hundreds of VPCs plus on-prem attachments via Direct Connect or VPN. Reflex: 'many VPCs' or 'simplify a mesh of peering connections' means Transit Gateway.",
+      "distractors": [
+        "VPC peering is transitive, so peering A-B and B-C automatically lets A reach C.",
+        "Transit Gateway supports at most two VPCs; larger topologies require full-mesh peering.",
+        "Peering connections route through the public internet, while Transit Gateway is the only private option."
+      ],
+      "quizAnswer": "Peering: 1:1, non-transitive, fine for a few VPCs. Transit Gateway: hub-and-spoke transitive routing for many VPCs and on-prem."
+    },
+    {
+      "front": "Site-to-Site VPN vs Direct Connect, and the encryption trap?",
+      "back": "VPN: provisioned in hours, IPsec-encrypted over the public internet, variable latency; the answer for 'quick', 'temporary', or 'backup path'. Direct Connect: a dedicated private physical link, weeks to provision, consistent low latency and high throughput; the answer for 'consistent network performance', 'large regular data volumes', or 'avoid the public internet'. The trap: Direct Connect is not encrypted by default, so if the scenario adds an encryption requirement, the answer layers a Site-to-Site VPN over the Direct Connect link.",
+      "distractors": [
+        "Direct Connect traffic is encrypted end to end by default because it is a private circuit.",
+        "A Site-to-Site VPN takes weeks to provision, so Direct Connect is the quick temporary option.",
+        "Direct Connect rides the public internet with QoS tagging for consistent latency."
+      ],
+      "quizAnswer": "VPN: hours to set up, encrypted, internet-based, variable latency. Direct Connect: dedicated private link, consistent performance, weeks to provision, not encrypted by default (layer VPN over it if needed)."
+    },
+    {
+      "front": "Route 53: weighted vs latency-based vs failover routing, which scenario triggers each?",
+      "back": "Weighted: split traffic by assigned proportions, the answer for A/B testing, canary releases, and gradual traffic shifts between environments. Latency-based: send each user to the region with the lowest measured latency, the answer for 'global users, best response time'. Failover: active-passive DR driven by health checks, primary fails its health check and DNS flips to the standby site.",
+      "distractors": [
+        "Weighted routing sends users to the geographically nearest region based on their location.",
+        "Failover routing splits traffic 50/50 between two healthy endpoints for load balancing.",
+        "Latency-based routing requires all endpoints to be in the same region to compare latencies."
+      ],
+      "quizAnswer": "Weighted: canary/A-B traffic splits. Latency-based: lowest-latency region per user. Failover: health-check-driven active-passive DR."
+    },
+    {
+      "front": "Route 53: geolocation vs geoproximity vs multi-value answer routing?",
+      "back": "Geolocation routes by the user's location, the compliance and content-licensing answer ('users in country X must be served this content'). Geoproximity routes by geography but with a tunable bias value that shifts traffic volume toward or away from a region. Multi-value answer returns up to eight healthy records so clients perform simple client-side load balancing with health checks; it is not a substitute for a real load balancer.",
+      "distractors": [
+        "Geolocation routes to whichever region currently has the lowest latency, ignoring the user's country.",
+        "Multi-value answer routing returns exactly one record and performs server-side load balancing.",
+        "Geoproximity is identical to geolocation but cannot shift traffic proportions between regions."
+      ],
+      "quizAnswer": "Geolocation: route by user location for compliance/content rules. Geoproximity: location plus a bias to shift traffic volume. Multi-value: up to 8 healthy records for client-side balancing."
+    },
+    {
+      "front": "CloudFront vs Global Accelerator: how do you tell which one the scenario wants?",
+      "back": "CloudFront: HTTP/HTTPS only, caches content at edge locations; the answer for static and dynamic web content, video, and API acceleration where caching helps. Global Accelerator: operates at the TCP/UDP layer with no caching, provides two static anycast IPs, and routes over the AWS global backbone to the closest healthy endpoint with fast regional failover that does not wait on DNS TTLs. Reflex: non-HTTP protocols (gaming, IoT, VoIP), 'static IP', or 'fast failover between regions' means Global Accelerator; cacheable web content means CloudFront.",
+      "distractors": [
+        "Global Accelerator caches content at edge locations, making it the choice for static websites.",
+        "CloudFront supports arbitrary TCP and UDP workloads such as game servers.",
+        "CloudFront provides two static anycast IP addresses for allow-listing by enterprise firewalls."
+      ],
+      "quizAnswer": "CloudFront: HTTP caching at the edge for web content and APIs. Global Accelerator: TCP/UDP, no caching, 2 static anycast IPs, fast regional failover."
+    },
+    {
+      "front": "ALB vs NLB: layer, strengths, and trigger keywords?",
+      "back": "ALB: layer 7 HTTP/HTTPS, path-based and host-based routing, WebSockets, Lambda targets; keywords 'route by URL path' and 'microservices behind one load balancer'. NLB: layer 4 TCP/UDP/TLS, millions of requests per second at ultra-low latency, a static IP per AZ with Elastic IP support, and source IP preservation; keywords 'static IP required', 'extreme performance', 'TCP passthrough'.",
+      "distractors": [
+        "The NLB routes by URL path and hostname, while the ALB is limited to raw TCP forwarding.",
+        "The ALB offers static Elastic IPs per AZ, which is why firewall allow-listing scenarios choose it.",
+        "The NLB operates at layer 7 and terminates HTTP to inspect headers on every request."
+      ],
+      "quizAnswer": "ALB: layer 7, path/host routing, WebSockets, Lambda targets. NLB: layer 4, extreme throughput, static IP per AZ, preserves source IP."
+    },
+    {
+      "front": "When is Gateway Load Balancer the answer?",
+      "back": "When the scenario needs third-party virtual appliances (firewalls, IDS/IPS, deep packet inspection) inserted transparently into the traffic path. GWLB operates at layer 3, uses the GENEVE encapsulation protocol, and scales and health-checks the appliance fleet for you. Keywords: 'inline security appliance', 'traffic inspection'. It is not for application routing (that is ALB) or raw TCP performance (that is NLB).",
+      "distractors": [
+        "GWLB is the layer 7 balancer for routing microservice traffic by URL path.",
+        "GWLB is a NAT replacement that grants private subnets outbound internet access.",
+        "GWLB terminates TLS and caches HTTP responses in front of web fleets."
+      ],
+      "quizAnswer": "Gateway Load Balancer: transparently insert and scale inline third-party security appliances (firewalls, IDS/IPS) at layer 3 via GENEVE."
+    },
+    {
+      "front": "IAM policy evaluation: in what order do explicit deny, SCPs, boundaries, and allows apply?",
+      "back": "Explicit deny anywhere always wins, no exceptions. Then the request must be allowed by every applicable boundary: the SCP at the Organizations level (SCPs set a ceiling, they never grant permissions), the permissions boundary on the IAM user or role, and any session policy; AND by at least one identity-based or resource-based policy. If nothing explicitly allows the action, the default is implicit deny. Compressed rule: explicit deny beats everything; then all boundaries must allow AND at least one policy must allow.",
+      "distractors": [
+        "An explicit allow in an identity policy overrides an explicit deny in the SCP.",
+        "SCPs grant permissions directly, so an SCP allow is sufficient without any identity policy.",
+        "If no policy mentions an action, access is granted by default and must be denied explicitly."
+      ],
+      "quizAnswer": "Explicit deny always wins; then every applicable boundary (SCP, permissions boundary, session policy) must allow AND at least one identity or resource policy must allow; otherwise implicit deny."
+    },
+    {
+      "front": "Cross-account access: when is an IAM role the answer, and when is a resource-based policy?",
+      "back": "A role is assumed via sts:AssumeRole for temporary credentials: cross-account access where the caller switches identity, EC2/Lambda execution identity, and federation. A resource-based policy (S3 bucket policy, SQS queue policy, KMS key policy) is attached directly to the resource and can grant a principal in another account access without that principal assuming anything, so the caller keeps its own identity and needs no code change. Reflex: 'cross-account access with no role-assumption step in the client' means a resource-based policy.",
+      "distractors": [
+        "Resource-based policies require the external principal to call sts:AssumeRole before every request.",
+        "IAM roles hand out permanent long-lived credentials, which is why they are preferred for federation.",
+        "S3 bucket policies can only reference principals in the same AWS account."
+      ],
+      "quizAnswer": "Role: assumed for temporary credentials (identity switch). Resource-based policy: attached to the resource, grants cross-account access with no assumption step in the client."
+    },
+    {
+      "front": "KMS key types: AWS-owned vs AWS-managed vs customer-managed, and key policy vs grant?",
+      "back": "AWS-owned keys: AWS's own, shared across accounts, invisible to you. AWS-managed keys (aws/service-name): per account per service, automatic roughly yearly rotation you cannot configure. Customer-managed keys (CMK): you control the key policy, rotation, aliases, and cross-account grants, with CloudTrail-audited usage; the answer for 'audit trail of key usage and rotation control'. The key policy is the always-required resource policy on the key, its root of trust. A grant is a temporary, programmatic, revocable delegation of specific key operations, the answer for temporary fine-grained key permissions without editing the key policy.",
+      "distractors": [
+        "AWS-managed keys give you full rotation control and custom key policies.",
+        "A grant permanently modifies the key policy and requires a policy edit to revoke.",
+        "Customer-managed keys cannot be shared across accounts; only AWS-owned keys can."
+      ],
+      "quizAnswer": "AWS-owned: invisible, shared. AWS-managed: per-service, fixed auto rotation. CMK: full policy/rotation/audit control. Key policy is required root of trust; grants are temporary revocable delegations."
+    },
+    {
+      "front": "How does KMS envelope encryption work, and why are large objects never sent to KMS directly?",
+      "back": "KMS generates a data key; your data is encrypted locally with the plaintext data key (fast symmetric crypto), then KMS encrypts that data key under your CMK, and only the encrypted data key is stored alongside the ciphertext while the plaintext data key is discarded. Decryption calls KMS once to unwrap the data key, then decrypts locally. KMS therefore never touches your bulk plaintext, and the direct KMS Encrypt API only accepts payloads up to 4 KB, which is exactly why bulk data uses envelope encryption.",
+      "distractors": [
+        "The entire object is streamed through KMS, which encrypts it server-side with the CMK.",
+        "The plaintext data key is stored next to the ciphertext so decryption never needs to call KMS.",
+        "Envelope encryption means encrypting the data twice with two different CMKs for defense in depth."
+      ],
+      "quizAnswer": "Data is encrypted locally with a generated data key; KMS encrypts only that data key under the CMK (4 KB API limit), so bulk plaintext never reaches KMS."
+    },
+    {
+      "front": "Secrets Manager vs SSM Parameter Store: how do you choose?",
+      "back": "Secrets Manager: built-in automatic rotation (managed Lambda rotation for RDS, Redshift, DocumentDB), cross-account access, cross-region replication, priced per secret plus API calls; trigger phrase 'automatically rotate database credentials'. Parameter Store: standard tier is free, stores configuration values and, as SecureString with KMS, secrets too, but has no built-in rotation, you must build it; trigger phrase 'store configuration values or parameters cheaply'. Rotation requirement means Secrets Manager, cost-sensitive config means Parameter Store.",
+      "distractors": [
+        "Parameter Store includes managed automatic rotation for RDS credentials at no charge.",
+        "Secrets Manager's standard tier is free, making it the cost-optimized choice for plain config values.",
+        "Parameter Store cannot encrypt values, so any sensitive string requires Secrets Manager."
+      ],
+      "quizAnswer": "Secrets Manager: built-in automatic rotation and replication, per-secret pricing. Parameter Store: free standard tier for config and SecureString secrets, no built-in rotation."
+    },
+    {
+      "front": "GuardDuty vs Inspector vs Macie: one line each?",
+      "back": "GuardDuty: continuous threat detection over VPC Flow Logs, DNS logs, and CloudTrail using ML anomaly detection, no agents; 'detect compromised instances or anomalous API activity'. Inspector: automated vulnerability scanning of EC2 instances, ECR container images, and Lambda functions for known CVEs; 'find unpatched or vulnerable software'. Macie: ML-driven discovery and classification of sensitive data (PII) in S3; 'find PII in buckets'. They answer threats, vulnerabilities, and sensitive data respectively.",
+      "distractors": [
+        "Macie scans EC2 instances for CVEs; Inspector classifies PII in S3 buckets.",
+        "GuardDuty requires an agent on every instance to inspect its traffic.",
+        "Inspector performs ML-based threat detection on CloudTrail and DNS logs."
+      ],
+      "quizAnswer": "GuardDuty: agentless ML threat detection from logs. Inspector: CVE scanning of EC2/ECR/Lambda. Macie: PII discovery in S3."
+    },
+    {
+      "front": "Config vs CloudTrail vs Security Hub vs Detective: which answers which question?",
+      "back": "Config: tracks resource configuration changes over time and evaluates them against compliance rules; the answer for 'who changed this security group' and 'was this resource ever non-compliant'. CloudTrail: records API calls, who did what and when; the answer for 'who deleted this bucket'. Security Hub: aggregates findings from GuardDuty, Inspector, Macie, and others into one dashboard with compliance-standard scoring. Detective: analyzes relationships across GuardDuty, CloudTrail, and VPC Flow Log data for root-cause investigation after a finding; it investigates, it does not detect.",
+      "distractors": [
+        "CloudTrail tracks configuration drift and evaluates compliance rules against resource state.",
+        "Detective is the primary threat-detection service; GuardDuty visualizes its findings afterward.",
+        "Security Hub records every API call in the account for forensic auditing."
+      ],
+      "quizAnswer": "Config: configuration history and compliance. CloudTrail: API call audit trail. Security Hub: aggregated findings dashboard. Detective: post-finding root-cause investigation."
+    },
+    {
+      "front": "SQS vs SNS: point-to-point vs fan-out?",
+      "back": "SQS is point-to-point: each message is pulled from the queue and processed once by one consumer (or a pool of competing consumers), with buffering and backpressure built in. SNS is pub/sub fan-out: every subscriber receives every message, the answer whenever 'multiple downstream systems need the same event'. The classic combined pattern is SNS fanning out to multiple SQS queues so each subscriber gets durable, independently retried delivery.",
+      "distractors": [
+        "SNS queues messages durably until a consumer polls them; SQS pushes to all subscribers at once.",
+        "SQS delivers every message to every consumer attached to the queue, like a broadcast.",
+        "SNS retains undelivered messages for 14 days so subscribers can replay history at will."
+      ],
+      "quizAnswer": "SQS: point-to-point queue, one consumer processes each message, buffering built in. SNS: pub/sub fan-out, every subscriber gets every message; combine as SNS-to-SQS fan-out."
+    },
+    {
+      "front": "When is EventBridge the answer over SNS or SQS?",
+      "back": "When the scenario needs routing logic based on event content or source: EventBridge is an event bus with rule-based, content-based routing, native integration with 200+ AWS services and SaaS partners, a schema registry, and archive/replay. SNS is blind fan-out (every subscriber gets everything), and SQS is point-to-point buffering. Keywords: 'route events from many AWS services', 'SaaS partner events', 'filter and route by event content or rules'.",
+      "distractors": [
+        "EventBridge is a FIFO queue used when strict ordering matters more than routing.",
+        "SNS supports content-based routing rules and SaaS partner event sources natively, so EventBridge is redundant.",
+        "EventBridge can only receive events from Lambda functions, not from other AWS services."
+      ],
+      "quizAnswer": "EventBridge: an event bus with content-based routing rules, 200+ AWS and SaaS integrations, schema registry, and archive/replay; pick it when events must be routed by content or source."
+    },
+    {
+      "front": "SQS Standard vs FIFO: ordering, delivery semantics, throughput?",
+      "back": "Standard: at-least-once delivery (consumers must be idempotent), best-effort ordering, near-unlimited throughput. FIFO: exactly-once processing and strict ordering within a message group, with throughput capped at 300 messages per second, or 3,000 with batching. Keywords 'strict ordering' or 'no duplicates' mean FIFO; everything else defaults to Standard for scale. Duplicate-sensitive consumers on Standard queues need their own idempotency.",
+      "distractors": [
+        "Standard queues guarantee exactly-once delivery, so consumer idempotency is unnecessary.",
+        "FIFO queues offer unlimited throughput; Standard queues are capped at 300 messages per second.",
+        "FIFO ordering applies across the entire queue globally, not per message group."
+      ],
+      "quizAnswer": "Standard: at-least-once, best-effort ordering, near-unlimited throughput. FIFO: exactly-once, strict per-group ordering, 300 msg/s (3,000 batched)."
+    },
+    {
+      "front": "Kinesis Data Streams vs Kinesis Data Firehose?",
+      "back": "Data Streams: you write the consumers, ordering per shard, replay with retention configurable up to 365 days (default 24 hours), multiple independent consumer applications, and enhanced fan-out gives each registered consumer its own 2 MB/s per shard push-based pipe instead of sharing the default pull-based one. Firehose: no consumer code at all, fully managed near-real-time (not real-time) delivery straight into S3, Redshift, OpenSearch, or HTTP endpoints, with optional inline Lambda transformation. 'Custom consumer logic or replay' means Streams; 'just land the data in S3' means Firehose.",
+      "distractors": [
+        "Firehose supports replaying the stream for 365 days to multiple independent consumers.",
+        "Data Streams delivers records directly into S3 and Redshift without any consumer code.",
+        "Firehose is the lower-latency true real-time option; Data Streams is batch-oriented."
+      ],
+      "quizAnswer": "Streams: custom consumers, per-shard ordering, replay up to 365 days, enhanced fan-out. Firehose: zero-code near-real-time delivery into S3/Redshift/OpenSearch with optional Lambda transform."
+    },
+    {
+      "front": "EC2 Spot vs On-Demand: when is Spot the answer and what is the catch?",
+      "back": "Spot: up to roughly 90% off On-Demand, but capacity can be reclaimed with a 2-minute interruption warning, so it is only for stateless, fault-tolerant, interruptible work: batch processing, CI runners, big data, and ASG mixed-instance fleets. On-Demand: no commitment and no interruption, for unpredictable or short-lived workloads that cannot tolerate being stopped. Reflex: 'interruption-tolerant and cost is the only lever' is Spot, full stop; anything stateful or SLA-critical kills Spot as an answer.",
+      "distractors": [
+        "Spot instances are guaranteed to run for a minimum of 24 hours before any interruption.",
+        "Spot is ideal for the stateful primary database because the discount outweighs the risk.",
+        "On-Demand offers the deepest discount in exchange for a one-year commitment."
+      ],
+      "quizAnswer": "Spot: up to ~90% off for stateless, fault-tolerant, interruptible work with a 2-minute reclaim warning; On-Demand for uninterruptible unpredictable workloads."
+    },
+    {
+      "front": "Reserved Instances vs Savings Plans: what is the exam tiebreak?",
+      "back": "Both reach up to roughly 72% off with a 1- or 3-year commitment for steady-state usage. Savings Plans commit to a dollars-per-hour compute spend and stay flexible across instance family and size (and, for Compute Savings Plans, region and even Fargate/Lambda), so 'steady, predictable, long-running' defaults to Savings Plans. RIs win only when the question needs a capacity reservation in a specific AZ: zonal RIs and On-Demand Capacity Reservations reserve capacity, Savings Plans never do.",
+      "distractors": [
+        "Savings Plans reserve capacity in a specific AZ, which Reserved Instances cannot do.",
+        "Standard Reserved Instances are more flexible than Savings Plans because they float across instance families.",
+        "Savings Plans require naming an exact instance type and region up front for the full term."
+      ],
+      "quizAnswer": "Default to Savings Plans for steady-state spend (more flexible, same ~72% ceiling); choose RIs only when an AZ capacity reservation is required."
+    },
+    {
+      "front": "The four DR strategies in cost order: what does each give you?",
+      "back": "Backup and restore: cheapest, RTO in hours, RPO of hours since the last backup; snapshots stored in another region and restored on demand. Pilot light: RTO in tens of minutes, RPO in minutes; the core (usually the database) always running and replicating in the DR region, everything else at zero until failover. Warm standby: RTO in minutes, RPO seconds to minutes; a scaled-down but fully functional stack always running, scaled up on failover. Active-active multi-Region: near-zero RTO and RPO; full stacks live in two or more regions with Route 53 or Global Accelerator routing. Exam shape: pick the cheapest rung that satisfies the stated RTO/RPO.",
+      "distractors": [
+        "Warm standby is cheaper than pilot light because the standby stack is scaled down.",
+        "Backup and restore delivers near-zero RPO since snapshots are continuous by default.",
+        "Active-active is the cheapest strategy because both regions share one set of infrastructure."
+      ],
+      "quizAnswer": "Cost ladder up: backup-restore (hours/hours), pilot light (tens of minutes/minutes), warm standby (minutes/seconds-minutes), active-active (near-zero/near-zero); pick the cheapest rung meeting the RTO/RPO."
+    },
+    {
+      "front": "Pilot light vs warm standby: what actually distinguishes them?",
+      "back": "Pilot light keeps only the critical core, typically the replicated database, running in the DR region; the application tier exists as AMIs and templates scaled to zero and must be launched and scaled at failover, so RTO is tens of minutes. Warm standby keeps the entire stack running but scaled down: it can take traffic almost immediately at reduced capacity and then scale up, so RTO is minutes at a higher standing cost. The dividing question: is the application tier already running before the disaster?",
+      "distractors": [
+        "In pilot light the full application stack runs at reduced capacity, ready to take traffic instantly.",
+        "Warm standby keeps only the database replicating, with app servers stored as AMIs.",
+        "The two differ only in backup frequency; both keep identical infrastructure running."
+      ],
+      "quizAnswer": "Pilot light: only the core (DB) runs in DR, app tier launched at failover (RTO tens of minutes). Warm standby: full stack running scaled-down, takes traffic immediately (RTO minutes)."
+    },
+    {
+      "front": "Lambda limits the exam tests: timeout, memory/CPU, /tmp, payloads, concurrency?",
+      "back": "Max execution timeout: 15 minutes. Memory: 128 MB to 10,240 MB, and CPU plus network scale linearly with memory, so the fix for a CPU-bound slow function is more memory, that is the trap. Ephemeral /tmp: configurable up to 10 GB. Deployment package: 50 MB zipped direct upload, 250 MB unzipped, up to 10 GB as a container image. Payloads: 6 MB synchronous, 256 KB asynchronous. Concurrency: an unreserved account-level pool shared by all functions; reserved concurrency caps and guarantees one function's slice; provisioned concurrency pre-warms environments to eliminate cold starts and costs money whether or not it is invoked.",
+      "distractors": [
+        "The maximum Lambda timeout is 60 minutes, suitable for long-running batch jobs.",
+        "vCPU count is configured independently of memory, so a CPU-bound function needs a CPU setting change.",
+        "Reserved concurrency pre-warms execution environments to eliminate cold starts."
+      ],
+      "quizAnswer": "15-minute timeout; 128 MB-10 GB memory with CPU scaling linearly (raise memory for CPU-bound); /tmp up to 10 GB; 6 MB sync / 256 KB async payloads; provisioned concurrency kills cold starts."
+    }
+  ]
+}

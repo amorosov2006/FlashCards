@@ -8,7 +8,8 @@
     "interview-study": false,
     "citizenship": true,
     "sasha-interview": true,
-    "tech-fundamentals": false
+    "tech-fundamentals": false,
+    "aws-saa": true
   },
   "decks": {
     "first-01-role-briefs.json": true,

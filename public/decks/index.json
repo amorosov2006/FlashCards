@@ -1,6 +1,15 @@
 {
   "groups": [
     {
+      "id": "aws-saa",
+      "title": "AWS SAA-C03 Prep",
+      "description": "Solutions Architect Associate exam prep (HM-suggested, pre-start). Deck 01: decision rules and keyword reflexes (cycles 1-2). Deck 02: exam-style scenarios with realistic wrong answers (cycles 2-3). Companion to LeetPrep/AWS-SAA-Prep/.",
+      "decks": [
+        "aws-saa-01-decision-rules.json",
+        "aws-saa-02-exam-scenarios.json"
+      ]
+    },
+    {
       "id": "first-interview",
       "title": "First Interview study",
       "description": "Focused prep for the two live JPMC interviews — 210750779 (AWM Fullstack Lead) and 210767095 (Firmwide AI/ML Deployment Platform). Concise answer-style cards; only topics on these two resumes.",
