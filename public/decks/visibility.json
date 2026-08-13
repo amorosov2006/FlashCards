@@ -1,14 +1,14 @@
 {
   "_readme": "Controls which built-in groups and decks are shown in the app. Set a value to false to hide it; true (or a missing entry) means shown. Groups are keyed by group id, decks by filename. Hiding a group hides all decks inside it. This file only affects built-in decks, not decks you import on your device.",
   "groups": {
-    "first-interview": true,
+    "first-interview": false,
     "nca-genl": true,
     "ncp-genl": true,
-    "interview": true,
-    "interview-study": true,
+    "interview": false,
+    "interview-study": false,
     "citizenship": true,
     "sasha-interview": true,
-    "tech-fundamentals": true
+    "tech-fundamentals": false
   },
   "decks": {
     "first-01-role-briefs.json": true,
