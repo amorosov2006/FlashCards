@@ -1,0 +1,240 @@
+{
+  "title": "Brent Interview — The 2025 Numbers (quiz)",
+  "description": "Broadview's 2025 Annual Report figures (all verified 21 Aug 2026): group, regions, Energy, Westag, cash, debt, FX, sustainability, financing, and the bridges between them. Practice + multiple-choice quiz with 5–6 distractors per card.",
+  "cards": [
+    {
+      "front": "Group revenue and recurring EBITDA, 2025 vs 2024?",
+      "back": "Revenue €1,238.2m vs €1,259.8m (−1.7%; −0.7% organic and currency-adjusted). Recurring EBITDA €105.7m vs €130.0m (−18.7%). Calculated recurring margin ~8.5% vs ~10.3%.",
+      "quizAnswer": "Revenue €1,238m (−1.7%); recurring EBITDA €105.7m vs €130.0m (−18.7%).",
+      "distractors": [
+        "Revenue €1,238m (−8.7%); recurring EBITDA €105.7m vs €130.0m (−1.7%).",
+        "Revenue €1,360m (+1.7%); recurring EBITDA €130.0m vs €105.7m (+23%).",
+        "Revenue €1,238m (−1.7%); recurring EBITDA €94.4m vs €121.6m (−22%).",
+        "Revenue €1,132m (−2.7%); recurring EBITDA €105.5m vs €129.0m (−18%).",
+        "Revenue €1,238m (−1.7%); recurring EBITDA €125.0m vs €130.0m (−4%)."
+      ],
+      "hint": "Revenue barely moved; profit fell ten times faster."
+    },
+    {
+      "front": "What is the one-sentence diagnosis of 2025?",
+      "back": "A margin story, not a revenue story: sales −1.7% but recurring EBITDA −18.7% — operating leverage in reverse (fixed manufacturing costs over fewer units), plus higher opex, the switch to a non-US kraft-paper supplier and US import tariffs; concentrated in Europe, offset by North America.",
+      "quizAnswer": "Margin and operating-leverage problem, not a sales collapse; Europe weak, North America up.",
+      "distractors": [
+        "A sales collapse driven by losing major customers to Wilsonart and EGGER.",
+        "A one-off hit from the Valencia flood; underlying profit was flat.",
+        "A currency story: all of the decline is euro translation of USD results.",
+        "A growth story: revenue up strongly but profit reinvested in capacity.",
+        "An Energy-cluster problem; Materials profit was stable."
+      ]
+    },
+    {
+      "front": "Operating profit and net result, 2025?",
+      "back": "Operating profit €7.3m (2024: €31.5m). Net result: a LOSS of €55.8m (2024: +€1.6m), driven by net financing costs of €63.5m — about €26m FX losses on largely USD positions and €25.3m interest on shareholder loans.",
+      "quizAnswer": "Operating profit €7.3m; net loss €55.8m after €63.5m net financing costs.",
+      "distractors": [
+        "Operating profit €31.5m; net profit €1.6m after financing costs.",
+        "Operating profit €7.3m; net profit €5.0m after a tax credit.",
+        "Operating profit €94.4m; net loss €26m from FX.",
+        "Operating loss €55.8m; net loss €63.5m.",
+        "Operating profit €7.3m; net loss €20m from working capital."
+      ],
+      "hint": "Financing costs, not operations, turned the year into a loss."
+    },
+    {
+      "front": "Bridge recurring EBITDA to reported EBITDA.",
+      "back": "Recurring EBITDA €105.7m − non-recurring items €11.3m (Valencia closure €9.9m less €6.3m insurance; other restructuring €5.6m; etc.) = reported EBITDA €94.4m (2024: €121.6m, non-recurring €8.4m).",
+      "quizAnswer": "€105.7m recurring − €11.3m non-recurring (Valencia, restructuring) = €94.4m reported.",
+      "distractors": [
+        "€105.7m recurring + €11.3m insurance gains = €117.0m reported.",
+        "€130.0m recurring − €35.6m non-recurring = €94.4m reported.",
+        "€105.7m recurring − €63.5m financing = €42.2m reported.",
+        "€94.4m recurring − €11.3m non-recurring = €83.1m reported.",
+        "€105.7m recurring − €20.0m working capital = €85.7m reported."
+      ]
+    },
+    {
+      "front": "Cash from operations and working capital, 2025?",
+      "back": "Cash from operations excluding acquisitions €3.1m (2024: €27.9m). Working capital absorbed €20.0m (2024: €8.7m). Including the €18.2m Westag stake, cash from operations was −€15.1m; net cash change −€21.6m.",
+      "quizAnswer": "Only €3.1m cash from operations (vs €27.9m); working capital absorbed €20m.",
+      "distractors": [
+        "€27.9m cash from operations (vs €3.1m); working capital released €20m.",
+        "€105.7m cash from operations; working capital neutral.",
+        "€3.1m cash from operations; working capital released €8.7m.",
+        "€37.1m cash from operations; working capital absorbed €48.4m.",
+        "−€55.8m cash from operations; working capital absorbed €63.5m."
+      ],
+      "hint": "Near-zero cash conversion."
+    },
+    {
+      "front": "Net capex, 2025 vs 2024?",
+      "back": "Net capex €37.1m vs €48.4m — lower capex helped cash but did not prevent weak conversion. Judge capex by return, necessity and timing, not by its level.",
+      "quizAnswer": "€37.1m, down from €48.4m.",
+      "distractors": [
+        "€48.4m, up from €37.1m.",
+        "€63.5m, up from €26.3m.",
+        "€18.2m, down from €37.1m.",
+        "€105.7m, flat year on year.",
+        "€20.0m, down from €27.9m."
+      ]
+    },
+    {
+      "front": "Net debt and its composition at end-2025?",
+      "back": "Net debt including shareholder loans €697m (2024: €646m) = shareholder loans €518m + bank debt €294m − cash €115m. Net bank debt alone ~€179m. Leverage covenant on the Materials facility <3.5x — complied.",
+      "quizAnswer": "€697m: shareholder loans €518m + bank debt €294m − cash €115m.",
+      "distractors": [
+        "€646m: shareholder loans €294m + bank debt €518m − cash €166m.",
+        "€179m: bank debt €294m − cash €115m; no shareholder loans.",
+        "€697m: bank debt €697m, no shareholder loans, no cash.",
+        "€518m: shareholder loans only; bank debt fully repaid in 2025.",
+        "€812m: shareholder loans €518m + bank debt €294m, cash excluded."
+      ]
+    },
+    {
+      "front": "Europe/Africa Materials 2025?",
+      "back": "Sales €590m vs €610m (−3.3%); recurring EBITDA €44.1m vs €61.6m (−28.4%); margin ~7.5% vs ~10.1%; FTE 2,921 vs 3,048. Drivers cited: lower volumes and reduced productivity; façade-cladding and home-improvement softness.",
+      "quizAnswer": "Sales €590m (−3.3%); recurring EBITDA €44.1m vs €61.6m (−28%).",
+      "distractors": [
+        "Sales €590m (−28%); recurring EBITDA €44.1m vs €61.6m (−3.3%).",
+        "Sales €610m (+3.3%); recurring EBITDA €61.6m vs €44.1m (+40%).",
+        "Sales €380m (+1.3%); recurring EBITDA €58.5m vs €57.3m (+2%).",
+        "Sales €590m (−3.3%); recurring EBITDA €58.5m vs €61.6m (−5%).",
+        "Sales €162m (−10%); recurring EBITDA €17.9m vs €21.1m (−15%)."
+      ],
+      "hint": "The clearest operating-leverage-in-reverse example."
+    },
+    {
+      "front": "Americas Materials 2025?",
+      "back": "Sales ~€380m vs €375m; recurring EBITDA €58.5m vs €57.3m; FTE 1,193 vs 1,170. Higher volume outweighed higher opex, tariffs and weaker USD translation. Includes ~€24m of direct sales by European companies.",
+      "quizAnswer": "Sales ~€380m (up); recurring EBITDA €58.5m vs €57.3m — the growth region.",
+      "distractors": [
+        "Sales ~€380m (down 5%); recurring EBITDA €44.1m vs €57.3m.",
+        "Sales ~€590m (up); recurring EBITDA €61.6m vs €58.5m.",
+        "Sales ~€380m (up); recurring EBITDA €17.9m vs €21.1m — margin squeezed by tariffs.",
+        "Sales ~€162m (up 10%); recurring EBITDA €21.1m vs €17.9m.",
+        "Sales ~€375m (flat); recurring EBITDA €30m vs €57.3m after tariffs."
+      ]
+    },
+    {
+      "front": "Asia Materials 2025?",
+      "back": "Sales €162m (~−10%); recurring EBITDA €17.9m vs €21.1m; FTE 1,272 vs 1,325. China/Taiwan real-estate and construction weakness; Broadview explicitly cites reduced operating leverage in the major markets.",
+      "quizAnswer": "Sales €162m (−10%); recurring EBITDA €17.9m vs €21.1m; China/Taiwan weak.",
+      "distractors": [
+        "Sales €162m (+10%); recurring EBITDA €21.1m vs €17.9m; India strong.",
+        "Sales €380m (−10%); recurring EBITDA €58.5m vs €57.3m.",
+        "Sales €106m (+10.6%); recurring EBITDA €1.5m vs €2.1m.",
+        "Sales €162m (−25%); recurring EBITDA loss of €5m; Thailand plant closed.",
+        "Sales €200m (flat); recurring EBITDA €17.9m vs €17.5m."
+      ]
+    },
+    {
+      "front": "Energy cluster 2025 and the lesson?",
+      "back": "Revenue €106m (+10.6%, DMT delivering more projects) but recurring EBITDA €1.5m vs €2.1m (margin ~1.4%). Hurt by the temporary shutdown of BNG's key supplier, lower Aritas volumes and Turkish inflation outpacing cost cuts. Lesson: growth alone is not value creation. 2026: cryogenic-equipment growth, DMT cost-base alignment (Q4 2025), no BNG disruption.",
+      "quizAnswer": "Revenue €106m (+10.6%) but recurring EBITDA fell to €1.5m — growth without profit.",
+      "distractors": [
+        "Revenue €106m (−10.6%) and recurring EBITDA rose to €5m on cost cuts.",
+        "Revenue €160m (+50%) and recurring EBITDA €15m from a large DMT project.",
+        "Revenue €95m (flat) and recurring EBITDA €2.1m, unchanged.",
+        "Revenue €106m (+10.6%) and recurring EBITDA €10.6m, a 10% margin.",
+        "Revenue €50m after the BNG disposal; recurring EBITDA break-even."
+      ]
+    },
+    {
+      "front": "Westag 2025 — revenue, EBITDA, causes?",
+      "back": "Revenue €181.0m (−2.8%); adjusted EBITDA €6.5m vs €13.1m (margin 3.6% vs 7.0%; guidance had been €11–15m); net −€2.6m. Causes: collective-agreement wage increases not offset by savings, raw-material costs, higher share of the lower-margin DIY-store channel (mix). Türen €104.4m (+3%), Elemente €70.4m (−9%). 2026 guidance: stable revenue, clear earnings improvement.",
+      "quizAnswer": "Revenue €181m (−2.8%); adjusted EBITDA halved to €6.5m — wages, raw materials, DIY mix.",
+      "distractors": [
+        "Revenue €181m (−12.6%); adjusted EBITDA €13.1m, stable.",
+        "Revenue €250m (+5%); adjusted EBITDA €20m on door demand.",
+        "Revenue €181m (−2.8%); adjusted EBITDA €6.5m — Valencia flood costs.",
+        "Revenue €160m (−15%); adjusted EBITDA loss of €5m — plant closure.",
+        "Revenue €181m (−2.8%); adjusted EBITDA €13.1m vs €6.5m, doubled."
+      ],
+      "hint": "Mix: selling more through DIY stores hurt profit even with revenue held."
+    },
+    {
+      "front": "What did Broadview pay to increase its Westag stake, and to what level?",
+      "back": "A further 13% for €18m in 2025, taking ownership to 89.8% (from 76.8%). Westag was delisted on 1 Jul 2025 after a delisting agreement and takeover offer via Broadview Industries AG. Signals continued strategic conviction despite short-term pressure.",
+      "quizAnswer": "€18m for a further 13%, reaching ~90%; Westag delisted mid-2025.",
+      "distractors": [
+        "€18m for a further 25%, reaching 100%; Westag delisted mid-2025.",
+        "€48m for a further 13%, reaching ~90%; Westag remains listed.",
+        "€18m for a further 13%, reaching ~64%; Westag remains listed.",
+        "€8m for a further 5%, reaching ~82%; Westag delisted in 2024.",
+        "Nothing — Broadview reduced its stake to 51% in 2025."
+      ]
+    },
+    {
+      "front": "FX exposure and its 2025 effect?",
+      "back": "About 60% of revenue is in foreign currencies; net assets in foreign currencies €562m. Transactional exposures USD, CAD, GBP, THB, CNY, TWD, TRY. 2025: currency developments reduced net asset value by €63m (NAV excl. minorities €176m vs €275m) and ~€26m FX losses ran through financing costs.",
+      "quizAnswer": "~60% of revenue in foreign currencies; FX cut NAV by €63m in 2025.",
+      "distractors": [
+        "~20% of revenue in foreign currencies; FX added €63m to NAV in 2025.",
+        "~60% of revenue in foreign currencies; FX had no effect because it is fully hedged.",
+        "~90% of revenue in foreign currencies; FX cut NAV by €6m in 2025.",
+        "~60% of revenue in USD only; FX cut NAV by €176m in 2025.",
+        "~40% of revenue in foreign currencies; FX cut EBITDA by €63m in 2025."
+      ]
+    },
+    {
+      "front": "FTE development and restructuring in 2025?",
+      "back": "FTE 5,400 vs 5,716 (−316, ~−5.5%). About 270 employees affected by restructuring group-wide, 135 of them at Formica Valencia (closure cost €9.9m, insurance €6.3m); other restructuring €5.6m. Cost-base adaptation is already happening — profit weakness is not from inaction.",
+      "quizAnswer": "FTE down ~5.5% to 5,400; ~270 employees hit by restructuring incl. Valencia.",
+      "distractors": [
+        "FTE up 5% to 6,000 as North America hired; no restructuring.",
+        "FTE down 15% to 4,900 after closing three factories.",
+        "FTE flat at 5,716; restructuring limited to Energy.",
+        "FTE down ~5.5% to 5,400; restructuring only at Westag.",
+        "FTE down 1% to 5,650; Valencia workers transferred to Kolho."
+      ]
+    },
+    {
+      "front": "Sustainability footprint — numbers and the caveat?",
+      "back": "Cradle-to-gate emissions 420kt CO2e (2019) → 240kt (2025), below the ~300kt target (−29% by 2026). Decomposition: −101kt from lower volumes, −97kt from reduction projects, +17kt from LCA refinements. Chemicals and fossil fuels are the main positive drivers; wood/paper biogenic carbon reduces the modelled footprint. Judge per-unit progress, not headline tonnes.",
+      "quizAnswer": "420kt → 240kt CO2e, but about half the cut came from lower volumes, not projects.",
+      "distractors": [
+        "420kt → 240kt CO2e, entirely from efficiency projects and green electricity.",
+        "240kt → 420kt CO2e as production grew; target missed.",
+        "420kt → 300kt CO2e, exactly on target, all from solar investments.",
+        "420kt → 240kt CO2e, mostly from buying carbon offsets.",
+        "1,000kt → 240kt CO2e after divesting the Asian plants."
+      ]
+    },
+    {
+      "front": "Key financing facts a finance trainee should know?",
+      "back": "Broadview Materials €160m ABN AMRO/HSBC facility (€120m term + €40m RCF, fully drawn), maturing Mar 2027 with extension options to 2029; leverage covenant <3.5x, complied; €44.3m undrawn elsewhere. Schuldschein remnants €15.6m + €65m (Trespa), €25m due Jun 2026. Arpa: new €10m Intesa loan (2031). Formica Asia loans €14.6m due 2026. Interest paid €26.3m. Interim dividend €5.0m. Refinancing is near — cash conversion matters now.",
+      "quizAnswer": "€160m Materials facility matures 2027 (covenant <3.5x); shareholder loans €518m; interest €26m.",
+      "distractors": [
+        "No bank debt — entirely financed by HAL shareholder loans of €700m.",
+        "€500m bond maturing 2030 with a 2.0x covenant; no shareholder loans.",
+        "€160m facility matured in 2025 and was repaid from operating cash.",
+        "€1bn syndicated loan at 8%; covenant breached and waived in 2025.",
+        "€160m Materials facility matures 2027; covenant <6x; dividend €50m."
+      ],
+      "hint": "Why is cash a board-level topic? Because 2027 is close."
+    },
+    {
+      "front": "What happened at Formica Valencia, start to finish?",
+      "back": "Flood in Oct 2024; decision in early 2025 not to resume production; ~135 employees affected; restructuring cost €9.9m offset by €6.3m insurance; volumes fully transferred to other group factories; Spanish commercial activities consolidated into Broadview Materials Spain with a new distribution centre in Valencia; former factory sold at book value on 27 Jan 2026. The real-life precedent for any production-transfer case.",
+      "quizAnswer": "Flooded Oct 2024, closed 2025, volumes moved to other plants, site sold Jan 2026.",
+      "distractors": [
+        "Rebuilt after the flood and reopened with new presses in 2026.",
+        "Sold as a going concern to Abet Laminati in 2025.",
+        "Closed for cost reasons in 2023, before the flood, and converted to a warehouse.",
+        "Flooded Oct 2024, still idle pending an insurance dispute.",
+        "Merged with Arpa's Bra plant; workers relocated to Italy."
+      ]
+    },
+    {
+      "front": "How did HAL, the owner, describe Broadview's 2025?",
+      "back": "HAL Annual Report (27 Mar 2026): Broadview (97.4%) revenue €1,238m, EBITDA €106m, EBITA €40m vs €58m — 'revenues decreased 1.7% due to lower materials volumes, and operating income decreased… driven by reduced volumes and the impact of U.S. tariffs, partly offset by efficiency programs'; HAL book value €686m. HAL's H1-2026 report is due 27 Aug 2026 — after the interview.",
+      "quizAnswer": "Lower materials volumes and US tariffs, partly offset by efficiency programmes; EBITA €40m.",
+      "distractors": [
+        "Strong volume recovery in Europe; EBITA doubled to €116m.",
+        "A write-down of €200m on Formica goodwill.",
+        "Broadview was reclassified as held for sale ahead of a 2026 IPO.",
+        "Lower volumes and Turkish inflation; EBITA €4m.",
+        "Broadview contributed a €50m dividend to HAL."
+      ]
+    }
+  ]
+}

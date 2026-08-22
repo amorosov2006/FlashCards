@@ -1,0 +1,109 @@
+{
+  "title": "Brent Interview — My Story, STAR & Weak Claims",
+  "description": "The 60-second introduction, the six STAR stories (Tekkers, TheFork, Philips, PostDator, China, feedback), and the weak-claim drills an experienced controller will push on: the 40% number, two start-ups in a row, no hard-finance track record, 'marketing analyst not finance'. Study-only two-part cards; items marked ⚠ still need Brent's own specifics.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "Tell me about yourself (60 seconds, not 90).",
+      "general": "Three beats: who I am in one sentence; three experiences and what each taught me (one line each); why Broadview in one sentence with one specific detail. Leave hobbies, the full country list and ProtecShin for follow-ups — they are better as answers than as monologue.",
+      "specific": "'I'm Brent, 25, just finished an MSc in Financial Management at Luiss in Rome after a bachelor's at the VU in Amsterdam, and I've lived in four countries. Three things shaped me: Philips, where I learned that the interesting part of a KPI is what moved it; TheFork, where I ran my own analysis project and had to get senior managers in several countries to act on it; and Tekkers, which I co-founded and run operations for — ownership with no playbook. I want to start my career in finance that sits next to factories and markets, converting sales into profit and cash — which is exactly how Broadview describes its Finance Track.'",
+      "hint": "Who · three experiences, one line each · why Broadview with one specific phrase."
+    },
+    {
+      "front": "Why materials? — the credible angle.",
+      "general": "Give a personal reason that predates the application and is about the product, not the brand. Then connect it to the chain the company actually manages.",
+      "specific": "'Before Tekkers I worked on PostDator, where we developed ProtecShin — a non-Newtonian material in a sock-like structure for shin protection without the bulk of a guard. The material *was* the value proposition, so I learned how material choice, manufacturability, sourcing and cost drive whether a product works commercially. Broadview lets finance see that whole chain, from Nemho's chemistry to the customer's willingness to pay.' ⚠ Have the one concrete moment ready (see failure card).",
+      "hint": "ProtecShin: the material was the product. Chain: chemistry → manufacturability → cost → price → adoption."
+    },
+    {
+      "front": "Tell me about a time you took ownership without being told what to do. (Tekkers)",
+      "general": "STAR with an ambiguous situation, a self-defined objective, concrete actions with owners, and a measurable result. Finish with the transferable learning.",
+      "specific": "S: early-stage start-up, no processes, scarce resources. T: turn a concept into an operating sports-community platform and grow usage. A: I took ownership of operations, host and community onboarding, payments, marketing, expansion and prioritisation; coordinated founders and external communities; set the weekly priorities myself. R: 750+ downloads, 500+ monthly active users, several active communities. Learning: in ambiguity, define the objective, break it into measurable priorities, assign owners, execute — which is how Broadview describes trainee projects.",
+      "hint": "Tekkers: no playbook → ops/onboarding/payments → 750 downloads, 500 MAU."
+    },
+    {
+      "front": "Tell me about a time your analysis led to a measurable improvement. (TheFork)",
+      "general": "Name the problem, the diagnosis method, the recommendation, who had to act, and the measured result — with the metric defined precisely.",
+      "specific": "S: new restaurant partners under-performing on visibility/performance. T: find out why and fix it. A: I analysed the drivers, identified optimisations, turned them into concrete changes and presented them to senior managers in several countries. R: ~40% improvement. ⚠ I must be able to say exactly WHAT improved 40% (views? conversions? bookings per new partner?), over what period, on what sample, and which part was mine versus the team's. Precision beats size.",
+      "hint": "Define the 40%: metric, period, sample, my share."
+    },
+    {
+      "front": "Weak claim: 'Your 40% — what exactly was that, and how much of it was you?'",
+      "general": "Never defend a headline number with another headline. Give the definition, the baseline, the period, the sample and an honest attribution. If it was a team result, say so and describe your specific contribution.",
+      "specific": "'The 40% was [metric] for the cohort of new partners in [period], against the prior cohort's baseline. My contribution was the diagnosis — [what I found] — and the recommendation; the product and account teams implemented it. I wouldn't claim the whole 40% as mine; I'd claim the analysis that made it possible.' ⚠ Fill in the brackets before Monday.",
+      "hint": "Definition, baseline, period, sample, honest attribution."
+    },
+    {
+      "front": "Tell me about a time you worked with numbers or KPIs. (Philips OneBlade)",
+      "general": "Go beyond 'I produced reports': what changed, why it changed, what it meant commercially, what decision followed.",
+      "specific": "At Philips I worked with the central marketing team on OneBlade — weekly KPI reporting, sales forecasting and performance analysis at head office. 'What I enjoyed wasn't producing the KPI itself; it was understanding what was driving the movement and what that meant commercially.' ⚠ Add one concrete forecast-versus-actual example and the tool (Excel / Power BI). Link: Broadview's controllers combine P&L with market and production data to challenge management.",
+      "hint": "Not the KPI — what moved it and what it meant. Add one concrete example."
+    },
+    {
+      "front": "Tell me about something you worked on that failed. (PostDator / ProtecShin)",
+      "general": "Use a real failure: prototype, material, supplier, cost or commercial assumption. Show how you discovered it, what you changed, and what you learned about testing assumptions early. Do not invent; do not pick a 'failure' that is secretly a success.",
+      "specific": "⚠ Brent must choose the true episode: e.g. the non-Newtonian compound that could not be sourced at a sane unit cost, the prototype that was too thick or too warm, the protection test it did not pass, or the cost estimate that killed the business case. Six sentences, with a number in it (cost per unit, weeks lost, prototypes made). Close with the learning about validating the hardest assumption first.",
+      "hint": "One true ProtecShin failure, six sentences, one number, one learning."
+    },
+    {
+      "front": "Tell me about a time you convinced someone who disagreed with you. (Tekkers)",
+      "general": "First understand the other person's objective; gather evidence and compare alternatives; be willing to change part of your own view; finish with the agreed decision and the result. The concession is what shows humility.",
+      "specific": "⚠ Pick a real Tekkers disagreement — with a founder, developer, host or partner — and write: what was at stake, what data I brought, what I conceded, what we decided, what happened. Link: Broadview's controllers are expected to challenge leadership with fact-based analysis, and Elsje Ouwehand names 'humbleness, transparency and open communication'.",
+      "hint": "Their objective → evidence → I conceded X → decision → result."
+    },
+    {
+      "front": "Tell me about a time you adapted quickly to a new environment. (China)",
+      "general": "Describe the concrete unfamiliarity, the proactive steps, and the behaviour change that stuck.",
+      "specific": "China: new academic system, culture, language environment and social setting. I built routines and a network deliberately, and became comfortable asking questions rather than pretending to understand — which has stayed with me. I have done versions of this in Switzerland (5 years), Italy, the US and China, so Broadview's relocations are attractive rather than daunting.",
+      "hint": "China: routines, network, ask instead of pretend. Done it in four countries."
+    },
+    {
+      "front": "Tell me about a time you had too many priorities at once.",
+      "general": "List everything; split urgent from important; identify what actually moves the objective; delegate with owners and deadlines; communicate early if something is at risk. Never answer 'I worked longer hours'.",
+      "specific": "Tekkers alongside the master's: I wrote everything down, separated what moved the objective (host onboarding, payments working) from what merely felt urgent, delegated with owners and dates, and told the founders early when something would slip. The learning is structured prioritisation, which is what the programme's training on time management and project management formalises.",
+      "hint": "List → urgent vs important → what moves the objective → delegate → communicate early."
+    },
+    {
+      "front": "Tell me about difficult feedback you received.",
+      "general": "A real piece of feedback, the belief it corrected, the concrete behaviour change, and evidence it stuck.",
+      "specific": "Feedback that my analysis and presentations contained too much detail: I had equated more information with stronger work. I learned that senior decision-makers need the conclusion first, then the two or three facts that support it, then detail on request — and I changed to recommendation → evidence → detail. Giacomo Ugolini calls this the 'helicopter view'. ⚠ Name who gave it and when; use only if genuinely experienced.",
+      "hint": "Too much detail → conclusion first, 2–3 facts, detail on request."
+    },
+    {
+      "front": "Weak claim: 'Two start-ups in a row — why a corporate traineeship, and what happens to Tekkers?'",
+      "general": "Answer the commitment worry directly and without embarrassment: what the start-ups taught, why the next step needs rigorous foundations inside a real industrial group, and the concrete status of the venture. Pre-empt it if the conversation heads there.",
+      "specific": "⚠ Brent's settled answer, roughly: 'The start-ups taught me ownership and how to work without a playbook — and they showed me the limits of learning finance on your own. I want rigorous foundations in business control inside a group that makes real products, and I want to build a career there. Tekkers is [handed over / paused / run by co-founders]; there is no time conflict and no conflict of interest.' State the status as fact.",
+      "hint": "What start-ups taught → why foundations now → Tekkers status as fact."
+    },
+    {
+      "front": "Weak claim: 'You have no real finance experience — Philips was a marketing team.'",
+      "general": "Agree with the literal fact, reframe what the experience actually involved, then point to the hardest finance evidence you do have and show the gap is one you know how to close.",
+      "specific": "'Correct — I haven't closed a month or built a budget in a finance department. What I have done is weekly KPI reporting and sales forecasting at Philips, a diagnosis-to-recommendation project at TheFork, payments and cash management at Tekkers, and an MSc with a corporate-finance focus where I [thesis / modelling coursework]. The programme is precisely where I'd build the controlling craft — and the finance trainees Broadview publishes started from reporting tools and factory KPIs, not from audit.' ⚠ Insert the thesis/modelling evidence.",
+      "hint": "Agree literal fact → reframe → MSc evidence → programme closes the gap."
+    },
+    {
+      "front": "Weak claim: 'You mention Business Analytics — are you sure you want Finance?'",
+      "general": "Anchor first, pragmatism second, and say the word 'undecided' only to deny it.",
+      "specific": "'Finance is my anchor. I'd welcome a mixed project if it strengthens the finance path — Business Analytics is the natural neighbour — but I'm not applying because I'm undecided. I want to be a business controller who understands the factory and the market.'",
+      "hint": "Anchor: Finance. BA only if it strengthens the path."
+    },
+    {
+      "front": "Weak claim: 'Your introduction was very long / very polished — are you reciting?'",
+      "general": "Shorten, not defend. Acknowledge with humour, give the one-sentence version, and invite them to pick what to dig into.",
+      "specific": "'Fair — I've thought about it a lot. The short version: I'm a finance graduate who wants to understand what physically drives the numbers, and I learn fastest when thrown in. Which part would you like me to go deeper on?'",
+      "hint": "Acknowledge → one sentence → hand them the choice."
+    },
+    {
+      "front": "What is your biggest weakness?",
+      "general": "A real one, with evidence of managing it, not a disguised strength. Ideally the same theme as the feedback story so the narrative is consistent.",
+      "specific": "'Depth over altitude: my instinct is to go into detail, and I have had feedback that decision-makers wanted the conclusion first. I now force myself to write the recommendation before the analysis and to stop after three supporting facts. I still notice the pull — which is why I'd value working with controllers who challenge CEOs for a living.'",
+      "hint": "Detail vs helicopter view — same theme as the feedback story."
+    },
+    {
+      "front": "The boring facts you must have instantly.",
+      "general": "Dates and durations of every role and exchange; languages with honest levels; thesis topic; grades; graduation date; start availability; relocation constraints; salary expectation range (say you expect the programme's standard package).",
+      "specific": "⚠ Brent fills in: Philips [dates, tools]; TheFork [dates]; Tekkers [founded, role, current status]; PostDator [dates, my role]; Switzerland [years, where]; China [programme, semester]; USA [programme, semester]; Italian [level]; German [level]; thesis [title, one-line finding]; available from [date].",
+      "hint": "Dates, languages, thesis, grades, availability — no hesitation."
+    }
+  ]
+}

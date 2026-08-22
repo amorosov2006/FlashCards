@@ -1,0 +1,115 @@
+{
+  "title": "Brent Interview — Case Frameworks & Quick-Fire Technicals",
+  "description": "The final round involves a business case presented to senior management. Frameworks for the likely case types (production transfer, cost cuts, procurement concentration, innovation, working capital), the questions behind them, and ten out-loud arithmetic drills a controller may fire at me. Study-only two-part cards (the framework + how I would say it).",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "The case spine — how do you structure any business-case answer?",
+      "general": "What happened? → Why (drivers)? → What data proves it? → What can we control? → What action, by whom, by when? → What risk? → Which KPI shows it worked? Lead with the conclusion, give 2–3 supporting facts, then stop and let them pull detail.",
+      "specific": "For a presentation: slide 1 = recommendation and the three numbers that justify it; slide 2 = driver tree; slide 3 = options compared in one table; slide 4 = plan with owners and KPIs; slide 5 = risks and 'what would change my mind'. Ten minutes, then questions.",
+      "hint": "What → why → proof → control → action → risk → KPI. Conclusion first."
+    },
+    {
+      "front": "A factory's EBITDA suddenly drops — what do you analyse, in order?",
+      "general": "1 Sales: volume, price, product/customer/geographic mix. 2 Variable costs: raw materials, energy, freight. 3 Operations: utilisation, productivity, yield, scrap, downtime. 4 Fixed and semi-fixed costs: labour, overhead — did they flex with volume? 5 One-offs and FX. 6 Cash: inventory, receivables/payables, capex.",
+      "specific": "Then I say which bucket I expect to be biggest before I get the data, and why — for a European HPL plant in 2025 it is bucket 3 and 4 (absorption) driven by bucket 1 (volume), with bucket 2 (kraft paper, energy) as the structural headwind.",
+      "hint": "Sales → variable → operations → fixed → one-offs/FX → cash."
+    },
+    {
+      "front": "Sales fall 5% — should we cut costs 5%?",
+      "general": "No. First: temporary or structural? Separate variable from fixed and semi-fixed costs. Protect safety, compliance and strategically important capabilities. Cut genuinely low-value cost first. Consider utilisation scenarios and the cost of rehiring if demand returns.",
+      "specific": "'I would want the cost base to be flexible, but I would not optimise one year's EBITDA at the expense of long-term value.' Broadview cut ~5.5% of FTE in 2025 and still kept Nemho, FENIX NTX and the Westag and Westra investments — that is the balance I would describe.",
+      "hint": "Temporary vs structural; variable vs fixed; protect safety/capability; cut low-value first."
+    },
+    {
+      "front": "One plant has spare capacity, another needs capacity — transfer production?",
+      "general": "Not automatically. Benefits: utilisation and fixed-cost absorption, capex avoided, procurement and manufacturing synergies. Risks: freight, lead time, quality and qualification, customer service requirements, plant capability, transfer and redundancy costs. Decide on the group/product/customer outcome, not on protecting a legacy site.",
+      "specific": "Valencia is the precedent: after the flood, volumes were fully transferred to other plants, Spanish commercial activities consolidated, and a distribution centre kept local service. I would quantify absorption gain and capex avoided against freight, lead-time cost and restructuring, and show an NPV with a volume sensitivity.",
+      "hint": "Absorption + capex avoided vs freight, lead time, quality, redundancy. Valencia precedent."
+    },
+    {
+      "front": "A single-supplier group paper contract saves money — take it?",
+      "general": "Quantify the saving against supplier concentration, quality, geography, working-capital terms and continuity risk. Prefer dual-sourcing or contractual mitigation (capacity reservation, step-in rights, safety stock) where the risk-adjusted value is better.",
+      "specific": "BNG's 2025 key-supplier shutdown cost the Energy cluster real profit — cheapest is not lowest risk. Broadview also switched kraft-paper suppliers in 2025 and said it hurt results. I would take the saving only with a second qualified source.",
+      "hint": "Saving vs concentration risk. BNG shutdown. Dual-source."
+    },
+    {
+      "front": "Nemho proposes a lower-impact resin that needs investment and trials — what do you ask?",
+      "general": "Customer value and willingness to pay; technical readiness; manufacturing yield impact; cost and capex; LCA benefit per unit; time-to-market; IP and defensibility; regulatory pull. Run it through stage gates with a business case rather than yes/no.",
+      "specific": "Bloom (lignin replacing fossil phenol) and FENIX NTX (up to 90% bio-based, launched Jun 2026) show this pipeline converts. Keep it alive through a gated business case: Broadview's long-term strategy depends on differentiation, not on being the cheapest board.",
+      "hint": "Value, readiness, yield, cost, LCA/unit, time, IP, regulation — stage gates."
+    },
+    {
+      "front": "Growth, margin or cash — which do you prioritise?",
+      "general": "Refuse the false choice. Sustainable growth must convert into profit and cash; if sales grow while margin and cash deteriorate, question the quality of the growth.",
+      "specific": "Energy 2025 is my example — revenue +10.6%, EBITDA down to €1.5m — and the Finance Track's own mandate is 'convert sales growth into higher profits and cash'. I would rank cash first in 2026 only because refinancing falls due in 2027, and I would say why.",
+      "hint": "False choice. Energy 2025: growth without profit. Cash first in 2026 because 2027 refinancing."
+    },
+    {
+      "front": "Inventory is rising while sales fall — symptom or cause?",
+      "general": "Check forecast accuracy, SKU ageing, service targets, batch sizes, slow movers, raw-material commitments and any transferred production. Fix planning before blaming demand; rising stock in a downturn is a cash warning.",
+      "specific": "In the European-surfaces case I would attack inventory in parallel with the capacity decision because it is an already-visible cash problem: set SKU-level targets, cut batch sizes on slow movers, and measure days of inventory alongside on-time delivery so service is not sacrificed.",
+      "hint": "Forecast accuracy, ageing, batch size, slow movers. Pair with service."
+    },
+    {
+      "front": "Which risks are non-negotiable in any recommendation?",
+      "general": "Safety, product compliance, reporting integrity, business continuity — Broadview's 'non-business risks', controlled as a licence to operate rather than traded for upside.",
+      "specific": "If the case involves Westag, I raise the 16 lost-time accidents before any productivity push. If it involves a production transfer, product compliance and qualification come before the savings number. Saying this unprompted is how I show I understand the Broadview Business System.",
+      "hint": "Safety, compliance, reporting, continuity — say it unprompted."
+    },
+    {
+      "front": "What would you put on the CEO dashboard for a European surfaces business in 2026?",
+      "general": "Volume and share; price/mix; contribution and EBITDA margin; utilisation; yield/scrap; inventory days with on-time delivery; working-capital cash; safety (lost-time accidents); Broadview One synergy realisation (cross-sales, transferred volume, procurement savings); innovation milestones and CO2e per unit.",
+      "specific": "Twelve lines, one page, each with a target and an owner. The three I would watch weekly: order intake versus forecast, days of inventory, and scrap — they move first and they are cash.",
+      "hint": "Volume, price/mix, margins, utilisation, scrap, inventory+OTD, cash, safety, synergies, innovation/CO2."
+    },
+    {
+      "front": "Drill: EBITDA €100m, D&A €40m, interest €25m, tax 25%. Net income?",
+      "general": "EBIT = 100 − 40 = 60. EBT = 60 − 25 = 35. Tax = 8.75. Net income = €26.25m.",
+      "specific": "Say it in five seconds, then add the Broadview version: recurring EBITDA 105.7 → non-recurring −11.3 → EBITDA 94.4 → D&A and other → operating profit 7.3 → financing −63.5 → tax → net loss −55.8.",
+      "hint": "60 → 35 → 26.25."
+    },
+    {
+      "front": "Drill: inventory +€10m, receivables −€4m, payables +€3m. Cash effect?",
+      "general": "−10 + 4 + 3 = −€3m absorbed by working capital.",
+      "specific": "Then the follow-up I expect: 'which of those would you attack first?' — inventory, because it is the one the factory controls directly through planning and batch sizes.",
+      "hint": "−3."
+    },
+    {
+      "front": "Drill: fixed costs €30m, contribution margin 40%, sales €100m. Sales fall 10% — EBITDA?",
+      "general": "Before: 40 − 30 = €10m. After: 36 − 30 = €6m. Sales −10% → EBITDA −40%. Break-even sales = 30 ÷ 0.4 = €75m; every euro below costs 40 cents of EBITDA.",
+      "specific": "This is Europe 2025 in miniature (sales −3%, EBITDA −28%). The lever is either volume back above break-even or lowering the €30m — and I would show both scenarios side by side.",
+      "hint": "10 → 6; −40%. Break-even €75m."
+    },
+    {
+      "front": "Drill: project costs €10m, saves €2.5m a year for 6 years, 10% discount rate. Worth it?",
+      "general": "Annuity factor (10%, 6 yrs) ≈ 4.36. PV ≈ €10.9m. NPV ≈ +€0.9m — marginally positive; payback 4 years. Sensitive to savings realisation, ramp-up and capex overrun.",
+      "specific": "I would call it 'positive but thin' and ask three things before approving: how confident is the €2.5m, is there a cheaper way to get half of it, and does it carry safety or compliance benefits the NPV does not count?",
+      "hint": "4.36 × 2.5 = 10.9; NPV ≈ +0.9m. Thin."
+    },
+    {
+      "front": "Drill: net debt €697m vs recurring EBITDA €105.7m — leverage?",
+      "general": "~6.6x including the €518m shareholder loans; ~1.7x on net bank debt only (€294m − €115m cash = €179m). Know which definition the covenant uses (Materials facility <3.5x, complied).",
+      "specific": "If asked whether Broadview is over-leveraged: 'On bank debt, no — about 1.7x. Including HAL's shareholder loans it is ~6.6x, but that is patient capital from the owner; the real constraint is the 2027 maturity and cash conversion.'",
+      "hint": "6.6x all-in; 1.7x bank-only."
+    },
+    {
+      "front": "Drill: yield improves from 92% to 94% on €100m of material input. Value?",
+      "general": "About €2m of material no longer wasted, plus freed press time, energy and capacity; second-order: less waste disposal and lower CO2e per unit.",
+      "specific": "That is why a two-point yield gain at a plant like Bra is worth a finance trainee's full project — it is margin, capacity and sustainability in one number, and it needs a mass balance to be measured honestly.",
+      "hint": "≈ €2m material + capacity + CO2."
+    },
+    {
+      "front": "Drill: transfer price between two group plants is set too low — what happens?",
+      "general": "The selling plant looks worse and the buying plant better; group profit is unchanged but incentives distort — the selling plant resists transferring production, managers optimise their own P&L, and KPIs stop being comparable.",
+      "specific": "Broadview One depends on neutral, consistent transfer pricing and common KPI definitions — exactly what the published trainee projects on reporting tools and harmonised scrap reporting were about. I would flag this as the first intra-company risk in any integration case.",
+      "hint": "Group unchanged; incentives distort; Broadview One needs neutral TP + common KPIs."
+    },
+    {
+      "front": "Drill: reported EBITDA up but organic EBITDA flat — explanations?",
+      "general": "Acquisitions or scope changes, or FX translation. Always ask for organic, constant-currency figures.",
+      "specific": "Broadview gives both: 2025 revenue −1.7% reported versus −0.7% organic; recurring EBITDA €105.7m reported versus €105.0m organic (scope +€0.7m). I quote the organic numbers when describing the underlying trend.",
+      "hint": "Scope or FX. Reported −1.7% vs organic −0.7%."
+    }
+  ]
+}

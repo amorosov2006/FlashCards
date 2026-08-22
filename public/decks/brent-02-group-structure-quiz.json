@@ -1,0 +1,203 @@
+{
+  "title": "Brent Interview — Group & Structure (quiz)",
+  "description": "Broadview Holding's ownership, clusters, companies, hubs, Broadview One and the Broadview Business System. Practice + multiple-choice quiz; every card carries 5–6 distractors.",
+  "cards": [
+    {
+      "front": "Who ultimately owns Broadview Holding B.V.?",
+      "back": "Broadview belongs to the HAL group: HAL Investments holds ~97.4%; the ultimate parent is HAL Trust (Hamilton, Bermuda), listed in Amsterdam as HAL. This explains the long-term, decentralised philosophy and the €518m of shareholder loans on Broadview's balance sheet.",
+      "quizAnswer": "The HAL group — HAL Investments ~97%, ultimate parent HAL Trust, Amsterdam-listed.",
+      "distractors": [
+        "A consortium of the founding families of Formica and Trespa.",
+        "Private-equity fund CVC Capital Partners via a 2019 buyout.",
+        "The Dutch state investment vehicle Invest-NL with minority partners.",
+        "It is independently listed on Euronext Amsterdam with dispersed ownership.",
+        "Westag AG, its German subsidiary, through a reverse holding structure.",
+        "A management buy-out led by CEO Matthijs Schoten in 2021."
+      ],
+      "hint": "Think Dutch listed investment company, Bermuda trust."
+    },
+    {
+      "front": "What are Broadview's two clusters and their approximate 2025 revenue?",
+      "back": "Material Technology (Broadview Materials) ~€1,132m and Energy (Broadview Energy Solutions) ~€106m; group total €1,238m.",
+      "quizAnswer": "Material Technology ~€1.13bn and Energy ~€106m; group €1.24bn.",
+      "distractors": [
+        "Materials ~€800m and Energy ~€440m; group €1.24bn.",
+        "Materials ~€1.5bn and Energy ~€300m; group €1.8bn.",
+        "Construction ~€900m and Chemicals ~€340m; group €1.24bn.",
+        "Materials ~€1.13bn and Logistics ~€106m; group €1.24bn.",
+        "Materials ~€600m and Energy ~€640m; group €1.24bn."
+      ],
+      "hint": "Energy is under a tenth of the group."
+    },
+    {
+      "front": "Where is Broadview headquartered?",
+      "back": "'s-Hertogenbosch (Den Bosch), the Netherlands. Nemho (R&D) is in Weert, NL, and Musa (marketing/design) in Milan.",
+      "quizAnswer": "'s-Hertogenbosch (Den Bosch), Netherlands.",
+      "distractors": [
+        "Rotterdam, Netherlands.",
+        "Weert, Netherlands.",
+        "Amsterdam Zuidas, Netherlands.",
+        "Eindhoven, Netherlands.",
+        "Düsseldorf, Germany."
+      ]
+    },
+    {
+      "front": "Which company is the largest Materials brand by 2025 revenue?",
+      "back": "Formica Group at €576.5m — roughly half of Materials. Then Westag €177.3m, Arpa €173.5m, Trespa €170.1m, DOS €34.8m.",
+      "quizAnswer": "Formica Group, ~€577m — about half of Materials revenue.",
+      "distractors": [
+        "Trespa, ~€577m — about half of Materials revenue.",
+        "Arpa Industriale, ~€400m — about a third of Materials revenue.",
+        "Westag, ~€577m — about half of Materials revenue.",
+        "Formica Group, ~€300m — about a quarter of Materials revenue.",
+        "Homapal, ~€250m — about a fifth of Materials revenue."
+      ],
+      "hint": "Global HPL brand with plants on three continents."
+    },
+    {
+      "front": "What does Trespa make and where is it based?",
+      "back": "Weert, Netherlands. High-quality panels for exterior façade cladding and scientific/laboratory surfaces — functional as well as aesthetic. Exposure: commercial construction and renovation cycles; 2025 saw façade-cladding softness.",
+      "quizAnswer": "Weert, NL — façade cladding and laboratory/scientific surface panels.",
+      "distractors": [
+        "Bra, Italy — decorative interior surfaces and the FENIX brand.",
+        "Herzberg, Germany — real-metal and magnetic laminates.",
+        "Rheda-Wiedenbrück, Germany — doors, frames and worktops.",
+        "Cincinnati, USA — HPL surfacing and Hartson-Kennedy worktops.",
+        "Singapore — HPL for Asian residential and commercial interiors."
+      ]
+    },
+    {
+      "front": "What is Arpa Industriale known for, and what is FENIX?",
+      "back": "Arpa (Bra, Italy) makes decorative interior panels and surfaces; FENIX is its innovative interior-material brand (matt, soft-touch, anti-fingerprint, thermally repairable). Arpa's Bloom technology uses lignin to reduce fossil phenol in the core resin; FENIX NTX (Jun 2026) is up to 90% bio-based. Arpa and Formica Europe are now run together as Broadview Materials Europe.",
+      "quizAnswer": "Bra, Italy — decorative interior surfaces; FENIX is its innovative material brand.",
+      "distractors": [
+        "Bra, Italy — exterior façade cladding; FENIX is its coating plant.",
+        "Milan, Italy — marketing and design; FENIX is its showroom.",
+        "Kolho, Finland — kraft-paper production; FENIX is its resin line.",
+        "Bra, Italy — kitchen e-commerce; FENIX is its online brand.",
+        "Turin, Italy — cryogenic tanks; FENIX is its LNG brand."
+      ]
+    },
+    {
+      "front": "What does Westag make, and how much does Broadview own?",
+      "back": "German manufacturer of doors, frames, worktops, panels, solid surface and coated plywood (segments: Türen and Elemente). Broadview bought a further 13% for €18m in 2025, reaching 89.8%; Westag was delisted from Frankfurt on 1 Jul 2025; CEO Schoten chairs its board from 2026.",
+      "quizAnswer": "Doors, frames, worktops and panels in Germany; Broadview owns ~90% after 2025.",
+      "distractors": [
+        "Doors, frames, worktops and panels in Germany; Broadview owns ~51%.",
+        "Real-metal laminates in Germany; Broadview owns 100%.",
+        "Biogas-upgrading plants in Germany; Broadview owns ~90%.",
+        "Kitchen worktops sold online in the UK; Broadview owns ~90%.",
+        "Cryogenic containers in Germany; Broadview owns ~77%."
+      ],
+      "hint": "Listed until mid-2025."
+    },
+    {
+      "front": "What is Homapal's niche?",
+      "back": "Herzberg, Germany. Specialty decorative surfaces — real-metal laminates and magnetic products; describes itself as world leader in metallic laminates; small-batch craftsmanship; sits in the pressured Europe/Africa region.",
+      "quizAnswer": "Real-metal and magnetic decorative laminates, small-batch, Germany.",
+      "distractors": [
+        "Exterior façade panels for high-rise buildings, Germany.",
+        "Kraft-paper supply for the group's laminate plants, Germany.",
+        "Solid-wood interior doors for the DIY channel, Germany.",
+        "Online kitchen-worktop retail, Germany.",
+        "Biogas-upgrading membranes, Germany."
+      ]
+    },
+    {
+      "front": "What is Direct Online Services (DOS)?",
+      "back": "UK e-commerce-led multichannel kitchen-worktop retailer (e.g. Worktop Express). Strategic role: closer to the end customer, digital capabilities, downstream route-to-market and customer data. 2025 revenue €34.8m; Cinderford building held for sale.",
+      "quizAnswer": "UK online kitchen-worktop retailer (Worktop Express) — downstream route to end customers.",
+      "distractors": [
+        "UK logistics company distributing HPL to builders' merchants.",
+        "UK software house building Broadview's reporting tool.",
+        "UK façade-installation contractor owned by Trespa.",
+        "UK kraft-paper mill supplying Formica Europe.",
+        "UK design studio for Formica's colour collections."
+      ]
+    },
+    {
+      "front": "Where are Formica's manufacturing regions, and which grew in 2025?",
+      "back": "Formica Europe: North Shields (UK) and Kolho (Finland) — Valencia closed in 2025. Formica North America: Cincinnati/Evendale (OH) and St-Jean (QC), plus Hartson-Kennedy worktops in Indiana. Formica Asia: Singapore HQ, plants in China, Taiwan, Thailand, India. Only North America grew in 2025.",
+      "quizAnswer": "Europe (UK, Finland), North America (Ohio, Québec) and Asia; only North America grew.",
+      "distractors": [
+        "Europe (UK, Spain), North America and Asia; only Asia grew.",
+        "Europe (Italy, Germany) and North America; both grew.",
+        "Europe (UK, Finland), North America and Asia; only Europe grew.",
+        "North America (Ohio, Indiana) and Latin America; both grew.",
+        "Europe, Middle East and Asia; only the Middle East grew."
+      ]
+    },
+    {
+      "front": "What are Nemho and Musa?",
+      "back": "Nemho (Weert, NL) is the group's technology / R&D centre of excellence — resins, coatings, adhesion, surface performance, university collaboration. Musa (Milan) is the marketing, design and communication hub. Both are Broadview One instruments: synergies beyond the factory.",
+      "quizAnswer": "Nemho = group R&D centre in Weert; Musa = marketing/design hub in Milan.",
+      "distractors": [
+        "Nemho = Finnish kraft-paper mill; Musa = Italian sales office.",
+        "Nemho = group IT shared-service centre; Musa = HR academy.",
+        "Nemho = Dutch façade installer; Musa = Milan showroom.",
+        "Nemho = Broadview's venture fund; Musa = design school sponsorship.",
+        "Nemho = Energy-cluster engineering office; Musa = LNG trading desk."
+      ]
+    },
+    {
+      "front": "Name the four Energy companies and their business models.",
+      "back": "DMT Environmental Technology (NL) — biogas-upgrading / CO2-capture projects; Aritas Cryogenics (Turkey) — cryogenic tanks and equipment; Barents NaturGass / BNG (Norway) — LNG distribution; Cryogenic Container Solutions / CCS (NL) — leasing cryogenic containers and trailers. July 2026: Westra (stainless-steel fabrication) added to support DMT.",
+      "quizAnswer": "DMT (biogas projects), Aritas (cryogenic tanks), BNG (LNG distribution), CCS (container leasing).",
+      "distractors": [
+        "DMT (LNG distribution), Aritas (biogas), BNG (tanks), CCS (wind turbines).",
+        "DMT (solar EPC), Aritas (batteries), BNG (hydrogen), CCS (carbon credits).",
+        "DMT (biogas projects), Aritas (offshore wind), BNG (oil trading), CCS (pipelines).",
+        "DMT (gas turbines), Aritas (cryogenic tanks), BNG (district heating), CCS (container leasing).",
+        "DMT (water treatment), Aritas (steel structures), BNG (LNG distribution), CCS (shipping)."
+      ]
+    },
+    {
+      "front": "What is 'Broadview One'?",
+      "back": "The strategy to run the Materials companies as one business: product and customer perspective over legacy-company perspective; customers get access to the complete group portfolio; shared manufacturing, procurement, R&D, design, data and KPIs. Evidence: €117m intercompany Materials sales and growing; Valencia volumes moved to other plants; Arpa + Formica Europe = Broadview Materials Europe; Spanish commercial activities consolidated.",
+      "quizAnswer": "Running the Materials companies as one business — product/customer view over legacy-company view.",
+      "distractors": [
+        "A single ERP system rolled out to all Broadview companies in 2025.",
+        "Merging the Materials and Energy clusters under one CEO.",
+        "A rebranding of every subsidiary under the Broadview name.",
+        "A cost-cutting programme targeting €100m savings by 2027.",
+        "A customer-loyalty scheme shared across Formica and Westag."
+      ]
+    },
+    {
+      "front": "What are the four dimensions of the Broadview Business System?",
+      "back": "Control non-business risk; grow the business; maximise the contribution of sales growth; have the right people. Budgets carry financial targets plus specific targets on each dimension. Umbrella: long-term orientation — companies should be 'the reference in their industry… still relevant decades from now'.",
+      "quizAnswer": "Control non-business risk; grow; maximise contribution of growth; the right people.",
+      "distractors": [
+        "Cut costs; raise prices; reduce headcount; centralise purchasing.",
+        "Customer, process, learning and financial perspectives of a balanced scorecard.",
+        "Safety, quality, delivery and cost — the classic lean dashboard.",
+        "Grow revenue; expand margins; generate cash; return capital to HAL.",
+        "Innovate; digitalise; decarbonise; diversify geographically."
+      ]
+    },
+    {
+      "front": "What does Broadview mean by 'non-business risk'?",
+      "back": "Safety, compliance, reporting integrity, environmental and similar risks — a licence to operate, to be controlled rather than traded for commercial upside. Slogan: 'Find risks before they find you or your colleagues'. 2025: 46 accidents (51), 190 incidents (276); Westag had the most lost-time accidents (16).",
+      "quizAnswer": "Safety, compliance, reporting and similar risks that must be controlled, never traded for upside.",
+      "distractors": [
+        "Macroeconomic and currency risks that the holding hedges centrally.",
+        "Risks in businesses Broadview does not own, such as suppliers.",
+        "Risks from non-core activities like real estate and sponsorship.",
+        "Competitive and pricing risks that operating companies manage locally.",
+        "Risks that the Supervisory Board, not the Executive Board, is responsible for."
+      ]
+    },
+    {
+      "front": "How many Materials factories does Broadview operate?",
+      "back": "16 factories across Europe, North America and Asia (after the closure of Formica Valencia).",
+      "quizAnswer": "16 factories across Europe, North America and Asia.",
+      "distractors": [
+        "9 factories, all in Europe.",
+        "24 factories across five continents.",
+        "12 factories across Europe and Asia.",
+        "16 factories, all in Europe and North America.",
+        "30 factories across Europe, North America and Asia."
+      ]
+    }
+  ]
+}

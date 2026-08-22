@@ -1,0 +1,103 @@
+{
+  "title": "Brent Interview — Industry, KPIs & Finance Concepts",
+  "description": "How HPL / surface materials make money, the factory and finance KPIs Broadview's controllers use, competitors, trends, and the core finance concepts an interviewer will test — each tied to a Broadview example or to my own experience. Study-only two-part cards.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "How is HPL made, and what drives its cost?",
+      "general": "High-pressure laminate: layers of kraft paper (core) and decor paper impregnated with thermosetting resins (phenolic core, melamine surface), bonded under high heat and pressure. Cost stack: kraft paper, resins/chemicals, energy, labour, machine time, scrap/yield, freight. Plants are capital- and process-intensive, so utilisation and productivity dominate unit cost.",
+      "specific": "Broadview named two input-cost items for 2025: the switch to a non-US kraft-paper supplier and US import tariffs. In Europe kraft paper costs ~40% more than in the US (≈$1.4 vs $1.0/kg in Q1 2026) — a structural disadvantage I would raise when discussing European margins.",
+      "hint": "Paper + resin + heat + pressure; paper, resin, energy, yield, utilisation drive cost."
+    },
+    {
+      "front": "Where does demand for surface materials come from?",
+      "general": "Residential kitchens, furniture and home improvement; commercial interiors (offices, retail, hospitality, healthcare); exterior façades (Trespa); laboratories; transport. Diversified by application, but tied to construction and renovation cycles.",
+      "specific": "That is why 2025 split the way it did: European and Chinese construction weak (Europe/Africa −3.3% sales, Asia −10%), US commercial demand healthy (Americas up). Westag's extra twist: more volume through DIY stores at lower margin.",
+      "hint": "Kitchens, commercial interiors, façades, labs — all construction-cycle exposed."
+    },
+    {
+      "front": "Why does capacity utilisation matter so much in this industry?",
+      "general": "Large fixed and semi-fixed costs (presses, buildings, skilled labour). Output down → cost per unit up → margin falls disproportionately. Output up → fixed-cost absorption improves → profit rises disproportionately. That is operating leverage.",
+      "specific": "Europe 2025: sales −3.3%, EBITDA −28%. Asia: sales −10%, EBITDA −15%, with Broadview explicitly citing 'reduced operating leverage'. North America is the same mechanism in reverse — volume growth outweighed higher opex and tariffs.",
+      "hint": "Fixed costs over fewer units. Europe −3% sales → −28% EBITDA."
+    },
+    {
+      "front": "Why does scrap matter, and what is a mass balance?",
+      "general": "A rejected panel has already consumed paper, resin, energy, machine time, labour and capacity but earns nothing; lower scrap improves material cost, productivity, capacity, margin and CO2 at the same time. A mass balance reconciles material inputs with good output, waste and inventory/process movements — unexplained gaps point to measurement or process-control problems.",
+      "specific": "This is literally a Broadview Finance Track project: Giacomo Ugolini built factory-control KPIs and mass-balance measurement at Arpa's Bra plant; Kavya Movva harmonised scrap reporting across US, Italy and UK plants. It is the project I would most like to own.",
+      "hint": "Scrap = paid-for inputs with no revenue. Mass balance = input vs good output vs waste."
+    },
+    {
+      "front": "Name the factory KPIs a Broadview controller watches and the 'good' direction.",
+      "general": "Volume (if profitable); price-cost spread (price above input inflation); contribution margin (higher); EBITDA margin (stable/rising); utilisation (high, without starving maintenance); yield up / scrap down; labour productivity (never at the cost of safety); inventory days (lower, subject to service); on-time delivery (higher); working-capital days (lower); ROIC (above cost of capital); CO2e per unit (lower).",
+      "specific": "I pair KPIs so they cannot be gamed: service level with inventory days, productivity with safety, EBITDA margin with cash conversion. At Philips I saw a KPI improve while the commercial picture worsened — the pairing is what saves you.",
+      "hint": "Pair them: service vs stock, productivity vs safety, margin vs cash."
+    },
+    {
+      "front": "Who are Broadview's comparable competitors?",
+      "general": "Wilsonart (HPL / engineered surfaces, closest to Formica), EGGER (integrated wood-based panels and laminates; FY2025/26 revenue €4.26bn, EBITDA margin 12.7%), Kronospan (global panels, vertical integration), Fundermax (compact/façade panels vs Trespa), Abet Laminati (Italian HPL, also in Bra, vs Arpa).",
+      "specific": "I call them 'comparables by product overlap', not Broadview's official peer set. The useful comparison is EGGER's ~13% EBITDA margin against Broadview Materials' ~9% — mix and integration explain part of it, but it shows headroom that Broadview One is meant to capture.",
+      "hint": "Wilsonart, EGGER, Kronospan, Fundermax, Abet. EGGER margin ~13% vs ~9%."
+    },
+    {
+      "front": "What trends are shaping the materials industry?",
+      "general": "Sustainability and chemistry (lower-carbon inputs, lignin resins, LCAs/EPDs demanded by architects and regulation); functional differentiation (durability, hygiene, anti-fingerprint, repairability, weather resistance); manufacturing data and automation with common KPIs; supply-chain resilience (tariffs, kraft-paper sourcing, supplier concentration); moves down the value chain toward end customers.",
+      "specific": "Broadview has a live example for each: Bloom/FENIX NTX (up to 90% bio-based, Jun 2026), Trespa's functional façades, Kavya's scrap-reporting harmonisation, the BNG supplier shutdown, and DOS/Worktop Express. ProtecShin taught me the first one personally — material choice *was* the product.",
+      "hint": "Chemistry, function, data, resilience, downstream."
+    },
+    {
+      "front": "EBITDA versus cash flow — why do they diverge?",
+      "general": "EBITDA ignores working-capital movements, capex, interest, tax, restructuring cash-outs and FX. Cash conversion (roughly cash from operations ÷ EBITDA) shows how much profit actually becomes cash.",
+      "specific": "Broadview 2025: recurring EBITDA €105.7m, cash from operations excluding acquisitions €3.1m. Working capital absorbed €20m, interest paid €26m, restructuring and tax took the rest. That gap is why I would put cash and working capital on any dashboard I built.",
+      "hint": "€105.7m EBITDA → €3.1m cash. WC −€20m, interest −€26m."
+    },
+    {
+      "front": "Working capital — components and cash effect.",
+      "general": "Inventory + receivables − payables (plus project work-in-progress for a project business like DMT). An increase absorbs cash; a decrease releases it. Rising inventory while sales fall is a warning sign: forecast accuracy, batch sizes, slow-moving SKUs.",
+      "specific": "Broadview's working capital absorbed €20m in 2025 versus €8.7m in 2024. My first question as a trainee: which component — finished-goods inventory in Europe, receivables, DMT project WIP — and is it structural or temporary?",
+      "hint": "Inv + AR − AP. 2025: −€20m. Ask which component."
+    },
+    {
+      "front": "What is a price-volume-mix bridge?",
+      "general": "A decomposition of a revenue or margin change into fewer/more units (volume), price changes, composition changes (mix — products, customers, channels), plus FX and scope. The first tool for 'why did the result change?'",
+      "specific": "Westag is my example: revenue −2.8% but EBITDA halved, partly because a larger share of sales went through DIY stores at lower margin — a mix effect, not a volume effect. At Philips I built weekly bridges of forecast versus actual for OneBlade; the interesting column was always mix.",
+      "hint": "Volume / price / mix / FX / scope. Westag = mix."
+    },
+    {
+      "front": "Recurring versus reported EBITDA — what to check?",
+      "general": "Recurring excludes non-recurring items (closures, restructuring, insurance offsets) to show the underlying trend. Always check the cash cost of the 'one-offs' and whether they recur every year.",
+      "specific": "Broadview: €11.3m non-recurring in 2025 and €8.4m in 2024 — restructuring has happened two years running (Valencia, ~270 employees in 2025). Recurring EBITDA is the right trend measure, but I would not call restructuring 'non-recurring' in a cash forecast.",
+      "hint": "Non-recurring €11.3m (2025), €8.4m (2024) — two years running."
+    },
+    {
+      "front": "ROIC and NPV in one line each — and when to use which.",
+      "general": "ROIC = after-tax operating profit ÷ invested capital; value is created when it is sustainably above the cost of capital. NPV = present value of incremental future cash flows minus the investment; positive means value creation at the chosen discount rate. ROIC judges a business or acquisition; NPV judges a project.",
+      "specific": "In a production-transfer case I would NPV the incremental cash flows (absorption gain, capex avoided, minus freight, redundancy, lead-time cost). For Westra or the Westag stake, the question is ROIC on the €18m relative to Broadview's cost of capital.",
+      "hint": "ROIC for businesses/acquisitions; NPV for projects."
+    },
+    {
+      "front": "How does FX translation hit Broadview's accounts?",
+      "general": "Foreign subsidiaries' results and net assets are translated into euros; a weaker foreign currency reduces reported revenue, EBITDA and equity without any change in local performance. Transactional FX (buying in USD, selling in EUR) is a separate, real cash exposure.",
+      "specific": "2025: ~60% of revenue in foreign currencies; translation cut NAV by €63m; ~€26m FX losses on USD positions ran through financing costs. A controller separates 'organic in local currency' from 'reported in euro' — Broadview itself reports −1.7% reported vs −0.7% organic.",
+      "hint": "Translation hits NAV (−€63m); transaction hits cash. Reported −1.7% vs organic −0.7%."
+    },
+    {
+      "front": "LCA and cradle-to-gate — how should finance read sustainability numbers?",
+      "general": "Life Cycle Assessment measures environmental impact across stages; cradle-to-gate covers extraction through the factory gate (excludes use and end-of-life) — the part a manufacturer controls. Always compare per unit or like-for-like so lower production is not mistaken for efficiency.",
+      "specific": "Broadview: 420kt (2019) → 240kt (2025), but −101kt of that is lower volume and only −97kt is projects. I would say 'real progress, half of it demand-driven' — the quality of the reduction matters, exactly as with profit.",
+      "hint": "Per-unit, like-for-like. Half the cut was volume."
+    },
+    {
+      "front": "Capex — is lower always better for cash?",
+      "general": "No. Capex is judged by return, necessity (safety, maintenance, compliance) and timing. Cutting it flatters cash this year and can destroy value later; under-investing in R&D or high-return automation undermines competitiveness.",
+      "specific": "Broadview cut net capex from €48.4m to €37.1m in 2025. The question I would ask: which categories were deferred — maintenance, safety, the Nemho pipeline? Broadview's own philosophy says the goal is to be 'the reference decades from now', which argues against starving high-return projects.",
+      "hint": "€48.4m → €37.1m. Ask what was deferred."
+    },
+    {
+      "front": "Project-business economics (Energy): what would you watch at DMT or Aritas?",
+      "general": "Backlog / order intake; project margin and cost-to-complete; percentage-of-completion revenue recognition; milestone billing and cash; supplier concentration; price-cost spread under inflation; capacity utilisation in fabrication. Growth without margin dilutes value.",
+      "specific": "Energy 2025: revenue +10.6% but EBITDA down to €1.5m — BNG's key supplier shut down, Aritas volumes fell and Turkish inflation outpaced cost cuts. Westra (Jul 2026) secures fabrication capacity for DMT; my test would be project margin and on-time delivery in 2026–27.",
+      "hint": "Backlog, project margin, cost-to-complete, milestone cash, supplier concentration."
+    }
+  ]
+}

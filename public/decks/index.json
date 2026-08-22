@@ -115,6 +115,20 @@
       ]
     },
     {
+      "id": "brent-interview",
+      "title": "Brent Interview Prep",
+      "description": "Brent's final round at Broadview Holding (International Trainee Programme, Finance Track) on 25 Aug 2026 — the programme and the room, group structure and the verified 2025 numbers (quiz decks), industry and finance concepts, case frameworks and arithmetic drills, his STAR stories and weak-claim drills, and 2026 context.",
+      "decks": [
+        "brent-01-role-and-programme.json",
+        "brent-02-group-structure-quiz.json",
+        "brent-03-2025-numbers-quiz.json",
+        "brent-04-industry-kpis-finance.json",
+        "brent-05-case-and-technicals.json",
+        "brent-06-my-story-behavioral.json",
+        "brent-07-2026-context-and-questions.json"
+      ]
+    },
+    {
       "id": "tech-fundamentals",
       "title": "Tech Fundamentals",
       "description": "Practice + quiz drills: intermediate/advanced Java & Python, core Python libraries, and platform tech (Kafka, Terraform, Kubernetes, Snowflake).",

@@ -1,0 +1,79 @@
+{
+  "title": "Brent Interview — 2026 Context & Questions to Ask",
+  "description": "What has happened since the 2025 annual report (Westra, FENIX NTX, the spring-2026 geopolitical shock, tariffs, China, peers), what I cannot know on 25 Aug 2026, how to answer 'what would you watch in 2026?', and the three questions I will actually ask. Study-only two-part cards.",
+  "studyOnly": true,
+  "cards": [
+    {
+      "front": "What is the most recent Broadview news, and what do you make of it?",
+      "general": "July 2026: Broadview Energy Solutions acquired Westra Roestvaststaalindustrie B.V. — stainless-steel structures, ~50 staff, Elahuizen/Koudum in Friesland — to de-bottleneck DMT's biogas-upgrading and CO2-capture fabrication. The only 2026 acquisition; Energy is getting capital; vertical integration for project delivery.",
+      "specific": "'Small but strategic: it secures fabrication capacity for DMT after a year when Energy grew revenue 10.6% but EBITDA fell to €1.5m. The finance test is whether project margin and on-time delivery improve in 2026–27 — and whether captive capacity stays utilised if DMT's order book dips.'",
+      "hint": "Westra, Jul 2026, ~50 staff, stainless steel for DMT. Test: project margin + utilisation."
+    },
+    {
+      "front": "What does Broadview's 2026 outlook say, and what lies behind 'geopolitical developments'?",
+      "general": "Annual report (Mar 2026): 'economic headwind will continue to affect volumes in the material technology business across the globe… first months of 2026 confirm this challenge, intensified by geopolitical developments'; but 2026 'will continue to benefit from operational and commercial projects linked to the Broadview One strategy'. Energy expected to improve. Behind it: the spring-2026 Iran / Strait-of-Hormuz energy shock and falling construction confidence — Euroconstruct (Jun 2026) cut EC-19 2026 growth to +2.0% (Germany +1.0%, NL +2.2%, UK +2.4%); Westag cites 'geopolitical disruption of February 2026'; EGGER says spring-2026 tensions dampened recovery.",
+      "specific": "My line: 'Volumes stay weak, energy costs spiked again in spring, so 2026 is about holding margin through Broadview One projects and cost discipline, not about recovery. The swing factor is North America and whether Europe's margin stabilises even at flat volume.'",
+      "hint": "Headwinds continue; spring-2026 energy shock; Broadview One supports; Energy improves."
+    },
+    {
+      "front": "What changed in US tariffs in 2026, and why does it matter for Formica North America?",
+      "general": "20 Feb 2026: the Supreme Court struck down the IEEPA tariffs; replaced by a flat 10% Section-122 surcharge; EU goods capped at 15% from 1 Jul 2026; Section-232 tariffs on wood products 25%, with the 50% step-up delayed to Jan 2027. Both Broadview and HAL named US tariffs as a 2025 profit drag (imported inputs incl. kraft paper).",
+      "specific": "I'd say: 'Less volatile now, still a cost. For Formica NA the question is how much of the input tariff can be passed through in price — 2025 suggests most of it, since Americas EBITDA still grew.'",
+      "hint": "IEEPA struck down Feb 2026 → 10% surcharge; EU 15% cap Jul 2026; wood 232 at 25%."
+    },
+    {
+      "front": "Input costs and China in 2026?",
+      "general": "Kraft paper ~US$1.0/kg in the US versus ~$1.4/kg in Europe (Q1 2026) — a structural European disadvantage; melamine in Europe ~$1.26/kg in Mar 2026 (−6% vs Dec); energy prices spiked in spring 2026. China: H1-2026 property investment −18% y/y, new starts −23% — no quick rebound for Formica Asia.",
+      "specific": "For an Asia question: 'Capacity and utilisation decisions, not growth plans — 2025 sales −10%, EBITDA €17.9m, and the Chinese property data in 2026 is worse, not better.'",
+      "hint": "Europe paper +40% vs US; melamine softening; China property −18%."
+    },
+    {
+      "front": "Which peer benchmark can you cite, and how carefully?",
+      "general": "EGGER FY2025/26 (Jul 2026): revenue €4.26bn (+3.4%), EBITDA margin 12.7%, flat — an integrated wood-based-panel and laminate producer. Wilsonart launched its first major HPL collection since 2022 (Jul 2026); Abet Laminati is building a US plant (2027); Kronospan took a €146m EIB loan (Mar 2026).",
+      "specific": "I use EGGER's ~13% against Broadview Materials' ~9% as 'headroom' — with the caveat that product mix and vertical integration explain part of the gap. Competitors are investing through the downturn; that is an argument for not starving Nemho and capex.",
+      "hint": "EGGER 12.7% vs ~9%; competitors investing (Abet US plant, Wilsonart launch)."
+    },
+    {
+      "front": "What product and innovation news from 2026 can you mention?",
+      "general": "FENIX NTX launched 16 Jun 2026 — up to 90% bio-based, continuing the Bloom/lignin chemistry direction; Formica 2026 Stone Collection (Jul 2026); Arpa's 'ArchiThoughts–ArchiTouch' at Milan Design Week 2026; Homapal and FENIX at Casa Decor 2026; Valencia site sold Jan 2026.",
+      "specific": "The point I make: innovation continued through the downturn, which is consistent with the philosophy of being 'the reference in the industry decades from now' — and it is what I would protect in any cost case.",
+      "hint": "FENIX NTX (90% bio-based, Jun 2026); Stone Collection; Milan Design Week."
+    },
+    {
+      "front": "What will you NOT be able to know on 25 Aug 2026 — and how do you handle it?",
+      "general": "No H1-2026 Broadview figures exist publicly: Broadview is private, Westag delisted in Jul 2025 (no interim report), and HAL's H1-2026 report is published 27 Aug 2026 — two days after the interview. HAL's Q1 update (12 May) only said unquoted revenues −7.2% (−4.1% organic) with no Broadview split.",
+      "specific": "If asked about 2026 numbers: 'I can't see H1 — HAL publishes on the 27th. From the outlook and the Q1 signal I'd expect volumes down and the question being margin stability; I'd rather you tell me how the first half actually went.' Never guess a number.",
+      "hint": "No H1 data; HAL reports 27 Aug. Say so; don't guess."
+    },
+    {
+      "front": "What would you watch in 2026? (90-second answer)",
+      "general": "Three things plus one comparison, each tied to a 2025 fact.",
+      "specific": "'First, whether Materials margins stabilise even if volumes stay weak — that would show the cost actions and Broadview One projects are working. Second, cash conversion and working capital, because 2025 cash from operations was near zero and the Materials facility matures in 2027. Third, whether the group keeps investing in innovation and selective growth — FENIX NTX, Westra — while managing debt. And I'd watch Europe against North America to see whether the regional divergence continues.'",
+      "hint": "Margin stability · cash/WC (2027 refinancing) · keep investing · Europe vs NA."
+    },
+    {
+      "front": "What do you think Broadview's biggest current challenge is?",
+      "general": "Lead with a diagnosis, support with two numbers, and avoid calling it a sales crisis.",
+      "specific": "'Converting relatively resilient revenue into profit and cash. Revenue fell only 1.7% in 2025 but recurring EBITDA fell 18.7% and cash from operations was €3.1m — and the year ended in a net loss because of financing costs. I wouldn't call it a sales crisis; it's a margin, operating-leverage and cash-conversion challenge in a weak demand environment, concentrated in Europe.'",
+      "hint": "Revenue −1.7%, EBITDA −18.7%, cash €3.1m, net loss. Margin not sales."
+    },
+    {
+      "front": "Question to ask #1 — about the numbers.",
+      "general": "Ask something that shows you read the report and that invites the interviewer's judgement rather than a fact you could look up.",
+      "specific": "'The 2025 numbers show Materials EBITDA falling much faster than revenue, especially in Europe. Which operational or commercial levers do you see as having the most potential to restore margin — and how much of that is Broadview One?'",
+      "hint": "Europe margin levers; how much is Broadview One."
+    },
+    {
+      "front": "Question to ask #2 — about the trainee experience.",
+      "general": "Ask about the texture of the work, not the perks.",
+      "specific": "'How much time does a finance trainee typically spend with plant management, sales teams and local CFOs versus at the holding office — and what makes you decide a trainee is ready to own a more ambiguous, senior-visible project?'",
+      "hint": "Time with plants/CFOs; what earns a bigger project."
+    },
+    {
+      "front": "Question to ask #3 — about the future (and the one in reserve).",
+      "general": "Ask about progression in a way that signals long-term intent.",
+      "specific": "'For the Finance Track, which permanent roles have the strongest trainees moved into over the last few years, and what differentiated those who progressed fastest?' In reserve, only if the conversation is already financial: 'With the €160m facility maturing in 2027 and 2025 cash conversion near zero, how visible is working capital in the monthly reporting trainees work on?' And the Westra question if Energy comes up.",
+      "hint": "Fast progressors; reserve: working capital visibility; Westra."
+    }
+  ]
+}
