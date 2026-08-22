@@ -1,0 +1,165 @@
+{
+  "title": "Brent Interview — Products & What They Physically Are (quiz)",
+  "description": "The invite says: read about the material technology industry, the companies in the group and the products they make. What each product is, what it is used for, what makes it different, and who buys it — so the on-the-spot case is recognisable in the first minute. Practice + quiz with 5–6 distractors per card.",
+  "cards": [
+    {
+      "front": "What is high-pressure laminate (HPL), physically?",
+      "back": "A sheet made of several layers of kraft paper impregnated with phenolic resin (the core) topped with a decor paper and a melamine-resin overlay, pressed together at high pressure (~70–100 bar) and heat (~140–150 °C) so the thermosetting resins cure into one hard, dense sheet. Typically 0.6–1.5 mm thick; glued onto a substrate (chipboard/MDF) for furniture, worktops, wall panels. Formica, Arpa and Homapal make HPL.",
+      "quizAnswer": "Resin-impregnated kraft and decor papers cured under high heat and pressure into a thin, hard sheet.",
+      "distractors": [
+        "A thin sheet of PVC printed with a wood pattern and glued onto chipboard.",
+        "A solid acrylic slab cast in a mould and polished to a gloss finish.",
+        "Layers of wood veneer glued crosswise and pressed into plywood.",
+        "A ceramic-coated steel sheet used for kitchen splashbacks.",
+        "Compressed wood fibres bonded with urea resin into a dense board (MDF)."
+      ],
+      "hint": "Paper + resin + heat + pressure."
+    },
+    {
+      "front": "What is a compact laminate / compact panel, and why does it matter for Trespa and Arpa?",
+      "back": "HPL made thick enough (typically 2–20 mm) to be self-supporting — no substrate needed. Dense, impact-resistant, moisture-resistant, machinable. Used for exterior façade cladding (Trespa Meteon), laboratory worktops (Trespa TopLab), toilet cubicles, lockers and furniture. It is the product behind Trespa's entire business and a large part of Arpa's.",
+      "quizAnswer": "Thick, self-supporting HPL (2–20 mm) used for façades, lab tops, cubicles — no substrate needed.",
+      "distractors": [
+        "Thin HPL glued onto a steel honeycomb for aircraft interiors.",
+        "A compressed rubber panel used for gym floors and playgrounds.",
+        "A lightweight aluminium composite panel with a plastic core.",
+        "Chipboard with a melamine paper face, used for flat-pack furniture.",
+        "A fibre-cement board used behind tiles in bathrooms."
+      ]
+    },
+    {
+      "front": "What is FENIX, and what does it do that plain HPL does not?",
+      "back": "Arpa's innovative interior material: an HPL whose surface is treated with next-generation acrylic resins cured by electron-beam. Result: extremely matt, soft-touch, anti-fingerprint, low light reflectivity, and thermally repairable (micro-scratches can be healed with heat from an iron). Used in kitchens, furniture, hospitality and retail interiors. Bloom technology cuts fossil phenol in the core with lignin; FENIX NTX (Jun 2026) is up to 90% bio-based.",
+      "quizAnswer": "Arpa's matt, soft-touch, anti-fingerprint, thermally repairable surface made with electron-beam-cured acrylic resins.",
+      "distractors": [
+        "Arpa's exterior façade panel with a UV-resistant ceramic coating.",
+        "Formica's budget laminate line for the DIY channel.",
+        "A stainless-steel laminate used for restaurant kitchens.",
+        "A high-gloss acrylic panel for bathroom furniture.",
+        "Trespa's fire-rated laboratory worktop material."
+      ],
+      "hint": "Matt, fingerprint-free, heals with heat."
+    },
+    {
+      "front": "What does Trespa sell, to whom, and why do customers specify it?",
+      "back": "Trespa Meteon: exterior façade cladding panels for ventilated façades — weather-, UV- and impact-resistant, colour-stable, available in many finishes; specified by architects and façade contractors for schools, hospitals, housing, offices. Trespa TopLab: chemical-resistant laboratory worktops and cabinetry. Selling points: durability, design, certification (fire, building regulations), warranty. Exposure: commercial construction/renovation cycles and building-regulation changes.",
+      "quizAnswer": "Façade cladding (Meteon) and lab worktops (TopLab), specified by architects for durability, design and certification.",
+      "distractors": [
+        "Kitchen worktops sold online direct to consumers in the UK.",
+        "Interior doors and frames sold through German builders' merchants.",
+        "Wood-based panels for flat-pack furniture manufacturers.",
+        "Decorative metal laminates for shop fitting and hotels.",
+        "Cryogenic storage tanks for industrial gas distributors."
+      ]
+    },
+    {
+      "front": "What does Formica sell, and through which channels?",
+      "back": "The original HPL brand (1913): decorative laminates in thousands of colours and textures, compact grade, worktops (post-formed and solid), wall-cladding and specialty products (e.g. chemical-resistant, magnetic, writable). Customers: furniture and kitchen manufacturers, distributors and builders' merchants, fabricators, architects/specifiers, retail and hospitality chains. In North America also Hartson-Kennedy pre-finished worktops for the home-centre/builder channel.",
+      "quizAnswer": "Decorative HPL, compact panels and worktops sold to furniture makers, distributors, fabricators and specifiers.",
+      "distractors": [
+        "Exterior façade panels sold only through architects' specifications.",
+        "Biogas-upgrading plants sold to farms and waste companies.",
+        "Solid-surface acrylic sold exclusively through kitchen studios.",
+        "Stainless-steel laminates sold to shop-fitting contractors.",
+        "Interior doors sold through the German DIY channel."
+      ]
+    },
+    {
+      "front": "What does Westag make, and what are its two segments?",
+      "back": "Türen (doors): interior doors and door frames — functional doors (fire, sound, security), design doors — for residential and commercial buildings, sold through builders' merchants and DIY chains in Germany. Elemente: worktops, wall panels, solid surface, coated plywood, laminated boards for furniture, kitchen and interior fit-out. 2025: Türen €104m (+3%), Elemente €70m (−9%). Plants in Rheda-Wiedenbrück and Wadersloh; Westag Saterland.",
+      "quizAnswer": "Interior doors and frames (Türen) plus worktops, panels and coated plywood (Elemente), sold in Germany.",
+      "distractors": [
+        "Exterior façade cladding and lab worktops, sold across Europe.",
+        "Kitchen worktops sold online to UK consumers.",
+        "Real-metal laminates and magnetic boards for shop fitting.",
+        "LNG tanks and cryogenic trailers for Nordic distributors.",
+        "Melamine-faced chipboard for flat-pack furniture makers."
+      ]
+    },
+    {
+      "front": "What does Homapal make, and where does it get used?",
+      "back": "Specialty decorative laminates: real-metal surfaces (aluminium, copper, brass, stainless steel, often brushed, patinated or embossed) bonded to an HPL core, plus magnetic and writable boards. Small series, high customisation. Used in shop fitting, hotels, restaurants, bars, elevators, furniture and offices where a genuine metal look is wanted without solid metal.",
+      "quizAnswer": "Real-metal and magnetic decorative laminates for shop fitting, hospitality and furniture.",
+      "distractors": [
+        "Exterior metal façade cassettes for high-rise buildings.",
+        "Stainless-steel pressure vessels for cryogenic gases.",
+        "Galvanised steel worktops for commercial kitchens.",
+        "Aluminium composite panels for signage.",
+        "Magnetic whiteboard paint for offices."
+      ]
+    },
+    {
+      "front": "What does Direct Online Services / Worktop Express sell, and what is different about its model?",
+      "back": "Kitchen worktops — solid wood, laminate, solid surface, quartz/stone, plus sinks and accessories — sold online direct to UK consumers and tradespeople, cut to size, with fast nationwide delivery. It is Broadview's downstream, e-commerce route to the end customer: customer data, digital marketing, cutting/fabrication and logistics rather than pressing laminate.",
+      "quizAnswer": "Cut-to-size kitchen worktops sold online direct to UK consumers and trades — a downstream e-commerce route.",
+      "distractors": [
+        "HPL sheets sold to furniture manufacturers across Europe.",
+        "Façade panels sold to UK architects through specification.",
+        "Interior doors sold through UK builders' merchants.",
+        "An online marketplace reselling other brands' kitchens.",
+        "Kitchen design software licensed to retailers."
+      ]
+    },
+    {
+      "front": "What does DMT Environmental Technology build?",
+      "back": "Biogas upgrading plants: membrane systems that separate CO2 from raw biogas (from farms, waste, wastewater) to produce biomethane that can be injected into the gas grid or used as vehicle fuel; also CO2 capture/liquefaction, desulphurisation and odour treatment. Project business: engineering, fabrication (skids), installation, service. Westra (Jul 2026) adds stainless-steel fabrication capacity.",
+      "quizAnswer": "Membrane biogas-upgrading plants that turn raw biogas into grid-quality biomethane, plus CO2 capture.",
+      "distractors": [
+        "Wind-turbine gearboxes and maintenance services.",
+        "Anaerobic digesters that produce raw biogas from manure.",
+        "LNG import terminals for Northern Europe.",
+        "Solar inverters and battery storage for farms.",
+        "Water-purification membranes for desalination plants."
+      ]
+    },
+    {
+      "front": "What does Aritas Cryogenics make, and who buys it?",
+      "back": "Cryogenic equipment: vacuum-insulated storage tanks, transport tanks/trailers, vaporisers and LNG/industrial-gas fuelling systems for liquefied gases (LNG, LIN, LOX, LAR, LCO2, hydrogen). Customers: industrial gas companies, LNG distributors, shipping/fuelling, hospitals and industrial users. Manufactured in Turkey — exposed to Turkish inflation and lira moves, order-book cycles and steel prices.",
+      "quizAnswer": "Vacuum-insulated cryogenic storage and transport tanks for LNG and industrial gases, made in Turkey.",
+      "distractors": [
+        "Refrigerated shipping containers for food logistics.",
+        "Industrial freezers and cold rooms for supermarkets.",
+        "Gas turbines for power plants.",
+        "Steel pipelines for natural-gas transmission.",
+        "Heat exchangers for chemical plants."
+      ]
+    },
+    {
+      "front": "What do Barents NaturGass (BNG) and Cryogenic Container Solutions (CCS) do?",
+      "back": "BNG (Norway): buys LNG from liquefaction plants and distributes it by truck/container to industrial customers, ferries and fishing/maritime users not connected to a gas grid — margin = purchase/sale spread minus logistics; dependent on supplier availability (2025 key-supplier shutdown). CCS (Netherlands): owns and leases cryogenic ISO tank containers and trailers to gas companies and distributors — an asset-utilisation business (fleet utilisation, lease rates, maintenance).",
+      "quizAnswer": "BNG distributes LNG by truck to off-grid customers in Norway; CCS leases cryogenic containers and trailers.",
+      "distractors": [
+        "BNG operates gas-fired power plants; CCS builds LNG ships.",
+        "BNG explores for gas in the Barents Sea; CCS stores carbon underground.",
+        "BNG runs a gas-trading desk; CCS manufactures shipping containers.",
+        "BNG sells hydrogen fuel cells; CCS leases forklifts.",
+        "BNG imports LNG into the Netherlands; CCS insures cargo."
+      ]
+    },
+    {
+      "front": "What is the difference between HPL, melamine-faced chipboard (MFC) and solid surface — and why does it matter commercially?",
+      "back": "HPL: multi-layer paper/resin sheet, very durable, glued to a substrate — premium to mid. MFC/LPL: a single decor paper melamine-pressed directly onto chipboard — cheaper, less wear-resistant, the volume product of EGGER/Kronospan. Solid surface: acrylic/mineral cast material (e.g. Corian-type), seamless and repairable, premium worktops. Commercial point: Broadview sits in the differentiated HPL/compact/specialty space, not the commodity MFC space — which is why design, function and brand matter more than tonnage.",
+      "quizAnswer": "HPL = durable multi-layer sheet on a substrate; MFC = one paper pressed on chipboard (commodity); solid surface = cast acrylic.",
+      "distractors": [
+        "They are three trade names for the same melamine laminate.",
+        "HPL is for floors, MFC for walls, solid surface for roofs.",
+        "HPL is a metal laminate, MFC a wood veneer, solid surface a ceramic.",
+        "MFC is the premium product; HPL and solid surface are budget lines.",
+        "HPL is always exterior-grade; MFC and solid surface are interior only."
+      ],
+      "hint": "Broadview is in the differentiated layer, not the commodity board."
+    },
+    {
+      "front": "Where in a building would you find each Broadview material? (the one-minute tour)",
+      "back": "Façade: Trespa Meteon compact panels. Lab: Trespa TopLab worktops. Kitchen: Formica or FENIX doors and fronts, a Formica/Westag/Worktop Express worktop, Homapal metal splashback. Office/retail/hotel: Formica or Arpa wall and furniture laminates, Homapal metal on reception desks and lifts, magnetic/writable boards. Interior doors and frames: Westag. Behind the scenes: biomethane from a DMT plant in the gas grid; LNG trucked by BNG in an Aritas tank on a CCS trailer.",
+      "quizAnswer": "Trespa outside and in labs; Formica/FENIX/Westag/Homapal in kitchens, furniture, doors and interiors; DMT/Aritas/BNG/CCS in energy.",
+      "distractors": [
+        "Trespa in kitchens; Formica on façades; Westag in labs.",
+        "All Broadview materials are used only in commercial office fit-out.",
+        "Homapal for façades; Arpa for doors; DMT for worktops.",
+        "Formica for roofing; Trespa for flooring; Westag for windows.",
+        "Broadview products are industrial only and never visible in buildings."
+      ]
+    }
+  ]
+}
